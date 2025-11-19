@@ -1,0 +1,18 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "FGD"
+            }
+        ],
+        "Category": "Plasma Theme",
+        "Description": "A modern theme for Plasma 6 based on Utterly-Round",
+        "EnabledByDefault": true,
+        "Id": "Mokka",
+        "License": "CC BY-SA 4.0",
+        "Name": "Mokka",
+        "Version": "1.0.0"
+    },
+    "X-KDE-PluginInfo-Id": "Mokka",
+    "X-Plasma-API": "5.0"
+}
