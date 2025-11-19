@@ -5,12 +5,15 @@ ShowCopyMoveMenu=true
 AutoExpandFolders=true
 EditableUrl=true
 FilterBar=true
+GlobalViewProps=false
 OpenExternallyCalledFolderInNewTab=false
 ShowCopyMoveMenu=true
 ShowFullPath=true
 ShowFullPathInTitlebar=true
 Version=202
-ViewPropsTimestamp=2025,11,16,16,43,6.766
+
+[IconsMode]
+PreviewSize=80
 
 [KFileDialog Settings]
 Places Icons Auto-resize=false
@@ -18,6 +21,7 @@ Places Icons Static Size=22
 
 [MainWindow]
 MenuBar=Disabled
+ToolBarsMovable=Enabled
 
 [PreviewSettings]
 Plugins=appimagethumbnail,audiothumbnail,blenderthumbnail,comicbookthumbnail,cursorthumbnail,djvuthumbnail,ebookthumbnail,exrthumbnail,directorythumbnail,fontthumbnail,imagethumbnail,jpegthumbnail,kraorathumbnail,windowsexethumbnail,windowsimagethumbnail,mobithumbnail,opendocumentthumbnail,gsthumbnail,rawthumbnail,svgthumbnail,textthumbnail,ffmpegthumbs
