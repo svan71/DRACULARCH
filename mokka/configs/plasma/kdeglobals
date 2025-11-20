@@ -119,6 +119,7 @@ ForegroundPositive=166, 227, 161
 ForegroundVisited=203, 166, 247
 
 [General]
+BrowserApplication=firefox.desktop
 ColorSchemeHash=8648bf1098bc3a0eeaa29f0e76fab31426bc8355
 XftHintStyle=hintslight
 XftSubPixel=none
@@ -129,11 +130,9 @@ menuFont=Noto Sans,11,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
 smallestReadableFont=Noto Sans,9,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
 toolBarFont=Noto Sans,11,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
 
-[Icons]
-Theme=Tela-circle-dracula-dark
-
 [KDE]
 LookAndFeelPackage=Mokka
+ShowDeleteCommand=false
 SingleClick=true
 
 [KFileDialog Settings]
@@ -156,6 +155,10 @@ View Style=Simple
 [KScreen]
 ScreenScaleFactors=DP-3=1;
 XwaylandClientsScale=false
+
+[PreviewSettings]
+EnableRemoteFolderThumbnail=false
+MaximumRemoteSize=0
 
 [WM]
 activeBackground=30,30,46

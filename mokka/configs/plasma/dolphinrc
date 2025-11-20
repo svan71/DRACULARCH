@@ -1,19 +1,27 @@
 [ContextMenu]
 ShowCopyMoveMenu=true
+ShowDuplicateHere=false
+ShowOpenInNewTab=false
 
 [General]
 AutoExpandFolders=true
+DoubleClickViewAction=none
 EditableUrl=true
 FilterBar=true
-GlobalViewProps=false
+GlobalViewProps=true
 OpenExternallyCalledFolderInNewTab=false
 ShowCopyMoveMenu=true
 ShowFullPath=true
 ShowFullPathInTitlebar=true
+ShowStatusBar=Disabled
+SortHiddenLast=true
 Version=202
 
 [IconsMode]
-PreviewSize=80
+PreviewSize=64
+
+[InformationPanel]
+dateFormat=ShortFormat
 
 [KFileDialog Settings]
 Places Icons Auto-resize=false
@@ -24,4 +32,4 @@ MenuBar=Disabled
 ToolBarsMovable=Enabled
 
 [PreviewSettings]
-Plugins=appimagethumbnail,audiothumbnail,blenderthumbnail,comicbookthumbnail,cursorthumbnail,djvuthumbnail,ebookthumbnail,exrthumbnail,directorythumbnail,fontthumbnail,imagethumbnail,jpegthumbnail,kraorathumbnail,windowsexethumbnail,windowsimagethumbnail,mobithumbnail,opendocumentthumbnail,gsthumbnail,rawthumbnail,svgthumbnail,textthumbnail,ffmpegthumbs
+Plugins=appimagethumbnail,audiothumbnail,comicbookthumbnail,cursorthumbnail,djvuthumbnail,ebookthumbnail,exrthumbnail,directorythumbnail,fontthumbnail,imagethumbnail,jpegthumbnail,kraorathumbnail,windowsexethumbnail,windowsimagethumbnail,opendocumentthumbnail,svgthumbnail,textthumbnail,ffmpegthumbs

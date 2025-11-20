@@ -34,6 +34,7 @@ desktopchangeosdEnabled=true
 fadeEnabled=true
 flipswitchEnabled=true
 forceblurEnabled=true
+kwin4_effect_roundedcornersEnabled=true
 magiclampEnabled=true
 scaleEnabled=false
 squashEnabled=false
@@ -66,6 +67,9 @@ LayoutName=coverswitch
 
 [Tiling]
 padding=4
+
+[Tiling][62c04db4-ac59-4028-a76a-94d5edd38ccb][09e0af60-2695-4656-a2e7-b4cfee85ca72]
+tiles={"layoutDirection":"horizontal","tiles":[{"width":0.25},{"width":0.5},{"width":0.25}]}
 
 [Tiling][62c04db4-ac59-4028-a76a-94d5edd38ccb][81a55072-4c2c-45ab-979f-60be3bab73d5]
 tiles={"layoutDirection":"horizontal","tiles":[{"width":0.25},{"width":0.5},{"width":0.25}]}

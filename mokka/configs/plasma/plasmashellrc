@@ -3,7 +3,7 @@ alignment=1
 floating=0
 
 [PlasmaViews][Panel 2][Defaults]
-thickness=44
+thickness=42
 
 [PlasmaViews][Panel 2][Horizontal2648]
 alignment=1
@@ -11,6 +11,7 @@ alignment=1
 [PlasmaViews][Panel 25]
 floating=1
 panelLengthMode=1
+panelOpacity=1
 panelVisibility=2
 
 [PlasmaViews][Panel 25][Defaults]
