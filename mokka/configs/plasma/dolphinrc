@@ -1,10 +1,13 @@
 [ContextMenu]
+ShowCopyMoveMenu=true
 ShowDuplicateHere=false
 ShowMoveToOtherSplitView=false
 ShowOpenInNewTab=false
-ShowOpenInNewWindow=false
+ShowOpenInSplitView=false
 
 [General]
+GlobalViewProps=false
+ShowStatusBar=Disabled
 Version=202
 ViewPropsTimestamp=2025,11,17,2,3,16.871
 

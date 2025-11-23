@@ -1,5 +1,9 @@
 # Ghostty configuration - Catppuccin Mocha theme with JetBrainsMono Nerd Font
 
+# Theme - Catppuccin Mocha built-in theme
+# Note: Custom cursor colors and opacity below override theme defaults
+theme = Catppuccin Mocha
+
 # Font configuration
 font-family = JetBrainsMono Nerd Font
 font-size = 12.5
@@ -29,39 +33,6 @@ unfocused-split-opacity = 0.85
 shell-integration = fish
 command = /usr/bin/fish
 
-# Catppuccin Mocha Colors (from Mokka.colorscheme)
-# Base colors
-background = 1e1e2e
-foreground = #cdd6f4
-
-# Selection
-selection-background = #585b70
-selection-foreground = #cdd6f4
-
-# Normal colors
-palette = 0=#45475a
-palette = 1=#f38ba8
-palette = 2=#a6e3a1
-palette = 3=#f9e2af
-palette = 4=#89b4fa
-palette = 5=#f5c2e7
-palette = 6=#94e2d5
-palette = 7=#bac2de
-
-# Bright colors
-palette = 8=#585b70
-palette = 9=#f38ba8
-palette = 10=#a6e3a1
-palette = 11=#f9e2af
-palette = 12=#89b4fa
-palette = 13=#f5c2e7
-palette = 14=#94e2d5
-palette = 15=#a6adc8
-
-# Additional Mocha colors for extended palette
-palette = 16=#fab387
-palette = 17=#f5e0dc
-
 # UI Configuration
 clipboard-trim-trailing-spaces = true
 mouse-hide-while-typing = true
@@ -81,6 +52,3 @@ keybind = ctrl+shift+comma=reload_config
 keybind = ctrl+shift+n=new_window
 keybind = ctrl+shift+t=new_tab
 keybind = ctrl+s=select_all
-
-# Resize overlay
-#resize-overlay = never
