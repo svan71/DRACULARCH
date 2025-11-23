@@ -1,22 +1,33 @@
+[CompactMode]
+PreviewsShown=true
+
 [ContextMenu]
 ShowCopyMoveMenu=true
+ShowCopyToOtherSplitView=false
 ShowDuplicateHere=false
 ShowMoveToOtherSplitView=false
 ShowOpenInNewTab=false
 ShowOpenInSplitView=false
 
+[DetailsMode]
+PreviewsShown=true
+
 [General]
+DoubleClickViewAction=none
+EditableUrl=true
 GlobalViewProps=false
+LockPanels=false
+ShowPreviewsForRemoteFiles=true
 ShowStatusBar=Disabled
 Version=202
 ViewPropsTimestamp=2025,11,17,2,3,16.871
+
+[IconsMode]
+PreviewsShown=true
 
 [KFileDialog Settings]
 Places Icons Auto-resize=false
 Places Icons Static Size=22
 
-[MainWindow]
-MenuBar=Disabled
-
 [PreviewSettings]
-Plugins=appimagethumbnail,audiothumbnail,glycin-heif,comicbookthumbnail,cursorthumbnail,djvuthumbnail,ebookthumbnail,exrthumbnail,directorythumbnail,fontthumbnail,imagethumbnail,glycin-image-rs,jpegthumbnail,glycin-jxl,kraorathumbnail,windowsexethumbnail,windowsimagethumbnail,opendocumentthumbnail,glycin-svg,svgthumbnail,textthumbnail
+Plugins=appimagethumbnail,audiothumbnail,glycin-heif,blenderthumbnail,comicbookthumbnail,cursorthumbnail,djvuthumbnail,ebookthumbnail,exrthumbnail,fontthumbnail,heif,imagethumbnail,glycin-image-rs,jpegthumbnail,glycin-jxl,kraorathumbnail,windowsexethumbnail,windowsimagethumbnail,mobithumbnail,opendocumentthumbnail,gsthumbnail,rawthumbnail,glycin-svg,svgthumbnail,textthumbnail,ffmpegthumbs,webp-pixbuf

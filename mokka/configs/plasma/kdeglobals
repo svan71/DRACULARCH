@@ -121,6 +121,8 @@ ForegroundVisited=203, 166, 247
 [General]
 BrowserApplication=firefox.desktop
 ColorSchemeHash=8648bf1098bc3a0eeaa29f0e76fab31426bc8355
+TerminalApplication=/usr/bin/ghostty --gtk-single-instance=true
+TerminalService=com.mitchellh.ghostty.desktop
 XftHintStyle=hintslight
 XftSubPixel=none
 cursorTheme=Catppuccin-Mocha-Mauve-Cursors
@@ -129,6 +131,7 @@ font=Noto Sans,11,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
 menuFont=Noto Sans,11,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
 smallestReadableFont=Noto Sans,9,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
 toolBarFont=Noto Sans,11,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
+widgetStyle=kvantum
 
 [KDE]
 LookAndFeelPackage=Mokka
@@ -157,8 +160,8 @@ ScreenScaleFactors=DP-3=1;
 XwaylandClientsScale=false
 
 [PreviewSettings]
-EnableRemoteFolderThumbnail=false
-MaximumRemoteSize=0
+EnableRemoteFolderThumbnail=true
+MaximumRemoteSize=524288000
 
 [WM]
 activeBackground=30,30,46

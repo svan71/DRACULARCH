@@ -8,4 +8,4 @@ Theme=Mokka
 WallpaperPlugin=org.kde.image
 
 [Greeter][Wallpaper][org.kde.image][General]
-Image=/usr/share/sddm/themes/Mokka/background.png
+Image=/usr/share/wallpapers/garuda-mokka/Mokka-tree.jpg
