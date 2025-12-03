@@ -52,3 +52,4 @@ keybind = ctrl+shift+comma=reload_config
 keybind = ctrl+shift+n=new_window
 keybind = ctrl+shift+t=new_tab
 keybind = ctrl+s=select_all
+gtk-custom-css = ~/.config/ghostty/ghostty-menu.css

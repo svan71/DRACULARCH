@@ -15,7 +15,6 @@ PreviewsShown=true
 [General]
 DoubleClickViewAction=none
 EditableUrl=true
-GlobalViewProps=false
 LockPanels=false
 ShowPreviewsForRemoteFiles=true
 ShowStatusBar=Disabled

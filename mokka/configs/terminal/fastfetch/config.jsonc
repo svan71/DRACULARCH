@@ -15,104 +15,104 @@
     },
     {
       "type": "os",
-      "key": " OS",
-      "keyColor": "yellow"
+      "key": " OS",
+      "keyColor": "#f9e2af"
     },
     {
       "type": "kernel",
-      "key": "├ Kernel",
-      "keyColor": "yellow"
+      "key": "├ Kernel",
+      "keyColor": "#f9e2af"
     },
     {
       "type": "packages",
       "key": "├󰏖 Packages",
-      "keyColor": "yellow"
+      "keyColor": "#f9e2af"
     },
     {
       "type": "shell",
-      "key": "├ Shell",
-      "keyColor": "yellow"
+      "key": "├ Shell",
+      "keyColor": "#f9e2af"
     },
     {
       "type": "command",
-      "key": "└ Age",
-      "keyColor": "yellow",
+      "key": "└ Age",
+      "keyColor": "#f9e2af",
       "text": "birth_install=$(stat -c %W /); current=$(date +%s); time_progression=$((current - birth_install)); days_difference=$((time_progression / 86400)); echo $days_difference days"
     },
     "break",
     {
       "type": "de",
-      "key": " DE",
-      "keyColor": "blue"
+      "key": " DE",
+      "keyColor": "#89b4fa"
     },
     {
       "type": "wm",
       "key": "├󰧨 Window Manager",
-      "keyColor": "blue"
+      "keyColor": "#89b4fa"
     },
     {
       "type": "lm",
       "key": "├󰧨 Login Manager",
-      "keyColor": "blue"
+      "keyColor": "#89b4fa"
     },
     {
       "type": "wmtheme",
       "key": "├󰉼 WM Theme",
-      "keyColor": "blue"
+      "keyColor": "#89b4fa"
     },
     {
       "type": "theme",
       "format": "{1}",
       "key": "├󰉼 Color Themes",
-      "keyColor": "blue"
+      "keyColor": "#89b4fa"
     },
     {
       "type": "icons",
       "format": "{1}",
       "key": "├󰀻 System Icons",
-      "keyColor": "blue"
+      "keyColor": "#89b4fa"
     },
     {
       "type": "font",
       "format": "{?1}{1} [Qt]{?}{/1}Unknown",
-      "key": "├ System Fonts",
-      "keyColor": "blue"
+      "key": "├ System Fonts",
+      "keyColor": "#89b4fa"
     },
     {
       "type": "terminal",
-      "key": "└ Terminal",
-      "keyColor": "blue"
+      "key": "└ Terminal",
+      "keyColor": "#89b4fa"
     },
     "break",
     {
       "type": "chassis",
       "key": "󰌢 PC",
-      "keyColor": "green"
+      "keyColor": "#a6e3a1"
     },
     {
       "type": "cpu",
       "key": "├󰻠 CPU",
-      "keyColor": "green"
+      "keyColor": "#a6e3a1"
     },
     {
       "type": "gpu",
       "key": "├󰍛 GPU",
-      "keyColor": "green"
+      "keyColor": "#a6e3a1"
     },
     {
       "type": "opengl",
       "key": "├󰍛 OpenGL",
-      "keyColor": "green"
+      "keyColor": "#a6e3a1"
     },
     {
       "type": "vulkan",
       "key": "├󰍛 Vulkan",
-      "keyColor": "green"
+      "keyColor": "#a6e3a1"
     },
     {
       "type": "display",
       "key": "└󰍹 Display(s)",
-      "keyColor": "green"
-    },
+      "keyColor": "#a6e3a1"
+    }
   ]
 }

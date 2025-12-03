@@ -39,7 +39,8 @@ set -gx BASH_ENV ~/.bashrc
 set -gx FZF_DEFAULT_OPTS "\
 --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
 --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
---color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8"
+--color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8,border:#7f849c \
+--border=rounded"
 
 ## Environment setup
 if test -f ~/.fish_profile
@@ -159,7 +160,7 @@ alias ll 'eza -l --color=always --group-directories-first --icons'
 alias lt 'eza -aT --color=always --group-directories-first --icons'
 alias l. 'eza -ald --color=always --group-directories-first --icons .*'
 
-abbr cat 'bat --style header,snip,changes'
+abbr cat 'bat'
 if not test -x /usr/bin/yay; and test -x /usr/bin/paru
     alias yay 'paru'
 end

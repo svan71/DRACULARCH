@@ -1,0 +1,82 @@
+/* Catppuccin Mocha theme for Ghostty GTK context menu */
+/* Matches KDE Plasma Konsole native menu styling */
+
+/* Main menu background */
+menu,
+.context-menu,
+popover.menu contents {
+  background-color: #313244;
+  color: #cdd6f4;
+  border: none;
+  border-radius: 8px;
+  padding: 4px;
+  font-family: "Noto Sans";
+  font-size: 11pt;
+  font-weight: 700;
+}
+
+/* Menu items */
+menuitem,
+.menuitem {
+  color: #cdd6f4;
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin: 2px;
+  font-family: "Noto Sans";
+  font-size: 11pt;
+  font-weight: 700;
+}
+
+/* Menu item hover/focus state */
+menuitem:hover,
+menuitem:focus,
+.menuitem:hover,
+.menuitem:focus {
+  background-color: #45475a;
+  color: #ffffff;
+}
+
+/* Menu item with submenu arrow */
+menuitem arrow,
+.menuitem arrow {
+  color: #cdd6f4;
+}
+
+menuitem:hover arrow,
+.menuitem:hover arrow {
+  color: #ffffff;
+}
+
+/* Menu separators */
+separator,
+.separator {
+  background-color: transparent;
+  min-height: 0px;
+  margin: 0px;
+  opacity: 0;
+}
+
+/* Accelerator text (keyboard shortcuts like "Shift+Ctrl+C") */
+menuitem label.accelerator,
+.menuitem label.accelerator {
+  color: #6c7086;
+  margin-left: 24px;
+}
+
+menuitem:hover label.accelerator,
+.menuitem:hover label.accelerator {
+  color: #a6adc8;
+}
+
+/* Menu arrow for submenus */
+menu arrow.right {
+  -gtk-icon-source: -gtk-icontheme("pan-end-symbolic");
+  color: #cdd6f4;
+}
+
+/* Disabled menu items */
+menuitem:disabled,
+.menuitem:disabled {
+  color: #6c7086;
+  opacity: 0.5;
+}

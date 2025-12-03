@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="64" height="64" viewBox="0 0 16.933 16.933" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="purpleGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" style="stop-color:#cba6f7;stop-opacity:0.3"/>
+      <stop offset="1" style="stop-color:#cba6f7;stop-opacity:0"/>
+    </radialGradient>
+    <filter id="ghostShadow">
+      <feDropShadow dx="0" dy="0.25" stdDeviation="0.4" flood-opacity="0.3"/>
+    </filter>
+    <filter id="glowFilter">
+      <feGaussianBlur stdDeviation="0.2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <radialGradient gradientUnits="userSpaceOnUse" cx="119.099" cy="177.07" r="51.677" id="gradient-terminal" gradientTransform="matrix(0.729201, 0, 0, 0.681069, 39.291263, 58.664891)">
+      <stop offset="0" style="stop-color: #cba6f7"/>
+      <stop offset="1" style="stop-color: #9399b2"/>
+    </radialGradient>
+    <linearGradient gradientUnits="userSpaceOnUse" x1="0" y1="-50" x2="0" y2="35" id="gradient-ghost">
+      <stop offset="0" style="stop-color: #cdd6f4"/>
+      <stop offset="1" style="stop-color: #a6adc8"/>
+    </linearGradient>
+  </defs>
+  <circle cx="8.526" cy="8.316" r="7.144" fill="#45475a" style="paint-order: stroke;" transform="matrix(1.026616, 0, 0, 1.022413, -0.387053, -0.536661)"/>
+  <circle cx="8.466" cy="6.2" r="4" fill="url(#purpleGlow)" style="" transform="matrix(1.22017, 0, 0, 1.138857, -2.004057, 0.575192)"/>
+  <g transform="matrix(0.055, 0, 0, 0.07266, 8.225815, 8.143615)" filter="url(#ghostShadow)" style="">
+    <path d="M 0,-50 C -30,-50 -45,-30 -45,0 L -45,25 C -45,30 -40,35 -30,35 C -20,35 -15,30 -15,25 C -15,30 -10,35 0,35 C 10,35 15,30 15,25 C 15,30 20,35 30,35 C 40,35 45,30 45,25 L 45,0 C 45,-30 30,-50 0,-50 Z" stroke="#cba6f7" stroke-width="2" style="fill: url(#gradient-ghost); fill-opacity: 0.9;"/>
+    <ellipse cx="-13.362" cy="-11.222" rx="10" ry="11" style="fill-opacity: 0.9;" fill="#1e1e2e"/>
+    <ellipse cx="14.256" cy="-11.488" rx="10" ry="11" style="fill-opacity: 0.9;" fill="#1e1e2e"/>
+    <circle cx="-13" cy="-12" r="2" style="fill: #cdd6f4; fill-opacity: 0.8;" transform="matrix(1.708735, 0, 0, 1.727624, 9.261311, 8.604264)"/>
+    <circle cx="16.173" cy="-11.076" r="2" style="fill: #cdd6f4; fill-opacity: 0.8;" transform="matrix(1.611443, 0, 0, 1.59178, -11.945975, 5.411552)"/>
+    <path d="M -8,5 Q 0,10 8,5" stroke="#1e1e2e" stroke-width="2" stroke-linecap="round" opacity="0.9" fill="none"/>
+  </g>
+  <g transform="matrix(0.063366, 0, 0, 0.062216, 22.304491, -0.696387)" filter="url(#glowFilter)" style="">
+    <path d="M 128.091 197.328 L 160.19 197.328 C 165.031 197.328 165.031 204.217 160.19 204.229 L 128.067 204.229 C 123.239 204.217 123.239 197.34 128.067 197.328 L 128.091 197.328 Z M 89.487 160.151 C 86.299 156.9 91.199 152.251 94.626 155.274 L 117.319 176.807 C 118.734 178.16 118.734 180.331 117.319 181.673 L 94.639 203.217 C 91.213 206.241 86.311 201.592 89.498 198.339 L 109.628 179.24 L 89.487 160.151 Z" style="stroke: #cba6f7; stroke-width: 2; fill: url(#gradient-terminal);"/>
+  </g>
+</svg>
