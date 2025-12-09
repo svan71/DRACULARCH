@@ -154,4 +154,10 @@ lpstat -v
 ```
 
 ## Notes File
-For full details, history, and context: see `notes.md` on USB or in repo.
+For full details, history, and context: `notes.md`
+
+**When user says "read notes":**
+1. Try USB first: `/run/media/steve/ARCH_202512/notes.md`
+2. If not found, fall back to Synology: `/mnt/synology/WEB Scripts/Arch/USB Files/notes.md`
+
+Do NOT check the repo (`~/Dracularch/`) - notes.md lives on USB/Synology only.
