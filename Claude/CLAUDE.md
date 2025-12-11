@@ -25,7 +25,7 @@ This file provides guidance to Claude Code when working with this repository.
 
 ### Next steps:
 1. Test BIOS changes (62/58 ratios + Turbo LLC)
-2. Test Dracula.sh on fresh install (UFW fix + CIFS mounts)
+2. ~~Test Dracula.sh on fresh install (UFW fix + CIFS mounts)~~ ✅ Done
 3. Update Mokka.sh with carapace bash-ble fix
 4. Update Mokka.sh to use Bash+ble.sh (currently Fish)
 
@@ -237,7 +237,13 @@ lpstat -v
 
 # Check active icon theme (Mokka)
 kreadconfig6 --group Icons --key Theme
+
+# Check ble.sh (use bash -c, not raw [[)
+bash -c '[[ -f /usr/share/blesh/ble.sh ]] && echo "OK" || echo "Missing"'
 ```
+
+## Claude Code Notes
+- **ble.sh check**: Use `bash -c '[[ ... ]]'` not raw `[[ ]]` in Bash tool (runs in sh by default)
 
 ## Printer Setup
 - Uses `dnssd://` URIs for GNOME integration (avoids dual printer display)
@@ -246,6 +252,7 @@ kreadconfig6 --group Icons --key Theme
 - UFW allows port 631 for CUPS
 
 ## Session History
+- Session 18: Dracula.sh fresh install verified ✅ (all optimizations working)
 - Session 17: CIFS kernel verified + Plex mount + unified bookmarks
 - Session 16: UFW activation fix + CIFS module added to modprobed-combined.db
 - Session 15: CachyOS kernel naming change + AMD GPP0 fix
