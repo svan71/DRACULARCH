@@ -8,6 +8,8 @@ ShowDuplicateHere=false
 ShowMoveToOtherSplitView=false
 ShowOpenInNewTab=false
 ShowOpenInSplitView=false
+ShowOpenTerminal=false
+ShowSortBy=false
 
 [DetailsMode]
 PreviewsShown=true
