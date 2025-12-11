@@ -3,31 +3,19 @@
 This file provides guidance to Claude Code when working with this repository.
 
 ## Current Session Status
-**Session 18 - Z790/14900K BIOS tuning for 62x single / 58x multi**
-
-### BIOS Changes Planned (Testing)
-
-| Setting | Before | After |
-|---------|--------|-------|
-| P-Core 1-2 Ratio | 61x | **62x** |
-| P-Core 3-8 Ratio | 57x | **58x** |
-| Vcore LLC | Extreme | **Turbo** |
-| AC/DC Loadline | Extreme | **Turbo** |
-| DVID Offset | +0.000V | **+0.025V** |
-
-**Issue:** DVID offset field shows +0.250V but won't apply - may need VF mode "Selection" instead of "Legacy".
-
-### To verify after reboot:
-- [ ] Single-core boost hits 62x (Cinebench R23 single)
-- [ ] All-core hits 58x (Cinebench R23 multi)
-- [ ] No WHEA errors in Event Viewer
-- [ ] Temps under 90°C in stress tests
+**Session 19 - Fresh Mokka.sh install and optimization**
 
 ### Next steps:
-1. Test BIOS changes (62/58 ratios + Turbo LLC)
-2. ~~Test Dracula.sh on fresh install (UFW fix + CIFS mounts)~~ ✅ Done
-3. Update Mokka.sh with carapace bash-ble fix
-4. Update Mokka.sh to use Bash+ble.sh (currently Fish)
+1. Fresh Mokka.sh install
+2. Verify what works out of the box
+3. Apply Dracula.sh optimizations (UFW systemctl fix, CIFS mounts, carapace bash-ble)
+4. Address any KDE-specific issues
+
+### Reference (from Dracula.sh Session 18):
+- Dracula.sh fresh install verified ✅ (all optimizations working)
+- UFW fix: `systemctl enable ufw` (not just `ufw --force enable`)
+- CIFS mounts working with multichannel
+- Carapace bash-ble mode for ble.sh compatibility
 
 ## Steve's Preferences - READ FIRST
 - **Bash with ble.sh** - provides Fish-like experience (autosuggestions, syntax highlighting)
@@ -244,6 +232,11 @@ bash -c '[[ -f /usr/share/blesh/ble.sh ]] && echo "OK" || echo "Missing"'
 
 ## Claude Code Notes
 - **ble.sh check**: Use `bash -c '[[ ... ]]'` not raw `[[ ]]` in Bash tool (runs in sh by default)
+- **"setup repo"**: Copy ssh-backup from Synology to ~/Documents, then run setup-repo.sh:
+  ```bash
+  cp -r "/mnt/synology/WEB Scripts/Scripts/Setup Repo/ssh-backup" ~/Documents/
+  bash "/mnt/synology/WEB Scripts/Scripts/Setup Repo/setup-repo.sh" setup
+  ```
 
 ## Printer Setup
 - Uses `dnssd://` URIs for GNOME integration (avoids dual printer display)
@@ -252,6 +245,7 @@ bash -c '[[ -f /usr/share/blesh/ble.sh ]] && echo "OK" || echo "Missing"'
 - UFW allows port 631 for CUPS
 
 ## Session History
+- Session 19: Fresh Mokka.sh install and optimization
 - Session 18: Dracula.sh fresh install verified ✅ (all optimizations working)
 - Session 17: CIFS kernel verified + Plex mount + unified bookmarks
 - Session 16: UFW activation fix + CIFS module added to modprobed-combined.db
