@@ -37,6 +37,7 @@ This file provides guidance to Claude Code when working with this repository.
 - Results matter, keep solutions simple
 - Hates typing - keep commands short
 - Script output must be themed - use color variables, no ugly raw output
+- **NEVER put .sh scripts in the repo** - scripts live on USB/Synology only, not GitHub
 
 ## Repository Overview
 
