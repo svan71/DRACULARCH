@@ -54,15 +54,26 @@ This file provides guidance to Claude Code when working with this repository.
 
 **Important:** Scripts run from USB during install. Repo holds backups/configs that sync to GitHub.
 
-## File Locations
+## File Locations & Sync Rules
 
 | Location | Purpose |
 |----------|---------|
-| `~/CLAUDE.md` | Active instructions (copied from repo) |
-| `~/.claude/settings.json` | Permissions (copied from repo) |
-| `~/Dracularch/` | Local git repo |
-| `/run/media/steve/ARCH_202512/` | USB (scripts run from here) |
-| `/mnt/synology/WEB Scripts/Arch/Claude/` | Synology backup |
+| `~/CLAUDE.md` | Active instructions (live) |
+| `~/.claude/settings.json` | Permissions (live) |
+| `~/Dracularch/Claude/` | Repo (CLAUDE.md + settings.json only) |
+| `/run/media/steve/ARCH_202512/` | USB (current scripts + config backups) |
+| `/mnt/synology/WEB Scripts/Arch/Claude/USB Files/` | Synology (previous working backups) |
+
+**"sync" means:**
+```
+~/CLAUDE.md → ~/Dracularch/Claude/CLAUDE.md → git push
+~/.claude/settings.json → ~/Dracularch/Claude/settings.json → git push
+Then copy both to USB: /run/media/steve/ARCH_202512/
+```
+
+**Script backups (.sh files):**
+- USB = current working version
+- Synology = previous working version (only update when explicitly asked)
 
 ## CachyOS Kernel
 Optional at install (choice 2). Script downloads tar.xz files from GitHub repo root:
