@@ -36,16 +36,35 @@ Both file managers now use same bookmark order with CIFS paths:
 | Synology | GVFS | `smb://synology.local/` (browse all shares) |
 | Web Scripts | CIFS | `/mnt/synology/WEB Scripts` |
 
+#### 4. Updated Both Scripts with CIFS Mount Setup
+- **Dracula.sh**: Added Plex mount to existing CIFS setup, updated bookmarks
+- **Mokka.sh**: Added full CIFS setup (Synology password prompt + fstab entries for both mounts)
+
+#### 5. Removed .credentials.json Backup Attempts
+Claude Code OAuth tokens don't transfer across installs. Removed:
+- Reminder from Dracula.sh notes pointer
+- `.credentials.json` file from USB
+
+Use SSH workflow for TTY auth (documented in notes).
+
+#### 6. Uploaded New Kernel to GitHub
+CachyOS kernel 6.18.0-1 with CIFS module pushed to repo.
+
 **Files updated:**
 - [x] `/etc/fstab` - Added plex mount
 - [x] `~/.config/gtk-3.0/bookmarks` - Nautilus bookmarks
 - [x] `~/Dracularch/Mokka/configs/dolphin/user-places.xbel` - Dolphin bookmarks
+- [x] `/run/media/steve/ARCH_202512/Dracula.sh` - Plex mount + bookmarks + removed credentials reminder
+- [x] `/run/media/steve/ARCH_202512/Mokka.sh` - Full CIFS setup added
+- [x] `~/Dracularch/Cachyos Optimized Kernel.tar.xz` - Updated to 6.18.0-1 with CIFS
+- [x] `~/Dracularch/Cachyos Optimized Headers.tar.xz` - Updated to 6.18.0-1
 
 ### Tested:
 - [x] CIFS module loading
 - [x] `/mnt/synology` mount working
 - [x] `/mnt/plex` mount working
 - [x] Nautilus bookmarks updated
+- [x] Kernel files uploaded to GitHub
 
 ### Previous sessions summary:
 - Session 16: UFW activation fix + CIFS module added to modprobed-combined.db
@@ -53,10 +72,10 @@ Both file managers now use same bookmark order with CIFS paths:
 - Session 14: Carapace bash-ble fix for ble.sh compatibility
 
 ### Next steps:
-1. Test Dracula.sh on fresh install (UFW fix)
+1. Test Dracula.sh on fresh install (UFW fix + CIFS mounts)
 2. Update Mokka.sh with carapace bash-ble fix (still TODO)
 3. Update Mokka.sh to use Bash+ble.sh (currently Fish)
-4. Add CIFS mount setup to both scripts (fstab + credentials)
+4. Z790/14900K BIOS tuning (screenshots pending)
 
 ## File Sync Rules
 
