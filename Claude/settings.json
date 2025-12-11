@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(/home/steve/**)",
+      "Edit(/home/steve/**)",
+      "Write(/home/steve/**)",
+      "Read(/run/media/steve/**)",
+      "Edit(/run/media/steve/**)",
+      "Write(/run/media/steve/**)",
+      "Read(/mnt/synology/WEB Scripts/**)",
+      "Edit(/mnt/synology/WEB Scripts/**)",
+      "Write(/mnt/synology/WEB Scripts/**)",
+      "Bash(*)",
+      "WebSearch",
+      "WebFetch"
+    ]
+  }
+}

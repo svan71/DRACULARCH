@@ -2,6 +2,33 @@
 
 This file provides guidance to Claude Code when working with this repository.
 
+## Current Session Status
+**Session 18 - Z790/14900K BIOS tuning for 62x single / 58x multi**
+
+### BIOS Changes Planned (Testing)
+
+| Setting | Before | After |
+|---------|--------|-------|
+| P-Core 1-2 Ratio | 61x | **62x** |
+| P-Core 3-8 Ratio | 57x | **58x** |
+| Vcore LLC | Extreme | **Turbo** |
+| AC/DC Loadline | Extreme | **Turbo** |
+| DVID Offset | +0.000V | **+0.025V** |
+
+**Issue:** DVID offset field shows +0.250V but won't apply - may need VF mode "Selection" instead of "Legacy".
+
+### To verify after reboot:
+- [ ] Single-core boost hits 62x (Cinebench R23 single)
+- [ ] All-core hits 58x (Cinebench R23 multi)
+- [ ] No WHEA errors in Event Viewer
+- [ ] Temps under 90°C in stress tests
+
+### Next steps:
+1. Test BIOS changes (62/58 ratios + Turbo LLC)
+2. Test Dracula.sh on fresh install (UFW fix + CIFS mounts)
+3. Update Mokka.sh with carapace bash-ble fix
+4. Update Mokka.sh to use Bash+ble.sh (currently Fish)
+
 ## Steve's Preferences - READ FIRST
 - **Bash with ble.sh** - provides Fish-like experience (autosuggestions, syntax highlighting)
 - POSIX compatible - scripts from anywhere just work
@@ -26,12 +53,28 @@ This file provides guidance to Claude Code when working with this repository.
 
 **Important:** Scripts run from USB during install. Repo holds backups/configs that sync to GitHub.
 
-## CachyOS LTO Kernel
+## File Locations
+
+| Location | Purpose |
+|----------|---------|
+| `~/CLAUDE.md` | Active instructions (copied from repo) |
+| `~/.claude/settings.json` | Permissions (copied from repo) |
+| `~/Dracularch/` | Local git repo |
+| `/run/media/steve/ARCH_202512/` | USB (scripts run from here) |
+| `/mnt/synology/WEB Scripts/Arch/Claude/` | Synology backup |
+
+## CachyOS Kernel
 Optional at install (choice 2). Script downloads tar.xz files from GitHub repo root:
 - `Cachyos Optimized Kernel.tar.xz`
 - `Cachyos Optimized Headers.tar.xz`
 
-The `Cachyos Optimized Kernel/` folder is redundant - delete it.
+Package names changed from `linux-cachyos-lto` to `linux-cachyos` (LTO is now default).
+
+**Kernel requirements:**
+- CONFIG_TCP_CONG_BBR
+- CONFIG_NET_SCH_CAKE
+- CONFIG_IP_NF_FILTER / CONFIG_IP_NF_IPTABLES (for UFW)
+- CONFIG_CIFS (for direct SMB mounts)
 
 ## Hardware Context
 - Intel 14900K, 32GB RAM, Samsung Odyssey G8 4K@240Hz
@@ -44,8 +87,10 @@ The `Cachyos Optimized Kernel/` folder is redundant - delete it.
 DRACULARCH/
 ├── Dracula.sh                          # GNOME + Dracula theme installer
 ├── Mokka.sh                            # KDE Plasma + Catppuccin Mocha installer
-├── Cachyos Optimized Kernel.tar.xz     # CachyOS LTO kernel (downloaded by script)
-├── Cachyos Optimized Headers.tar.xz    # CachyOS LTO headers (downloaded by script)
+├── Cachyos Optimized Kernel.tar.xz     # CachyOS kernel (downloaded by script)
+├── Cachyos Optimized Headers.tar.xz    # CachyOS headers (downloaded by script)
+├── CLAUDE.md                           # This file (copied to ~/ during install)
+├── settings.json                       # Claude permissions (copied to ~/.claude/)
 ├── Dracula/                            # Dracula backup configs
 │   ├── configs/
 │   │   ├── terminal/
@@ -100,10 +145,43 @@ DRACULARCH/
 
 ### Both Scripts
 - **Printer**: Use `dnssd://` URIs, mDNS discovery, no hardcoded IPs
-- **CachyOS kernel needs**: CONFIG_TCP_CONG_BBR, CONFIG_NET_SCH_CAKE, CONFIG_IP_NF_FILTER
+- **AMD GPP0 fix**: Auto-creates systemd service to disable GPP0 wakeup (prevents immediate wake after suspend)
 - **Packages**: bash-completion, thefuck, tldr included
-- **Carapace**: Configured for Bash
+- **Carapace**: Configured for Bash with `bash-ble` mode (not `bash`)
 - **Ghostty**: shell-integration set to "detect"
+
+## SMB/CIFS Direct Mount Setup
+
+### Why Direct Mount?
+- **GVFS (smb://)**: ~193 MB/s write, ~157 MB/s read
+- **Direct CIFS mount**: ~230 MB/s write, ~260 MB/s read (+20-65% faster)
+
+### Implementation
+**Credentials file:** `~/.smbcredentials` (chmod 600)
+```
+username=steve
+password=<synology_password>
+```
+
+**fstab entries:**
+```
+//synology.local/external /mnt/synology cifs credentials=/home/steve/.smbcredentials,vers=3.1.1,multichannel,max_channels=4,rsize=4194304,wsize=4194304,uid=1000,gid=1000,_netdev,nofail 0 0
+//synology.local/plex /mnt/plex cifs credentials=/home/steve/.smbcredentials,vers=3.1.1,multichannel,max_channels=4,rsize=4194304,wsize=4194304,uid=1000,gid=1000,_netdev,nofail 0 0
+```
+
+## Unified Bookmarks (Both Scripts)
+
+| # | Bookmark | Path |
+|---|----------|------|
+| 1 | Arch | `/mnt/synology/WEB Scripts/Arch` |
+| 2 | Documents | `~/Documents` |
+| 3 | Downloads | `~/Downloads` |
+| 4 | Pictures | `~/Pictures` |
+| 5 | Plex | `/mnt/plex` |
+| 6 | Music | `~/Music` |
+| 7 | Videos | `~/Videos` |
+| 8 | Synology | `smb://synology.local/` |
+| 9 | Web Scripts | `/mnt/synology/WEB Scripts` |
 
 ## SSH Workflow for Claude Code (Fresh Installs)
 
@@ -130,34 +208,33 @@ Auth stored in `~/.claude/` until next reinstall. Under 2 minutes.
 
 **Tip**: Add `openssh` to archinstall package selection so it's ready immediately.
 
-## Common Tasks
-
-### Check autostart cleanup worked
+## Common Debugging Commands
 ```bash
+# Check autostart cleanup worked
 ls -la ~/.config/autostart/consolidated-setup.desktop ~/.config/scripts/consolidated-autostart.sh 2>&1
-```
 
-### Check UFW
-```bash
+# Check UFW
 sudo ufw status verbose
 systemctl is-enabled ufw
-```
 
-### Check GNOME extensions
-```bash
+# Check GNOME extensions
 gnome-extensions list --enabled
-```
 
-### Check printer
-```bash
+# Check printer
 lpstat -v
+
+# Check active icon theme (Mokka)
+kreadconfig6 --group Icons --key Theme
 ```
 
-## Notes File
-For full details, history, and context: `notes.md`
+## Printer Setup
+- Uses `dnssd://` URIs for GNOME integration (avoids dual printer display)
+- Name printer to match mDNS discovery name
+- Canon TR8600: `cnijfilter2` AUR package for scanning support
+- UFW allows port 631 for CUPS
 
-**When user says "read notes":**
-1. Try USB first: `/run/media/steve/ARCH_202512/notes.md`
-2. If not found, fall back to Synology: `/mnt/synology/WEB Scripts/Arch/USB Files/notes.md`
-
-Do NOT check the repo (`~/Dracularch/`) - notes.md lives on USB/Synology only.
+## Session History
+- Session 17: CIFS kernel verified + Plex mount + unified bookmarks
+- Session 16: UFW activation fix + CIFS module added to modprobed-combined.db
+- Session 15: CachyOS kernel naming change + AMD GPP0 fix
+- Session 14: Carapace bash-ble fix for ble.sh compatibility
