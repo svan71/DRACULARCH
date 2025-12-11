@@ -13,15 +13,14 @@
    </metadata>
   </info>
  </bookmark>
- <bookmark href="file:///home/steve/Desktop">
-  <title>Desktop</title>
+ <bookmark href="file:///mnt/synology/WEB%20Scripts/Arch">
+  <title>Arch</title>
   <info>
    <metadata owner="http://freedesktop.org">
-    <bookmark:icon name="user-desktop"/>
+    <bookmark:icon name="folder-script"/>
    </metadata>
    <metadata owner="http://www.kde.org">
     <ID>1700000000/1</ID>
-    <isSystemItem>true</isSystemItem>
    </metadata>
   </info>
  </bookmark>
@@ -49,18 +48,6 @@
    </metadata>
   </info>
  </bookmark>
- <bookmark href="file:///home/steve/Music">
-  <title>Music</title>
-  <info>
-   <metadata owner="http://freedesktop.org">
-    <bookmark:icon name="folder-music"/>
-   </metadata>
-   <metadata owner="http://www.kde.org">
-    <ID>1764037569/0</ID>
-    <isSystemItem>true</isSystemItem>
-   </metadata>
-  </info>
- </bookmark>
  <bookmark href="file:///home/steve/Pictures">
   <title>Pictures</title>
   <info>
@@ -68,7 +55,30 @@
     <bookmark:icon name="folder-pictures"/>
    </metadata>
    <metadata owner="http://www.kde.org">
-    <ID>1764037569/1</ID>
+    <ID>1700000000/4</ID>
+    <isSystemItem>true</isSystemItem>
+   </metadata>
+  </info>
+ </bookmark>
+ <bookmark href="file:///mnt/plex">
+  <title>Plex</title>
+  <info>
+   <metadata owner="http://freedesktop.org">
+    <bookmark:icon name="folder-videos"/>
+   </metadata>
+   <metadata owner="http://www.kde.org">
+    <ID>1700000000/5</ID>
+   </metadata>
+  </info>
+ </bookmark>
+ <bookmark href="file:///home/steve/Music">
+  <title>Music</title>
+  <info>
+   <metadata owner="http://freedesktop.org">
+    <bookmark:icon name="folder-music"/>
+   </metadata>
+   <metadata owner="http://www.kde.org">
+    <ID>1700000000/6</ID>
     <isSystemItem>true</isSystemItem>
    </metadata>
   </info>
@@ -80,7 +90,7 @@
     <bookmark:icon name="folder-videos"/>
    </metadata>
    <metadata owner="http://www.kde.org">
-    <ID>1764037569/2</ID>
+    <ID>1700000000/7</ID>
     <isSystemItem>true</isSystemItem>
    </metadata>
   </info>
@@ -92,29 +102,18 @@
     <bookmark:icon name="network-server"/>
    </metadata>
    <metadata owner="http://www.kde.org">
-    <ID>1700000000/4</ID>
+    <ID>1700000000/8</ID>
    </metadata>
   </info>
  </bookmark>
- <bookmark href="smb://synology.local/external/WEB%20Scripts/Arch">
-  <title>Arch</title>
+ <bookmark href="file:///mnt/synology/WEB%20Scripts">
+  <title>Web Scripts</title>
   <info>
    <metadata owner="http://freedesktop.org">
-    <bookmark:icon name="network-server"/>
+    <bookmark:icon name="folder-script"/>
    </metadata>
    <metadata owner="http://www.kde.org">
-    <ID>1700000000/5</ID>
-   </metadata>
-  </info>
- </bookmark>
- <bookmark href="smb://synology.local/external/WEB%20Scripts">
-  <title>WEB Scripts</title>
-  <info>
-   <metadata owner="http://freedesktop.org">
-    <bookmark:icon name="network-server"/>
-   </metadata>
-   <metadata owner="http://www.kde.org">
-    <ID>1700000000/6</ID>
+    <ID>1700000000/9</ID>
    </metadata>
   </info>
  </bookmark>
@@ -126,7 +125,7 @@
     <bookmark:icon name="network-workgroup"/>
    </metadata>
    <metadata owner="http://www.kde.org">
-    <ID>1700000000/7</ID>
+    <ID>1700000000/10</ID>
     <isSystemItem>true</isSystemItem>
    </metadata>
   </info>
@@ -138,31 +137,7 @@
     <bookmark:icon name="user-trash"/>
    </metadata>
    <metadata owner="http://www.kde.org">
-    <ID>1700000000/8</ID>
-    <isSystemItem>true</isSystemItem>
-   </metadata>
-  </info>
- </bookmark>
- <bookmark href="recentlyused:/files">
-  <title>Recent Files</title>
-  <info>
-   <metadata owner="http://freedesktop.org">
-    <bookmark:icon name="document-open-recent"/>
-   </metadata>
-   <metadata owner="http://www.kde.org">
-    <ID>1764037569/3</ID>
-    <isSystemItem>true</isSystemItem>
-   </metadata>
-  </info>
- </bookmark>
- <bookmark href="recentlyused:/locations">
-  <title>Recent Locations</title>
-  <info>
-   <metadata owner="http://freedesktop.org">
-    <bookmark:icon name="folder-open-recent"/>
-   </metadata>
-   <metadata owner="http://www.kde.org">
-    <ID>1764037569/4</ID>
+    <ID>1700000000/11</ID>
     <isSystemItem>true</isSystemItem>
    </metadata>
   </info>
@@ -170,86 +145,6 @@
  <info>
   <metadata owner="http://www.kde.org">
    <kde_places_version>4</kde_places_version>
-   <withRecentlyUsed>true</withRecentlyUsed>
-   <GroupState-RecentlySaved-IsHidden>false</GroupState-RecentlySaved-IsHidden>
-   <withBaloo>true</withBaloo>
-   <GroupState-SearchFor-IsHidden>false</GroupState-SearchFor-IsHidden>
   </metadata>
  </info>
- <separator>
-  <info>
-   <metadata owner="http://www.kde.org">
-    <UDI>/org/freedesktop/UDisks2/block_devices/nvme0n1p3</UDI>
-    <isSystemItem>true</isSystemItem>
-    <uuid>b24a5ea94a5e69dd</uuid>
-    <IsHidden>true</IsHidden>
-   </metadata>
-  </info>
- </separator>
- <separator>
-  <info>
-   <metadata owner="http://www.kde.org">
-    <UDI>/org/freedesktop/UDisks2/block_devices/nvme1n1p2</UDI>
-    <isSystemItem>true</isSystemItem>
-    <uuid>6ac44d55-668e-45bd-bc70-7fab2d5c4eae</uuid>
-    <IsHidden>true</IsHidden>
-   </metadata>
-  </info>
- </separator>
- <separator>
-  <info>
-   <metadata owner="http://www.kde.org">
-    <UDI>/org/freedesktop/UDisks2/block_devices/nvme2n1p2</UDI>
-    <isSystemItem>true</isSystemItem>
-    <uuid>9a9edcef-3023-4ff5-8b28-1462084baaa4</uuid>
-    <IsHidden>true</IsHidden>
-   </metadata>
-  </info>
- </separator>
- <separator>
-  <info>
-   <metadata owner="http://www.kde.org">
-    <UDI>/org/freedesktop/UDisks2/block_devices/nvme2n1p3</UDI>
-    <isSystemItem>true</isSystemItem>
-    <uuid>203f190b-9274-4da4-82bf-580d676e6ba7</uuid>
-   </metadata>
-  </info>
- </separator>
- <separator>
-  <info>
-   <metadata owner="http://www.kde.org">
-    <UDI>/org/freedesktop/UDisks2/block_devices/nvme3n1p2</UDI>
-    <isSystemItem>true</isSystemItem>
-    <uuid>4dff8c4b-80b4-478c-a8f1-50107663a2a4</uuid>
-    <IsHidden>true</IsHidden>
-   </metadata>
-  </info>
- </separator>
- <separator>
-  <info>
-   <metadata owner="http://www.kde.org">
-    <UDI>/org/freedesktop/UDisks2/block_devices/nvme3n1p3</UDI>
-    <isSystemItem>true</isSystemItem>
-    <uuid>311ab572-c0ad-4cde-bd06-b4d4457abfee</uuid>
-   </metadata>
-  </info>
- </separator>
- <separator>
-  <info>
-   <metadata owner="http://www.kde.org">
-    <UDI>/org/freedesktop/UDisks2/block_devices/sda1</UDI>
-    <isSystemItem>true</isSystemItem>
-    <uuid>b22e036b2e032845</uuid>
-   </metadata>
-  </info>
- </separator>
- <separator>
-  <info>
-   <metadata owner="http://www.kde.org">
-    <UDI>/org/freedesktop/UDisks2/block_devices/sdb1</UDI>
-    <isSystemItem>true</isSystemItem>
-    <uuid>90f1-0fa0</uuid>
-   </metadata>
-  </info>
- </separator>
 </xbel>
