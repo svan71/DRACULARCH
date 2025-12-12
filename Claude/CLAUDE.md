@@ -227,6 +227,7 @@ bash -c '[[ -f /usr/share/blesh/ble.sh ]] && echo "OK" || echo "Missing"'
 ```
 
 ## Claude Code Notes
+- **USB check**: DON'T use `ls /run/media/steve/` - it fails. Use full path: `ls /run/media/steve/ARCH_202512/`
 - **ble.sh check**: Use `bash -c '[[ ... ]]'` not raw `[[ ]]` in Bash tool (runs in sh by default)
 - **"setup repo"**: Copy ssh-backup from Synology to ~/Documents, then run setup-repo.sh:
   ```bash
