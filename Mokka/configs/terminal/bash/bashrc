@@ -177,4 +177,5 @@ command -v zoxide &>/dev/null && eval "$(zoxide init bash)"
 [[ -f ~/.config/fastfetch/config.jsonc ]] && command -v fastfetch &>/dev/null && fastfetch --config ~/.config/fastfetch/config.jsonc
 
 # Attach ble.sh (must be last)
+# NOTE: For Konsole with kitty images, move fastfetch AFTER ble-attach with 'clear' prefix
 [[ ${BLE_VERSION-} ]] && ble-attach

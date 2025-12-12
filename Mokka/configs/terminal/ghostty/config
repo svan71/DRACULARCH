@@ -6,13 +6,13 @@ theme = Catppuccin Mocha
 
 # Font configuration
 font-family = JetBrainsMono Nerd Font
-font-size = 12.5
+font-size = 13
 font-style = Bold
 font-feature = -calt
 font-thicken = true
 
 # Window Configuration
-window-width = 105
+window-width = 103
 window-height = 28
 window-vsync = true
 window-decoration = true
@@ -30,8 +30,8 @@ background-blur-radius = 20
 unfocused-split-opacity = 0.85
 
 # Shell integration
-shell-integration = fish
-command = /usr/bin/fish
+shell-integration = bash
+command = /usr/bin/bash
 
 # UI Configuration
 clipboard-trim-trailing-spaces = true
@@ -53,3 +53,4 @@ keybind = ctrl+shift+n=new_window
 keybind = ctrl+shift+t=new_tab
 keybind = ctrl+s=select_all
 gtk-custom-css = ~/.config/ghostty/ghostty-menu.css
+keybind = shift+enter=text:\x1b\r

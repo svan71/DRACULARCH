@@ -3,19 +3,15 @@
 This file provides guidance to Claude Code when working with this repository.
 
 ## Current Session Status
-**Session 19 - Fresh Mokka.sh install and optimization**
+**Session 19 - Mokka.sh: Fish → Bash + Konsole removed**
 
-### Next steps:
-1. Fresh Mokka.sh install
-2. Verify what works out of the box
-3. Apply Dracula.sh optimizations (UFW systemctl fix, CIFS mounts, carapace bash-ble)
-4. Address any KDE-specific issues
-
-### Reference (from Dracula.sh Session 18):
-- Dracula.sh fresh install verified ✅ (all optimizations working)
-- UFW fix: `systemctl enable ufw` (not just `ufw --force enable`)
-- CIFS mounts working with multichannel
-- Carapace bash-ble mode for ble.sh compatibility
+### Completed this session:
+- **Fish completely removed** from Mokka.sh - all packages, configs, functions
+- **Bash + ble.sh** now the shell (matches Dracula.sh)
+- **Konsole removed** - Ghostty only (cleaner, actively developed)
+- **Ghostty config updated** - current working settings as fallback in script
+- **Bashrc cleaned up** - fastfetch before ble-attach (Konsole note preserved)
+- All repo configs synced with current system
 
 ## Steve's Preferences - READ FIRST
 - **Bash with ble.sh** - provides Fish-like experience (autosuggestions, syntax highlighting)
@@ -94,15 +90,14 @@ DRACULARCH/
 ├── Dracula/                            # Dracula backup configs
 │   ├── configs/
 │   │   ├── terminal/
-│   │   │   ├── bash/   # bash_history (curated)
-│   │   │   └── fish/   # fish_history (legacy)
+│   │   │   └── bash/   # bashrc, blerc, bash_history
 │   │   └── zoxide/
 │   ├── themes/
 │   ├── icons/
 │   └── wallpapers/
 └── Mokka/              # Mokka backup configs
     ├── configs/
-    │   ├── plasma/     # 23 config files (appletsrc, plasmashellrc, kwinrc, etc.)
+    │   ├── plasma/     # 22 config files (appletsrc, plasmashellrc, kwinrc, etc.)
     │   ├── state/      # dolphinstaterc (Plasma 6 panel state)
     │   ├── dolphin-layout/
     │   ├── terminal/   # bash, starship, fastfetch, ghostty
@@ -142,13 +137,15 @@ DRACULARCH/
 - **TahoeLauncher**: Path must be `/usr/share/plasma/plasmoids/TahoeLauncher/`
 - **Dolphin state**: Plasma 6 uses `~/.local/state/dolphinstaterc`
 - **Display scaling**: Remove `ScreenScaleFactors=`, use `kscreen-doctor output.1.scale.1.9`
+- **Terminal**: Ghostty only (Konsole removed)
+- **Shell**: Bash + ble.sh (Fish completely removed)
 
 ### Both Scripts
 - **Printer**: Use `dnssd://` URIs, mDNS discovery, no hardcoded IPs
 - **AMD GPP0 fix**: Auto-creates systemd service to disable GPP0 wakeup (prevents immediate wake after suspend)
 - **Packages**: bash-completion, thefuck, tldr included
 - **Carapace**: Configured for Bash with `bash-ble` mode (not `bash`)
-- **Ghostty**: shell-integration set to "detect"
+- **Ghostty**: shell-integration = bash, command = /usr/bin/bash
 
 ## SMB/CIFS Direct Mount Setup
 
