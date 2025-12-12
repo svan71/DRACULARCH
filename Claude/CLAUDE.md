@@ -52,8 +52,10 @@ Guidance for Claude Code working with DRACULARCH repository.
 ### Both Scripts
 - **Printer**: Use `dnssd://` URIs, mDNS discovery, no hardcoded IPs. Canon TR8600 needs `cnijfilter2` AUR
 - **AMD GPP0 fix**: Systemd service disables GPP0 wakeup (prevents wake after suspend)
-- **Carapace**: Use `bash-ble` mode (not `bash`)
-- **Ghostty**: shell-integration = bash, command = /usr/bin/bash
+- **Carapace**: Use `bash-ble` mode (not `bash`), install `carapace-bin` (prebuilt)
+- **Ghostty**: In `extra` repo (prebuilt), shell-integration = bash
+- **Starship**: In `extra` repo (prebuilt), use `install_packages` not AUR
+- **ScreenScaleFactors**: Remove from both `plasmashellrc` AND `kdeglobals`
 
 ## CachyOS Kernel
 Optional at install. Package name: `linux-cachyos` (LTO now default).
@@ -103,6 +105,6 @@ curl -fsSL https://claude.ai/install.sh | bash && export PATH="$HOME/.local/bin:
 - **Windows 11**: Run [RemoveWindowsAI](https://github.com/zoicware/RemoveWindowsAI) - strips Copilot, Recall. Use backup mode, PowerShell 5.1.
 
 ## Session History
-- Session 20: Fresh Mokka, Firefox theming (selection color, Dark Reader, CanvasBlocker → Mocha)
+- Session 20: Fresh Mokka verified, script fixes (thefuck, ScreenScaleFactors in kdeglobals, starship → extra)
 - Session 19: Mokka.sh Fish → Bash + ble.sh, Konsole removed
 - Session 18: Dracula.sh fresh install verified
