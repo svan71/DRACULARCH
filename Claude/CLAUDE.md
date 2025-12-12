@@ -3,15 +3,14 @@
 This file provides guidance to Claude Code when working with this repository.
 
 ## Current Session Status
-**Session 19 - Mokka.sh: Fish → Bash + Konsole removed**
+**Session 20 - Fresh Mokka install + Firefox theming**
 
 ### Completed this session:
-- **Fish completely removed** from Mokka.sh - all packages, configs, functions
-- **Bash + ble.sh** now the shell (matches Dracula.sh)
-- **Konsole removed** - Ghostty only (cleaner, actively developed)
-- **Ghostty config updated** - current working settings as fallback in script
-- **Bashrc cleaned up** - fastfetch before ble-attach (Konsole note preserved)
-- All repo configs synced with current system
+- **Fresh Mokka.sh install** verified working
+- **Notification timeout** changed from 3000ms to 2000ms (plasmanotifyrc)
+- **Firefox/FireDragon selection color** - mauve (#cba6f7) via userContent.css
+- **CanvasBlocker settings** updated with recommendations (protectNavigator, protectWindow, WebGL spoofing, storePersistentRnd)
+- **Dark Reader settings** converted from Dracula to Catppuccin Mocha colors
 
 ## Steve's Preferences - READ FIRST
 - **Bash with ble.sh** - provides Fish-like experience (autosuggestions, syntax highlighting)
@@ -241,8 +240,12 @@ bash -c '[[ -f /usr/share/blesh/ble.sh ]] && echo "OK" || echo "Missing"'
 - Canon TR8600: `cnijfilter2` AUR package for scanning support
 - UFW allows port 631 for CUPS
 
+## Reminders
+- **Windows 11 install**: Run [RemoveWindowsAI](https://github.com/zoicware/RemoveWindowsAI) to strip Copilot, Recall, and AI bloat. Use backup mode. PowerShell 5.1 only.
+
 ## Session History
-- Session 19: Fresh Mokka.sh install and optimization
+- Session 20: Fresh Mokka install, Firefox/FireDragon theming (selection color, Dark Reader, CanvasBlocker)
+- Session 19: Mokka.sh Fish → Bash + ble.sh, Konsole removed
 - Session 18: Dracula.sh fresh install verified ✅ (all optimizations working)
 - Session 17: CIFS kernel verified + Plex mount + unified bookmarks
 - Session 16: UFW activation fix + CIFS module added to modprobed-combined.db

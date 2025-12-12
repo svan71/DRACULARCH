@@ -18,7 +18,7 @@ ShowPopupsInDndMode=true
 ShowInHistory=false
 
 [Notifications]
-PopupTimeout=3000
+PopupTimeout=2000
 
 [Services][libnotificationmanager]
 ShowInHistory=false
