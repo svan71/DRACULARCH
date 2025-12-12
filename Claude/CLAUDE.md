@@ -23,6 +23,18 @@ Guidance for Claude Code working with DRACULARCH repository.
 **Local repo:** ~/Dracularch/
 **USB:** /run/media/steve/ARCH_202512
 
+## Repo Structure
+```
+DRACULARCH/
+├── Claude/           # CLAUDE.md + settings.json
+├── Shared/           # CachyOS kernel (Cachyos-Kernel.tar.xz, Cachyos-Headers.tar.xz)
+├── Dracula/          # GNOME configs, themes, icons
+│   └── assets/       # 10 tar.xz archives (plymouth, wallpaper, icons, etc.)
+├── Mokka/            # KDE configs, themes, icons
+├── macOS/            # Mac-related files (future)
+└── Archive/          # Deprecated configs (Fish)
+```
+
 ## File Locations & Sync
 
 | Location | Purpose |
@@ -105,6 +117,7 @@ curl -fsSL https://claude.ai/install.sh | bash && export PATH="$HOME/.local/bin:
 - **Windows 11**: Run [RemoveWindowsAI](https://github.com/zoicware/RemoveWindowsAI) - strips Copilot, Recall. Use backup mode, PowerShell 5.1.
 
 ## Session History
+- Session 21: Repo reorganization (Dracula/assets, Shared, macOS, Archive), zip→tar.xz conversion
 - Session 20: Fresh Mokka verified, script fixes (thefuck, ScreenScaleFactors in kdeglobals, starship → extra)
 - Session 19: Mokka.sh Fish → Bash + ble.sh, Konsole removed
 - Session 18: Dracula.sh fresh install verified
