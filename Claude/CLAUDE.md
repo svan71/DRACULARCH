@@ -27,13 +27,27 @@ Guidance for Claude Code working with DRACULARCH repository.
 ```
 DRACULARCH/
 ├── Claude/           # CLAUDE.md + settings.json
-├── Shared/           # CachyOS kernel (Cachyos-Kernel.tar.xz, Cachyos-Headers.tar.xz)
-├── Dracula/          # GNOME configs, themes, icons
-│   └── assets/       # 10 tar.xz archives (plymouth, wallpaper, icons, etc.)
-├── Mokka/            # KDE configs, themes, icons
+├── Shared/           # Cachyos-Kernel.tar.xz, Cachyos-Headers.tar.xz
+├── Dracula/
+│   ├── configs/      # bashrc, blerc, zoxide
+│   ├── themes/       # GTK themes
+│   ├── icons/        # Icon themes
+│   ├── wallpapers/
+│   └── assets/       # 10 tar.xz archives downloaded by script
+├── Mokka/
+│   ├── configs/      # plasma, terminal, gtk, sddm, samba
+│   ├── themes/       # Kvantum, color-schemes, sddm, kate
+│   ├── icons/        # FireDragon icons
+│   └── wallpapers/
 ├── macOS/            # Mac-related files (future)
-└── Archive/          # Deprecated configs (Fish)
+└── Archive/          # Deprecated Fish configs
 ```
+
+**Dracula/assets/ contents:**
+- Dracula-GTK.tar.xz, Dracula-Cursors.tar.xz, Dracula-Icons.tar.xz
+- Dracula-Wallpaper.tar.xz, Dracula-Plymouth.tar.xz
+- Dracula-Gedit.tar.xz, Dracula-GnomeTerminal.tar.xz
+- Extensions.tar.xz, Nautilus-TypeAhead.tar.xz, TomboyNotes.tar.xz
 
 ## File Locations & Sync
 
@@ -117,7 +131,14 @@ curl -fsSL https://claude.ai/install.sh | bash && export PATH="$HOME/.local/bin:
 - **Windows 11**: Run [RemoveWindowsAI](https://github.com/zoicware/RemoveWindowsAI) - strips Copilot, Recall. Use backup mode, PowerShell 5.1.
 
 ## Session History
-- Session 21: Repo reorganization (Dracula/assets, Shared, macOS, Archive), zip→tar.xz conversion
+- Session 21: Major repo reorganization
+  - Created Dracula/assets/ (moved 10 archives from root)
+  - Created Shared/ (CachyOS kernel files, renamed without spaces)
+  - Created macOS/ (moved 4 Mac files)
+  - Created Archive/ (deprecated Fish configs)
+  - Converted Dracula-Plymouth.zip and Dracula-Wallpaper.zip to .tar.xz
+  - Updated Dracula.sh: 10 GitHub URLs to new paths
+  - Updated Mokka.sh: 4 GitHub URLs to new paths
 - Session 20: Fresh Mokka verified, script fixes (thefuck, ScreenScaleFactors in kdeglobals, starship → extra)
 - Session 19: Mokka.sh Fish → Bash + ble.sh, Konsole removed
 - Session 18: Dracula.sh fresh install verified
