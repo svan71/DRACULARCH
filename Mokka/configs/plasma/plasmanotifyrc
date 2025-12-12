@@ -2,6 +2,9 @@
 ShowBadges=false
 ShowInHistory=false
 
+[Applications][com.mitchellh.ghostty]
+Seen=true
+
 [Applications][org.kde.drkonqi]
 ShowInHistory=false
 
@@ -13,6 +16,9 @@ ShowPopupsInDndMode=true
 
 [Applications][vlc]
 ShowInHistory=false
+
+[Notifications]
+PopupTimeout=3000
 
 [Services][libnotificationmanager]
 ShowInHistory=false
