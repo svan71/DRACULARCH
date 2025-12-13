@@ -131,6 +131,23 @@ curl -fsSL https://claude.ai/install.sh | bash && export PATH="$HOME/.local/bin:
 - **Windows 11**: Run [RemoveWindowsAI](https://github.com/zoicware/RemoveWindowsAI) - strips Copilot, Recall. Use backup mode, PowerShell 5.1.
 
 ## Session History
+- Session 22: macOS.sh brought to Dracula.sh parity
+  - Replaced Fish with Bash + ble.sh
+  - Fixed logging functions with tee guards (LOGFILE existence check)
+  - Fixed setup_kernel URLs → `Shared/Cachyos-*.tar.xz`
+  - Fixed install_aur_packages: `pacman -Qi` → `yay -Q`
+  - Fixed restore_gnome_extensions URL → `Dracula/assets/Extensions.tar.xz`
+  - Added full 2.5Gb network optimizations (sysctl settings)
+  - Fixed setup_grub: removed LTO kernel references
+  - Fixed Plymouth: added animation service, deferred mkinitcpio
+  - Added SMB credential collection and setup_smb_and_portals
+  - Fixed UFW with proper systemctl enable
+  - Added AMD GPP0 wake fix
+  - Replaced printer setup with dnssd auto-detect
+  - Updated carapace to bash-ble mode
+  - Fixed EFI label to "archOS"
+  - Reordered browsers: Firefox, Firedragon, Chrome, Brave, Edge (both scripts)
+  - Fixed default apps (audio: mpv → smplayer)
 - Session 21: Major repo reorganization
   - Created Dracula/assets/ (moved 10 archives from root)
   - Created Shared/ (CachyOS kernel files, renamed without spaces)
