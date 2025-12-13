@@ -104,18 +104,41 @@ password=<synology_password>
 //synology.local/plex /mnt/plex cifs credentials=/home/steve/.smbcredentials,vers=3.1.1,multichannel,max_channels=4,rsize=4194304,wsize=4194304,uid=1000,gid=1000,_netdev,nofail 0 0
 ```
 
+## time.py - Automated Installer
+
+Pre-configured archinstall automation script on USB. Tested with archinstall 3.0.14.
+
+**Usage:**
+```bash
+python3 time.py
+```
+
+**What it does:**
+- Prompts for password (hashed, not stored)
+- Shows drives with mount warnings, double-confirms selection
+- Auto-updates archinstall, warns if version changed
+- Configures: linux-zen, Grub (removable), 512MB /boot + 50GB / + remainder /home (ext4)
+- Creates user `steve` with sudo, enables sshd, creates `/mnt/usb` and `/usr/local/bin/usb` helper
+
+**Post-reboot workflow:**
+```bash
+# Login as steve
+usb                      # mounts USB, cd's into it
+./mokka.sh               # or ./dracula.sh
+```
+
+**Version tracking:** Update `TESTED_ARCHINSTALL_VERSION` in script when archinstall changes.
+
 ## SSH Workflow (Fresh Installs)
 
-Claude Code needs browser OAuth. SSH from Mac:
+Claude Code needs browser OAuth. SSH from Mac (sshd already enabled by time.py):
 
 ```bash
-# Arch TTY: sudo pacman -S openssh && sudo systemctl start sshd && ip addr | grep 192
+# Arch TTY: ip addr | grep 192
 # Mac: ssh steve@192.168.x.x
 export TERM=xterm-256color
 curl -fsSL https://claude.ai/install.sh | bash && export PATH="$HOME/.local/bin:$PATH" && claude
 ```
-
-**Tip:** Add `openssh` to archinstall packages.
 
 ## Claude Code Notes
 - **USB check**: Use full path `ls /run/media/steve/ARCH_202512/` (parent dir fails)
@@ -131,6 +154,15 @@ curl -fsSL https://claude.ai/install.sh | bash && export PATH="$HOME/.local/bin:
 - **Windows 11**: Run [RemoveWindowsAI](https://github.com/zoicware/RemoveWindowsAI) - strips Copilot, Recall. Use backup mode, PowerShell 5.1.
 
 ## Session History
+- Session 23: time.py archinstall automation script
+  - Updated config format for archinstall 3.0.14
+  - Added password prompt (hashed with SHA512, not stored)
+  - Improved drive selection: shows mounts, double-confirm, CAUTION warnings
+  - Added version detection: warns if archinstall version changes
+  - Config: linux-zen, Grub (removable for OpenCore), 512MB /boot + 50GB / + remainder /home
+  - Enables multilib repo, pipewire, bluetooth, NetworkManager
+  - custom_commands: mkdir /mnt/usb, systemctl enable sshd, creates /usr/local/bin/usb helper
+  - Post-reboot: `usb` command mounts USB and cd's into it
 - Session 22: macOS.sh brought to Dracula.sh parity
   - Replaced Fish with Bash + ble.sh
   - Fixed logging functions with tee guards (LOGFILE existence check)
