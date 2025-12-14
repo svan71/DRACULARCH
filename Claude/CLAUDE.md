@@ -184,6 +184,16 @@ curl -fsSL https://claude.ai/install.sh | bash && export PATH="$HOME/.local/bin:
 - **Windows 11**: Run [RemoveWindowsAI](https://github.com/zoicware/RemoveWindowsAI) - strips Copilot, Recall. Use backup mode, PowerShell 5.1.
 
 ## Session History
+- Session 24: Weather widget fix + Flameshot screenshot tool
+  - Removed broken `org.kde.plasma.weather` (wettercom provider dead)
+  - Removed `kweather` package entirely (question mark icon issue)
+  - Installed `plasma6-applets-weather-widget-3-git` (Weather Widget Plus)
+  - Weather Widget 3 config: metno provider, Vincentown NJ, Noto Sans Bold font
+  - Installed `plasma6-applets-plasmusic-toolbar` (media controls for panel)
+  - Installed `flameshot` for screenshots (tray icon, GNOME-like workflow)
+  - Print Screen key mapped to Flameshot
+  - Added `Mokka/configs/flameshot/flameshot.ini` to repo
+  - Updated plasma config: removed all kweather/old weather refs
 - Session 23: time.py archinstall automation script
   - Updated config format for archinstall 3.0.14
   - Added password prompt (hashed with SHA512, not stored)
