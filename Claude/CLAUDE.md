@@ -150,6 +150,36 @@ curl -fsSL https://claude.ai/install.sh | bash && export PATH="$HOME/.local/bin:
 - AMD 9950X3D, 64GB
 - Mac M4 Pro, 24GB
 
+## 14900K Tuning (Gigabyte Z790 Aorus Master)
+
+**Results:** 5.5GHz all-core, 6.2GHz boost, R23: 40,742, temps max 87°C
+
+**BIOS Settings:**
+| Setting | Value |
+|---------|-------|
+| Intel Default Profile | High (not Extreme) |
+| IA AC/DC Loadline | 55 |
+| IA VR Voltage Limit | 1400 (1.4V cap - critical) |
+| IA VR Current Limit | 0 (unlimited) |
+| Package Power Limit 1 & 2 | 4095 |
+| Core Current Limit | 512A |
+| P-core Ratio | 62 (6.2GHz) |
+| E-core Ratio | 46 (4.6GHz) |
+| Vcore LLC | High |
+| VF Offset Mode | Selective |
+
+**V/F Curve (Selective mode):**
+| Point | Ratio | Offset |
+|-------|-------|--------|
+| 1-5 | 8-43x | -0.090V |
+| 6 | 51x | -0.070V |
+| 7 | 56x | -0.060V |
+| 8 | 58x | -0.050V |
+| 9 | 60x | +0.100V |
+| 10-11 | - | Auto |
+
+**Key principles:** 1.4V hard cap prevents degradation, undervolt at low frequencies for efficiency, full voltage only at boost. Kernel compile with FullLTO + AVX-512 is the hardest stability test.
+
 ## Reminders
 - **Windows 11**: Run [RemoveWindowsAI](https://github.com/zoicware/RemoveWindowsAI) - strips Copilot, Recall. Use backup mode, PowerShell 5.1.
 
