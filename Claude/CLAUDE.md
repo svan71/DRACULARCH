@@ -184,6 +184,19 @@ curl -fsSL https://claude.ai/install.sh | bash && export PATH="$HOME/.local/bin:
 - **Windows 11**: Run [RemoveWindowsAI](https://github.com/zoicware/RemoveWindowsAI) - strips Copilot, Recall. Use backup mode, PowerShell 5.1.
 
 ## Session History
+- Session 25: Weather widget deep dive on Garuda Linux (first Claude Code on Garuda)
+  - Explored weather widget options:
+    - **Weather Widget Plus** (`weather.widget.plus`) - fork with more customization, buggy compact mode
+    - **Chaac.Complete.Weather** - edited QML (removed °F suffix, adjusted spacing/icon), still frustrating
+    - **Default KDE** (`org.kde.plasma.weather`) - wettercom only provider shown, wettercom is DEAD
+  - **Solution**: Use NOAA provider with **Mount Holly, NJ** (close to Vincentown, has NWS office)
+  - Weather providers on system: `bbcukmet`, `dwd`, `envcan`, `noaa`, `wettercom` (in `/usr/lib/qt6/plugins/plasma/weather_ions/`)
+  - Applied Mokka fonts to Garuda kdeglobals (Noto Sans Bold 10pt everywhere)
+  - Tried separating system tray widgets into individual panel widgets:
+    - **What you get**: Control over order, direct click (no tray expand)
+    - **What you DON'T get**: Icon appearance control (icon theme), widget width control (widget design)
+    - System tray items can be reordered and set to "shown" anyway
+  - **Conclusion**: Stick with system tray layout, use NOAA provider for weather
 - Session 24: Weather widget fix + Flameshot screenshot tool
   - Removed broken `org.kde.plasma.weather` (wettercom provider dead)
   - Removed `kweather` package entirely (question mark icon issue)
