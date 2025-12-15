@@ -1,0 +1,314 @@
+/*
+ * Firefox userChrome.css - Combined Catppuccin Mocha + Dracula Theme
+ * - Catppuccin Mocha URL bar dropdown styling (KDE/Mokka)
+ * - Dracula window button icons (GNOME/Dracularch)
+ *
+ * Installation:
+ * 1. Enable: about:config -> toolkit.legacyUserProfileCustomizations.stylesheets = true
+ * 2. Copy to: ~/.mozilla/firefox/<profile>/chrome/userChrome.css
+ * 3. Restart Firefox
+ */
+
+/* ==========================================================================
+   DRACULA WINDOW CONTROLS (GNOME)
+   Note: Requires ~/.themes/Dracula/metacity-1/ button images
+   Silently fails on systems without Dracula theme (no harm)
+   ========================================================================== */
+
+/* Dracula theme window controls - 23x23 size */
+.titlebar-button {
+  width: 23px !important;
+  height: 23px !important;
+  min-width: 23px !important;
+  min-height: 23px !important;
+  margin: 4px 4px !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 12px !important;
+}
+
+/* Add padding to pull buttons away from edge */
+.titlebar-buttonbox {
+  padding-right: 8px !important;
+  align-items: center !important;
+  margin-top: -2px !important;
+}
+
+.titlebar-button>.toolbarbutton-icon {
+  width: 23px !important;
+  height: 23px !important;
+}
+
+/* Use the actual theme button images */
+.titlebar-close>.toolbarbutton-icon {
+  background: url('file:///home/steve/.themes/Dracula/metacity-1/close_focused.png') !important;
+  list-style-image: none !important;
+}
+
+.titlebar-min>.toolbarbutton-icon {
+  background: url('file:///home/steve/.themes/Dracula/metacity-1/minimize_focused.png') !important;
+  list-style-image: none !important;
+}
+
+.titlebar-max>.toolbarbutton-icon {
+  background: url('file:///home/steve/.themes/Dracula/metacity-1/maximize_focused.png') !important;
+  list-style-image: none !important;
+}
+
+.titlebar-restore>.toolbarbutton-icon {
+  background: url('file:///home/steve/.themes/Dracula/metacity-1/unmaximize_focused.png') !important;
+  list-style-image: none !important;
+}
+
+/* Mauve toolbar icons - bold */
+#back-button image,
+#forward-button image,
+#home-button image,
+#reload-button image,
+#stop-button image {
+  fill: #cba6f7 !important;
+  stroke: #cba6f7 !important;
+  stroke-width: 1px !important;
+}
+
+/* Thin icons need extra weight */
+#downloads-button image,
+#unified-extensions-button image,
+#PanelUI-menu-button image,
+#fxa-toolbar-menu-button image,
+#library-button image {
+  fill: #cba6f7 !important;
+  stroke: #cba6f7 !important;
+  stroke-width: 2px !important;
+  filter: drop-shadow(0 0 0.5px #cba6f7) !important;
+}
+
+/* Downloads indicator */
+#downloads-indicator-anchor {
+  fill: #cba6f7 !important;
+  stroke: #cba6f7 !important;
+  stroke-width: 2px !important;
+}
+
+/* Bookmark star */
+#star-button {
+  fill: #cba6f7 !important;
+}
+
+/* Catch-all for toolbar icons */
+:root {
+  --toolbarbutton-icon-fill: #cba6f7 !important;
+}
+
+/* ==========================================================================
+   CATPPUCCIN MOCHA URL BAR STYLING (KDE/Mokka)
+   ========================================================================== */
+
+/* Catppuccin Mocha Color Palette */
+:root {
+  --ctp-base: #1e1e2e;
+  --ctp-mantle: #181825;
+  --ctp-crust: #11111b;
+  --ctp-surface0: #313244;
+  --ctp-surface1: #45475a;
+  --ctp-surface2: #585b70;
+  --ctp-overlay0: #6c7086;
+  --ctp-overlay1: #7f849c;
+  --ctp-text: #cdd6f4;
+  --ctp-subtext0: #a6adc8;
+  --ctp-subtext1: #bac2de;
+  --ctp-mauve: #cba6f7;
+  --ctp-pink: #f5c2e7;
+  --ctp-lavender: #b4befe;
+  --ctp-blue: #89b4fa;
+
+  /* Override toolbar field colors - exact match from FireDragon/Dolphin */
+  --toolbar-field-background-color: #313244 !important;
+  --toolbar-field-focus-background-color: #313244 !important;
+}
+
+/* URL Bar Dropdown Container - border on sides and bottom to continue urlbar-background */
+.urlbarView {
+  border: 2px solid var(--ctp-mauve) !important;
+  border-top: none !important;
+  border-radius: 0 0 12px 12px !important;
+  background-color: var(--ctp-base) !important;
+  margin-top: 0 !important;
+  margin-inline: 0 !important;
+  width: calc(100% + 4px) !important;
+  margin-left: -2px !important;
+}
+
+/* Dropdown body inner separator - remove to prevent double line */
+.urlbarView-body-inner {
+  border-top: none !important;
+}
+
+/* Results container padding */
+.urlbarView-results {
+  background-color: var(--ctp-base) !important;
+}
+
+/* Individual row styling */
+.urlbarView-row {
+  color: var(--ctp-text) !important;
+}
+
+/* Row hover state */
+.urlbarView-row[row-selectable]:not([selected]):hover {
+  background-color: var(--ctp-surface0) !important;
+}
+
+/* Row selected state - use mauve for selection */
+.urlbarView-row[selected] {
+  background-color: var(--ctp-mauve) !important;
+  color: var(--ctp-crust) !important;
+}
+
+/* Secondary text (URLs, descriptions) */
+.urlbarView-url,
+.urlbarView-title-separator,
+.urlbarView-action {
+  color: var(--ctp-subtext0) !important;
+}
+
+/* Selected row secondary text */
+.urlbarView-row[selected] .urlbarView-url,
+.urlbarView-row[selected] .urlbarView-title-separator,
+.urlbarView-row[selected] .urlbarView-action {
+  color: var(--ctp-surface1) !important;
+}
+
+/* Search one-offs section separator */
+.urlbarView:not([noresults]) > .search-one-offs:not([hidden]) {
+  border-top-color: var(--ctp-surface1) !important;
+}
+
+/* One-off search buttons */
+#urlbar .searchbar-engine-one-off-item {
+  background-color: transparent !important;
+}
+
+#urlbar .searchbar-engine-one-off-item:hover {
+  background-color: var(--ctp-surface0) !important;
+}
+
+#urlbar .searchbar-engine-one-off-item[selected] {
+  background-color: var(--ctp-mauve) !important;
+}
+
+/* Search panel header label */
+#urlbar .search-panel-one-offs-header-label {
+  color: var(--ctp-subtext0) !important;
+}
+
+/* URL bar background when focused but NOT open */
+#urlbar[focused]:not([open]) > #urlbar-background {
+  border: 2px solid var(--ctp-mauve) !important;
+  background-color: #313244 !important;
+}
+
+/* URL bar background when dropdown is OPEN - blend with dropdown */
+#urlbar[open] > #urlbar-background {
+  border: 2px solid var(--ctp-mauve) !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  background: #1e1e2e !important;
+  background-color: #1e1e2e !important;
+}
+
+/* URL bar background when not focused */
+#urlbar:not([focused]) > #urlbar-background {
+  background-color: #313244 !important;
+}
+
+/* Let the more specific rules above handle urlbar-background */
+
+#urlbar-input-container {
+  background-color: transparent !important;
+}
+
+#urlbar[open] #urlbar-input-container {
+  background: #1e1e2e !important;
+  background-color: #1e1e2e !important;
+}
+
+#urlbar {
+  --toolbar-field-background-color: #313244 !important;
+  --toolbar-field-focus-background-color: #313244 !important;
+}
+
+/* When dropdown is open, change the variables */
+#urlbar[open] {
+  --toolbar-field-background-color: #1e1e2e !important;
+  --toolbar-field-focus-background-color: #1e1e2e !important;
+}
+
+/* Force the actual background when open */
+#urlbar[open] > #urlbar-background,
+#urlbar[open][focused] > #urlbar-background {
+  background: #1e1e2e !important;
+  background-color: #1e1e2e !important;
+}
+
+/* ==========================================================================
+   SHARED SETTINGS (Both themes)
+   ========================================================================== */
+
+/* Hide zoom percentage in URL bar */
+#urlbar-zoom-button {
+  display: none !important;
+}
+
+/* Bookmarks bar font - match FireDragon */
+#PersonalToolbar .bookmark-item {
+    font-family: "Noto Sans" !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.3px !important;
+}
+
+/* Bookmarks bar icons */
+#PersonalToolbar .bookmark-item .toolbarbutton-icon,
+#PersonalToolbar .bookmark-item image {
+    width: 17px !important;
+    height: 17px !important;
+}
+
+/* Tab label font */
+.tab-label {
+    font-family: "Noto Sans" !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.275px !important;
+}
+
+/* Address bar font */
+#urlbar-input {
+    font-family: "Noto Sans" !important;
+    font-weight: 600 !important;
+}
+
+/* Shield and lock icons - always white */
+#tracking-protection-icon,
+#identity-icon {
+  fill: white !important;
+}
+
+/* Result button styling (menu buttons on rows) */
+.urlbarView-button {
+  color: var(--ctp-text) !important;
+}
+
+.urlbarView-button:hover {
+  background-color: var(--ctp-surface1) !important;
+}
+
+/* Favicon styling */
+.urlbarView-favicon {
+  fill: var(--ctp-text) !important;
+}
+
+.urlbarView-row[selected] .urlbarView-favicon {
+  fill: var(--ctp-crust) !important;
+}
