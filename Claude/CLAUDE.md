@@ -74,6 +74,18 @@ DRACULARCH/
 - **Dolphin state**: Plasma 6 uses `~/.local/state/dolphinstaterc`
 - **Display scaling**: Remove `ScreenScaleFactors=`, use `kscreen-doctor output.1.scale.1.9`
 - **Logging functions**: Guard with `[[ -n "$LOGFILE" && -f "$LOGFILE" ]]` before tee
+- **Window borders**: KWin Round-Corners effect in `~/.config/kwinrc`:
+  ```
+  [Round-Corners]
+  Size=20                          # Corner radius
+  OutlineThickness=4.5             # Active border thickness
+  ActiveOutlineUsePalette=true     # Uses theme accent color
+  ActiveOutlineAlpha=253
+  InactiveOutlineThickness=3.5     # Inactive border thickness
+  InactiveOutlinePalette=19        # Palette color index
+  InactiveOutlineUsePalette=true
+  InactiveOutlineAlpha=255
+  ```
 
 ### Both Scripts
 - **Printer**: Use `dnssd://` URIs, mDNS discovery, no hardcoded IPs. Canon TR8600 needs `cnijfilter2` AUR
