@@ -74,7 +74,7 @@ DRACULARCH/
 - **Dolphin state**: Plasma 6 uses `~/.local/state/dolphinstaterc`
 - **Display scaling**: Remove `ScreenScaleFactors=`, use `kscreen-doctor output.1.scale.1.9`
 - **Logging functions**: Guard with `[[ -n "$LOGFILE" && -f "$LOGFILE" ]]` before tee
-- **Digital Clock Widget** (from Garuda - apply to Mokka):
+- **Digital Clock Widget**:
   ```ini
   [Configuration][Appearance]
   autoFontAndSize=false
@@ -82,12 +82,13 @@ DRACULARCH/
   customDateFormat=dddd, MMM d
   dateDisplayFormat=BesideTime
   dateFormat=custom
-  fontFamily=Noto Sans
-  fontSize=13
-  fontStyleName=Bold
-  fontWeight=700
+  fontFamily=Noto Sans Black
+  fontSize=14
+  fontStyleName=Black
+  fontWeight=900
   showWeekNumbers=true
   ```
+  Note: Plasma widgets render fonts thinner than Qt apps - use Black/900 for proper weight
 - **Panel Colorizer** (`luisbocanegra.panel.colorizer`):
   - `widgets.enabled=true`
   - `widgets.shadow.foreground.enabled=true` (size: 5) - adds text shadow
@@ -214,6 +215,11 @@ curl -fsSL https://claude.ai/install.sh | bash && export PATH="$HOME/.local/bin:
 - **Windows 11**: Run [RemoveWindowsAI](https://github.com/zoicware/RemoveWindowsAI) - strips Copilot, Recall. Use backup mode, PowerShell 5.1.
 
 ## Session History
+- Session 27: Updated Mokka repo configs from Garuda testing
+  - Clock widget: Noto Sans Black, size 14, weight 900 (widgets render thinner than Qt apps)
+  - Weather widget: `org.kde.weatherWidget-3` → `weather.widget.plus`
+  - kdeglobals: font size 11 → 10, removed ScreenScaleFactors
+  - Pushed to GitHub - next Mokka install will use these settings
 - Session 26: Garuda clock/Colorizer settings + full terminal/Dolphin setup
   - Digital clock: Noto Sans Bold 13pt, date beside time (`dddd, MMM d`), week numbers
   - Panel Colorizer: foreground shadow enabled (size 5), tracks clock widget
