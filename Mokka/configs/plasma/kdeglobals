@@ -126,11 +126,11 @@ TerminalService=com.mitchellh.ghostty.desktop
 XftHintStyle=hintslight
 XftSubPixel=none
 cursorTheme=Catppuccin-Mocha-Mauve-Cursors
-fixed=Hack,11,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
-font=Noto Sans,11,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
-menuFont=Noto Sans,11,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
+fixed=Hack,10,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
+font=Noto Sans,10,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
+menuFont=Noto Sans,10,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
 smallestReadableFont=Noto Sans,9,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
-toolBarFont=Noto Sans,11,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
+toolBarFont=Noto Sans,10,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
 widgetStyle=kvantum
 
 [KDE]
@@ -156,7 +156,6 @@ Speedbar Width=140
 View Style=Simple
 
 [KScreen]
-ScreenScaleFactors=DP-3=1;
 XwaylandClientsScale=false
 
 [PreviewSettings]
@@ -166,7 +165,7 @@ MaximumRemoteSize=524288000
 [WM]
 activeBackground=30,30,46
 activeBlend=205,214,244
-activeFont=Noto Sans,11,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
+activeFont=Noto Sans,10,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
 activeForeground=205,214,244
 inactiveBackground=17,17,27
 inactiveBlend=166,173,200
