@@ -74,6 +74,24 @@ DRACULARCH/
 - **Dolphin state**: Plasma 6 uses `~/.local/state/dolphinstaterc`
 - **Display scaling**: Remove `ScreenScaleFactors=`, use `kscreen-doctor output.1.scale.1.9`
 - **Logging functions**: Guard with `[[ -n "$LOGFILE" && -f "$LOGFILE" ]]` before tee
+- **Digital Clock Widget** (from Garuda - apply to Mokka):
+  ```ini
+  [Configuration][Appearance]
+  autoFontAndSize=false
+  boldText=true
+  customDateFormat=dddd, MMM d
+  dateDisplayFormat=BesideTime
+  dateFormat=custom
+  fontFamily=Noto Sans
+  fontSize=13
+  fontStyleName=Bold
+  fontWeight=700
+  showWeekNumbers=true
+  ```
+- **Panel Colorizer** (`luisbocanegra.panel.colorizer`):
+  - `widgets.enabled=true`
+  - `widgets.shadow.foreground.enabled=true` (size: 5) - adds text shadow
+  - `unfiedBackground["org.kde.plasma.digitalclock"]=0` - clock tracked separately
 - **Window borders**: KWin Round-Corners effect in `~/.config/kwinrc`:
   ```
   [Round-Corners]
@@ -196,6 +214,14 @@ curl -fsSL https://claude.ai/install.sh | bash && export PATH="$HOME/.local/bin:
 - **Windows 11**: Run [RemoveWindowsAI](https://github.com/zoicware/RemoveWindowsAI) - strips Copilot, Recall. Use backup mode, PowerShell 5.1.
 
 ## Session History
+- Session 26: Garuda clock/Colorizer settings + full terminal/Dolphin setup
+  - Digital clock: Noto Sans Bold 13pt, date beside time (`dddd, MMM d`), week numbers
+  - Panel Colorizer: foreground shadow enabled (size 5), tracks clock widget
+  - Installed: Ghostty, btop, zoxide, blesh-git, carapace-bin (via paru)
+  - Copied: bashrc, blerc, bat, btop, fastfetch, starship, Ghostty configs
+  - Set up SMB mounts (/mnt/synology, /mnt/plex) with fstab
+  - Restored zoxide db and bash history
+  - Note: Garuda uses `paru` not `yay`
 - Session 25: Weather widget deep dive on Garuda Linux (first Claude Code on Garuda)
   - Explored weather widget options:
     - **Weather Widget Plus** (`weather.widget.plus`) - fork with more customization, buggy compact mode
