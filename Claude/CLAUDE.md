@@ -217,6 +217,17 @@ curl -fsSL https://claude.ai/install.sh | bash && export PATH="$HOME/.local/bin:
 - **COSMIC Desktop**: Considering Cosmic.sh script. Dracula theme exists on cosmic-themes.org. Config in `~/.config/cosmic/`, uses `.ron` files. Install Arch + COSMIC to explore.
 
 ## Session History
+- Session 28: COSMIC Desktop research + Mokka wallpaper updates
+  - Researched COSMIC theming: ~/.config/cosmic/, .ron files, cosmic-themes.org
+  - Dracula theme exists for COSMIC (1,059 downloads) + terminal theme on GitHub
+  - Discussed Plymouth dependency for GDM display settings (early KMS init)
+  - Explored Dracula symbolic icons (1,564 SVGs) - potential overlay for Mokka
+  - Updated Mokka-tree.jpg to higher res (606K → 2.7MB)
+  - Updated 3 wallpapers from orangci/walls-catppuccin-mocha repo:
+    - Abstract-swirls: 357K → 409K
+    - Horizon: 220K → 240K
+    - River-city: 854K → 996K
+  - Next: Install Arch + COSMIC to explore and build Cosmic.sh
 - Session 27: Updated Mokka repo configs from Garuda testing
   - Clock widget: Noto Sans Black, size 14, weight 900 (widgets render thinner than Qt apps)
   - Weather widget: `org.kde.weatherWidget-3` → `weather.widget.plus`
