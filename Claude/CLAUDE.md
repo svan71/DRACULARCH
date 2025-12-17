@@ -213,6 +213,8 @@ curl -fsSL https://claude.ai/install.sh | bash && export PATH="$HOME/.local/bin:
 
 ## Reminders
 - **Windows 11**: Run [RemoveWindowsAI](https://github.com/zoicware/RemoveWindowsAI) - strips Copilot, Recall. Use backup mode, PowerShell 5.1.
+- **Mokka symbolic icons**: Consider overlaying Dracula's white symbolic icons onto Catppuccin theme for panel/Dolphin. Source: `/usr/share/icons/Dracula/symbolic/` (1,564 SVGs). Copy to `~/.local/share/icons/[theme]/symbolic/`
+- **COSMIC Desktop**: Considering Cosmic.sh script. Dracula theme exists on cosmic-themes.org. Config in `~/.config/cosmic/`, uses `.ron` files. Install Arch + COSMIC to explore.
 
 ## Session History
 - Session 27: Updated Mokka repo configs from Garuda testing
