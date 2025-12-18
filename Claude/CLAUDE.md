@@ -72,7 +72,7 @@ DRACULARCH/
 ### Mokka.sh (KDE)
 - **TahoeLauncher**: Path = `/usr/share/plasma/plasmoids/TahoeLauncher/`
 - **Dolphin state**: Plasma 6 uses `~/.local/state/dolphinstaterc`
-- **Display scaling**: Remove `ScreenScaleFactors=`, use `kscreen-doctor output.1.scale.1.9`
+- **Display scaling**: Remove `ScreenScaleFactors=`, use `kscreen-doctor output.1.scale.2` (200% is sharper than fractional)
 - **Logging functions**: Guard with `[[ -n "$LOGFILE" && -f "$LOGFILE" ]]` before tee
 - **Digital Clock Widget**:
   ```ini
@@ -217,6 +217,22 @@ curl -fsSL https://claude.ai/install.sh | bash && export PATH="$HOME/.local/bin:
 - **COSMIC Desktop**: Considering Cosmic.sh script. Dracula theme exists on cosmic-themes.org. Config in `~/.config/cosmic/`, uses `.ron` files. Install Arch + COSMIC to explore.
 
 ## Session History
+- Session 30: Garuda fresh config - terminal + fonts + icons
+  - Fresh Garuda install - display gaps GONE (confirmed backed-up configs were the issue)
+  - Terminal setup: installed ghostty, btop, zoxide, blesh-git, carapace-bin (via paru)
+  - Garuda already had: starship, bat, fastfetch
+  - Copied all terminal configs from repo (bashrc, blerc, bat, btop, fastfetch, ghostty, starship, zoxide db)
+  - Set system fonts: Noto Sans Bold 10pt (9pt smallest), JetBrainsMono Nerd Font Bold 10pt fixed
+  - Copied custom icons to ~/.local/share/icons/hicolor/ (firedragon, ghostty, firefox, chrome, vscode SVGs)
+  - Icons not applying - need logout/login or plasmashell restart
+  - Next: continue Garuda config (Dolphin, panels, etc.) then backup clean configs to repo
+- Session 29: Mokka display issue diagnosis + fresh config plan
+  - Identified display issue: gaps on sides of browser at 200% scale (only on Mokka, not Garuda)
+  - Issue only at exactly 200% - 190% and 195% work fine (integer vs fractional scaling code paths)
+  - Switching to 200% for sharper display (no fractional blur)
+  - Plan: Fresh Garuda install → configure Dolphin, terminal, panels → backup clean configs to repo
+  - Suspect: kwinoutputconfig.json or ScreenScaleFactors in backed-up configs causing geometry mismatch
+  - Fixed settings.json permission syntax: `Bash(*)` → `Bash`
 - Session 28: COSMIC Desktop research + Mokka wallpaper updates
   - Researched COSMIC theming: ~/.config/cosmic/, .ron files, cosmic-themes.org
   - Dracula theme exists for COSMIC (1,059 downloads) + terminal theme on GitHub
