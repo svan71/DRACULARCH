@@ -290,6 +290,17 @@ At 2560x1440 with 125% scaling, Firefox and Brave bookmarks match with these set
 - **COSMIC Desktop**: Considering Cosmic.sh script. Dracula theme exists on cosmic-themes.org. Config in `~/.config/cosmic/`, uses `.ron` files. Install Arch + COSMIC to explore.
 
 ## Session History
+- Session 31: GNOME Show Apps cleanup + Loupe replaces EOG
+  - Hid 4 apps from Show Apps menu (Manage Printing, Mission Center, nvtop, Psensor)
+  - Method: Created override .desktop files in ~/.local/share/applications/ with NoDisplay=true
+  - Researched Eye of GNOME (eog) → replaced by Loupe in GNOME 45 (Sept 2023)
+  - Installed Loupe 49.1 (GPU-accelerated, GTK4/Libadwaita)
+  - Edited custom Loupe icon for Dracula theme
+  - Updated icon in ~/.icons/Dracula/ (scalable and scalable@2x)
+  - Uninstalled EOG completely (`sudo pacman -Rns eog`)
+  - Set Loupe as default image viewer (mimeapps.list)
+  - Updated Dracula-Icons.tar.xz in repo with custom Loupe icon
+  - Updated Dracula.sh: `eog` → `loupe` package, default app, app grid position
 - Session 30: Garuda fresh config - terminal + fonts + icons
   - Fresh Garuda install - display gaps GONE (confirmed backed-up configs were the issue)
   - Terminal setup: installed ghostty, btop, zoxide, blesh-git, carapace-bin (via paru)
