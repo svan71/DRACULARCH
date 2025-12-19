@@ -211,6 +211,27 @@ curl -fsSL https://claude.ai/install.sh | bash && export PATH="$HOME/.local/bin:
 
 **Key principles:** 1.4V hard cap prevents degradation, undervolt at low frequencies for efficiency, full voltage only at boost. Kernel compile with FullLTO + AVX-512 is the hardest stability test.
 
+## Firefox userChrome.css - Bookmark Spacing (2K @ 125%)
+
+At 2560x1440 with 125% scaling, Firefox and Brave bookmarks match with these settings:
+
+```css
+/* Bookmark bar spacing to match Brave/Chrome */
+#PlacesToolbarItems > .bookmark-item {
+  padding-inline: 0px !important;   /* no extra padding inside */
+  margin-inline: 6px !important;    /* space between items */
+  font-size: 108% !important;       /* larger font */
+}
+
+#PersonalToolbar {
+  padding-block: 2px !important;    /* vertical padding */
+}
+```
+
+**Why:** Chromium Refresh 2023 added fat padding to bookmarks. Firefox is tighter by default. These settings make Firefox match Brave's spacing so both browsers show the same bookmarks before overflow.
+
+**Full userChrome.css location:** `~/.mozilla/firefox/<profile>/chrome/userChrome.css`
+
 ## Reminders
 - **Windows 11**: Run [RemoveWindowsAI](https://github.com/zoicware/RemoveWindowsAI) - strips Copilot, Recall. Use backup mode, PowerShell 5.1.
 - **Mokka symbolic icons**: Consider overlaying Dracula's white symbolic icons onto Catppuccin theme for panel/Dolphin. Source: `/usr/share/icons/Dracula/symbolic/` (1,564 SVGs). Copy to `~/.local/share/icons/[theme]/symbolic/`
