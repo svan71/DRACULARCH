@@ -290,6 +290,18 @@ At 2560x1440 with 125% scaling, Firefox and Brave bookmarks match with these set
 - **COSMIC Desktop**: Considering Cosmic.sh script. Dracula theme exists on cosmic-themes.org. Config in `~/.config/cosmic/`, uses `.ron` files. Install Arch + COSMIC to explore.
 
 ## Session History
+- Session 32: SF Pro font migration + macOS-style rendering
+  - Installed SF Pro fonts (Display, Text, Rounded) from Synology to ~/.local/share/fonts/SFPro
+  - Installed SF Mono Nerd Font from GitHub (epk/SF-Mono-Nerd-Font)
+  - Copied SF Mono to Synology for future installs
+  - KDE system fonts: SF Pro Text Semibold 10pt (UI), SFMono Nerd Font Bold 10pt (fixed)
+  - Ghostty: SFMono Nerd Font Bold 13pt
+  - Digital Clock widget: SF Pro Display Black 13pt
+  - Weather widget: SF Pro Text 17pt
+  - macOS-style font rendering: hintnone, rgb subpixel, antialias true
+  - Firefox userChrome.css: Noto Sans → SF Pro Text (bookmarks, tabs, address bar)
+  - FireDragon userChrome.css: Noto Sans → SF Pro Text
+  - Font locations: ~/.local/share/fonts/SFPro/, ~/.local/share/fonts/SFMono/
 - Session 31: GNOME Show Apps cleanup + Loupe replaces EOG
   - Hid 4 apps from Show Apps menu (Manage Printing, Mission Center, nvtop, Psensor)
   - Method: Created override .desktop files in ~/.local/share/applications/ with NoDisplay=true
