@@ -114,6 +114,58 @@ DRACULARCH/
 - **Starship**: In `extra` repo (prebuilt), use `install_packages` not AUR
 - **ScreenScaleFactors**: Remove from both `plasmashellrc` AND `kdeglobals`
 
+## Updating Dracula GTK Theme
+
+1. Download latest from https://github.com/dracula/gtk/releases to `~/Downloads/Dracula`
+2. Copy custom icon: `cp ~/.themes/Dracula/gnome-shell/assets/view-app-grid.svg ~/Downloads/Dracula/gnome-shell/assets/`
+3. Append custom CSS to `~/Downloads/Dracula/gnome-shell/gnome-shell.css` (show-apps icon + hover effects)
+4. Trash old, copy new: `gio trash ~/.themes/Dracula && cp -r ~/Downloads/Dracula ~/.themes/`
+5. GTK4 fix: `cp ~/.themes/Dracula/gtk-4.0/*.css ~/.config/gtk-4.0/`
+6. GTK4 assets: `cp -r ~/.themes/Dracula/assets ~/.config/`
+7. Test GTK3 and GTK4 apps
+8. Package: `cd ~/.themes && tar -cJf Dracula-GTK.tar.xz Dracula`
+9. Sync: Copy to repo, git push, copy to USB
+
+**Custom CSS to append** (end of `gnome-shell/gnome-shell.css`):
+```css
+/* Show Apps Icon - Custom themed icon */
+.show-apps .show-apps-icon {
+  color: transparent !important;
+  background-image: url("assets/view-app-grid.svg");
+  background-size: contain;
+}
+
+.show-apps .overview-icon,
+.show-apps .show-apps-icon {
+  color: transparent !important;
+}
+
+/* Show Apps Hover Effect - Dracula Purple */
+#panel .panel-button.show-apps:hover {
+  box-shadow: inset 0 0 0 100px rgba(189, 147, 249, 0.5);
+  color: white;
+  transition-duration: 200ms;
+}
+
+#panel .panel-button.show-apps:active,
+#panel .panel-button.show-apps:focus,
+#panel .panel-button.show-apps:checked {
+  box-shadow: inset 0 0 0 100px rgba(189, 147, 249, 0.7);
+  color: white;
+  transition-duration: 200ms;
+}
+
+/* Dash Show Apps Hover (if in dash) */
+#dash .show-apps:hover .overview-icon {
+  background-color: rgba(189, 147, 249, 0.3);
+}
+
+#dash .show-apps:active .overview-icon,
+#dash .show-apps:checked .overview-icon {
+  background-color: rgba(189, 147, 249, 0.5);
+}
+```
+
 ## CachyOS Kernel
 Optional at install. Package name: `linux-cachyos` (LTO now default).
 
