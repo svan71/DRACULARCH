@@ -263,33 +263,105 @@ curl -fsSL https://claude.ai/install.sh | bash && export PATH="$HOME/.local/bin:
 
 **Key principles:** 1.4V hard cap prevents degradation, undervolt at low frequencies for efficiency, full voltage only at boost. Kernel compile with FullLTO + AVX-512 is the hardest stability test.
 
-## Firefox userChrome.css - Bookmark Spacing (2K @ 125%)
+## Firefox userChrome.css - Dracula Theme
 
-At 2560x1440 with 125% scaling, Firefox and Brave bookmarks match with these settings:
+Full Dracula theming for Firefox URL bar and dropdown.
 
+**Location:** `~/.mozilla/firefox/<profile>/chrome/userChrome.css`
+
+**Key colors:**
+- `#2d2f3d` - URL bar (closed) - slightly lighter than page background
+- `#21222c` - URL bar + dropdown (open) - darker, seamless together
+- `#bd93f9` - Purple border on focus
+- `#44475a` - Hover/selection background (current-line)
+- `#f8f8f2` - Text (foreground)
+
+**Features:**
+- Dracula window control buttons (close/min/max) from GTK theme
+- URL bar dropdown with purple border and proper Dracula colors
+- Bookmark bar spacing to match Brave/Chrome
+- Font weight fixes for high-DPI displays
+- Bookmark star turns purple when starred
+
+**Bookmark spacing (2K @ 125%):**
 ```css
-/* Bookmark bar spacing to match Brave/Chrome */
 #PlacesToolbarItems > .bookmark-item {
-  padding-inline: 0px !important;   /* no extra padding inside */
-  margin-inline: 6px !important;    /* space between items */
-  font-size: 108% !important;       /* larger font */
+  padding-inline: 0px !important;
+  margin-inline: 6px !important;
+  font-size: 108% !important;
 }
-
 #PersonalToolbar {
-  padding-block: 2px !important;    /* vertical padding */
+  padding-block: 2px !important;
 }
 ```
 
-**Why:** Chromium Refresh 2023 added fat padding to bookmarks. Firefox is tighter by default. These settings make Firefox match Brave's spacing so both browsers show the same bookmarks before overflow.
+**Note:** Toolbar icons (back, forward, home, reload, downloads, extensions) use Firefox defaults - no custom styling needed. Previous filter-based approaches caused color issues.
 
-**Full userChrome.css location:** `~/.mozilla/firefox/<profile>/chrome/userChrome.css`
+## Dark Reader Config - PENDING CHANGES
+
+**File:** `/mnt/synology/WEB Scripts/Google/Dark-Reader-Settings.json`
+
+Steve will restore from backup. Then apply these changes:
+
+### 1. Replace ALL Dracula selection colors with Catppuccin Mocha Mauve
+```
+Find:    "selectionColor": "#6272A4",
+Replace: "selectionColor": "#cba6f7",
+```
+
+### 2. Replace claude.ai config block entirely
+Find the claude.ai entry and replace with:
+```json
+{
+    "theme": {
+        "mode": 1,
+        "brightness": 115,
+        "contrast": 95,
+        "grayscale": 0,
+        "sepia": 0,
+        "useFont": false,
+        "fontFamily": "Open Sans",
+        "textStroke": 0,
+        "engine": "dynamicTheme",
+        "stylesheet": "",
+        "darkSchemeBackgroundColor": "#11111b",
+        "darkSchemeTextColor": "#ffffff",
+        "lightSchemeBackgroundColor": "#dcdad7",
+        "lightSchemeTextColor": "#181a1b",
+        "scrollbarColor": "auto",
+        "selectionColor": "#c29df1",
+        "styleSystemControls": false,
+        "lightColorScheme": "Default",
+        "darkColorScheme": "Catppuccin",
+        "immediateModify": false
+    },
+    "url": [
+        "claude.ai"
+    ]
+}
+```
+
+### Key Catppuccin Mocha colors for reference:
+- `#11111b` - Crust (darkest, used for claude.ai background)
+- `#1e1e2e` - Base (standard background)
+- `#cdd6f4` - Text
+- `#cba6f7` - Mauve (selection color for most sites)
+- `#c29df1` - Lighter mauve variant (used for claude.ai selection)
 
 ## Reminders
+- **AdGuard + Chrome + Twitter/X**: There's an issue with AdGuard extension on Chrome breaking Twitter/X. Needs investigation. Config files in `~/Downloads/` and `/mnt/synology/WEB Scripts/AdGaurd/`
 - **Windows 11**: Run [RemoveWindowsAI](https://github.com/zoicware/RemoveWindowsAI) - strips Copilot, Recall. Use backup mode, PowerShell 5.1.
 - **Mokka symbolic icons**: Consider overlaying Dracula's white symbolic icons onto Catppuccin theme for panel/Dolphin. Source: `/usr/share/icons/Dracula/symbolic/` (1,564 SVGs). Copy to `~/.local/share/icons/[theme]/symbolic/`
 - **COSMIC Desktop**: Considering Cosmic.sh script. Dracula theme exists on cosmic-themes.org. Config in `~/.config/cosmic/`, uses `.ron` files. Install Arch + COSMIC to explore.
 
 ## Session History
+- Session 33: Firefox userChrome.css Dracula theme overhaul
+  - Converted URL bar dropdown from Catppuccin Mocha to Dracula colors
+  - Removed problematic toolbar icon filter styling (caused white/peach icons)
+  - Toolbar icons now use Firefox defaults - match hamburger menu perfectly
+  - URL bar colors: `#2d2f3d` (closed), `#21222c` (open/dropdown)
+  - Purple border `#bd93f9` on focus, proper hover/selection colors
+  - Updated CLAUDE.md Firefox section with new color scheme
 - Session 32: SF Pro font migration + macOS-style rendering
   - Installed SF Pro fonts (Display, Text, Rounded) from Synology to ~/.local/share/fonts/SFPro
   - Installed SF Mono Nerd Font from GitHub (epk/SF-Mono-Nerd-Font)
