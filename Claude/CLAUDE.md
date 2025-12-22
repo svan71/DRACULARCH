@@ -485,3 +485,168 @@ Find the claude.ai entry and replace with:
 - Session 20: Fresh Mokka verified, script fixes (thefuck, ScreenScaleFactors in kdeglobals, starship → extra)
 - Session 19: Mokka.sh Fish → Bash + ble.sh, Konsole removed
 - Session 18: Dracula.sh fresh install verified
+
+## Hackintosh EFI Notes
+
+### System Configuration
+- **CPU**: AMD Ryzen 9 7950X3D (AM5)
+- **GPU**: AMD Radeon RX 6600 (8GB)
+- **SMBIOS**: MacPro7,1
+- **macOS**: 26.2 (Tahoe) Build 25C56
+- **OpenCore**: 1.0.6 (Official Acidanthera)
+
+### EFI Location
+`/Volumes/EFI/EFI/OC/`
+
+### Changes Made (Dec 22, 2025 - Updated)
+
+**1. SSDT Darwin Wrapper Fixes**
+- **SSDT-EC**: Wrapped USBX `_DSM` kUSB* properties in `_OSI("Darwin")` check
+- **SSDT-PLUG-ALT**: Wrapped C000 `_DSM` plugin-type in `_OSI("Darwin")` check
+- Both SSDTs previously relied only on `_STA` to hide devices from Linux
+- Now have explicit `_OSI("Darwin")` checks in `_DSM` methods for defense-in-depth
+- All other SSDTs (ANS, ARPT, GIGE, HDEF, SBUS) already had proper wrapping
+
+**2. Switched to Official OpenCore 1.0.6**
+- Migrated from NO_ACPI 1.0.7 to Official Acidanthera 1.0.6
+- Config rebuilt from official `Sample.plist` with settings migrated
+- Config passes `ocvalidate` with zero errors
+- NO_ACPI binaries were never actually required for this setup
+
+**3. Previous: Updated OpenCore to 1.0.7 (NO_ACPI)**
+- Replaced BOOTx64.efi, OpenCore.efi
+- Updated drivers: OpenCanopy, OpenRuntime, OpenLinuxBoot, ResetNvramEntry
+- Replaced Resources folder (retained BlackOSX theme)
+
+**4. AllowSetDefault Enabled**
+- `Misc → Security → AllowSetDefault` = true
+- Use **Ctrl+Enter** in boot picker to set default boot drive
+
+**5. Theme Configuration**
+- `Misc → Boot → PickerMode` = External
+- `Misc → Boot → PickerVariant` = `BlackOSX/BsxM1` (use forward slash, not backslash)
+- Theme files at: `Resources/Image/BlackOSX/BsxM1/`
+
+**6. Previous Changes (Dec 22, 2024)**
+- Cleaned 211 `._*` metadata files from EFI
+- Enabled Resizable BAR (`ResizeGpuBars: 0`)
+- Updated NootRX to Dec 15, 2024 nightly
+
+### Kexts Installed
+| Kext | Version |
+|------|---------|
+| Lilu | 1.7.2 |
+| VirtualSMC | 1.3.8 |
+| NootRX | 1.0.0 (Dec 2024) |
+| AppleALC | 1.9.7 |
+| AMDRyzenCPUPowerManagement | 0.7.2 |
+| AppleMCEReporterDisabler | 1.2 |
+| AMFIPass | 1.4.1 |
+| BlueToolFixup | 2.6.9 |
+| AppleIntelI210Ethernet | 2.3.1 |
+| RestrictEvents | 1.1.7 |
+
+### AMD Kernel Patches
+16 kernel patches from AMD Vanilla (verified current as of Dec 2025):
+- Core AMD patches (cpuid, commpage, mtrr, etc.)
+- CaseySJ IOPCIFamily patches for AM5 (both enabled)
+- Visual non-monotonic time patches
+- Algrey/Zormeister PAT fix for 15.0+
+- MaxKernel: 25.99.99 (covers Tahoe kernel 25.x)
+
+### ACPI SSDTs
+All SSDTs use proper `_OSI("Darwin")` wrapping for macOS-only execution:
+
+| SSDT | Protection Method |
+|------|------------------|
+| SSDT-ANS | `_OSI("Darwin")` wraps entire file (3 NVMe devices) |
+| SSDT-ARPT | `_OSI("Darwin")` in `_DSM` methods |
+| SSDT-GIGE | `_OSI("Darwin")` in `_DSM` methods |
+| SSDT-HDEF | `_OSI("Darwin")` in `_DSM` method |
+| SSDT-SBUS | `_OSI("Darwin")` in `_DSM` method |
+| SSDT-EC | `_OSI("Darwin")` in `_DSM` + `_STA` (fixed Dec 2025) |
+| SSDT-PLUG-ALT | `_OSI("Darwin")` in `_DSM` + `_STA` (fixed Dec 2025) |
+| SSDT-XHCI | `_OSI("Darwin")` in `_STA` methods |
+| SSDT-HPET | `_OSI("Darwin")` in methods |
+| SSDT-XOSI | `_OSI("Darwin")` in method |
+
+### Important Notes
+
+**Official OpenCore**
+This EFI uses **official Acidanthera OpenCore** binaries. NO_ACPI method not needed because:
+- All SSDTs have proper `_OSI("Darwin")` conditional wrapping
+- Config.plist uses only standard schema keys
+- Config passes official `ocvalidate` validation
+
+**Ethernet**
+- Using AppleIntelI210Ethernet for Intel I225-V (2.5Gbps working)
+- AppleIGC not compatible with macOS Tahoe on AMD (SDK mismatch + no VT-d)
+
+**Resizable BAR**
+- Config enabled (`ResizeGpuBars: 0`) but GPU shows 256MB BAR
+- Likely BIOS or NootRX driver limitation
+
+**OCAT Compatibility Warning**
+- OCAT may lag behind OpenCore releases
+- Opening config in OCAT may strip unrecognized keys
+- Use ProperTree or text editor for manual config edits
+
+### OpenCore Update Workflow
+1. Download new release from https://github.com/acidanthera/OpenCorePkg/releases
+2. Extract to `~/Desktop/OpenCore_OFFICIAL_XXX/`
+3. Start with new `Docs/Sample.plist`, rename to `config.plist`
+4. Migrate your settings using the migration script or manually
+5. Replace binaries: `EFI/BOOT/BOOTx64.efi`, `EFI/OC/OpenCore.efi`
+6. Replace drivers: `EFI/OC/Drivers/*.efi`
+7. **Keep**: `ACPI/*.aml`, `Kexts/`, `Resources/`
+8. Validate with `ocvalidate` before installing
+9. Backup old EFI before replacing
+
+### OpenCanopy Theme Requirements
+For themes to work, these folders must contain files:
+- `Resources/Font/` - Font_1x.bin, Font_1x.png, Font_2x.bin, Font_2x.png
+- `Resources/Label/` - .lbl and .l2x files for boot entry labels
+- `Resources/Image/<ThemeName>/` - theme icons
+
+If theme fails to load, check that Font and Label folders are not empty.
+
+### Useful Commands
+```bash
+# Mount EFI
+sudo diskutil mount disk0s1
+
+# Check GPU
+system_profiler SPDisplaysDataType
+
+# Check Ethernet
+system_profiler SPEthernetDataType
+
+# Clean EFI metadata
+dot_clean /Volumes/EFI/EFI
+
+# Validate config with official ocvalidate
+~/Desktop/OpenCore_OFFICIAL_106/Utilities/ocvalidate/ocvalidate /Volumes/EFI/EFI/OC/config.plist
+
+# Update NootRX
+curl -L -o /tmp/NootRX.zip "https://nightly.link/ChefKissInc/NootRX/workflows/main/master/Artifacts.zip"
+
+# Check AMD Vanilla patches (latest)
+curl -sL "https://raw.githubusercontent.com/AMD-OSX/AMD_Vanilla/master/patches.plist" -o /tmp/amd_vanilla_latest.plist
+
+# Check SSDT Darwin wrappers (decompile and search)
+cd /Volumes/EFI/EFI/OC/ACPI && for f in *.aml; do iasl -d "$f" 2>/dev/null; done
+grep -rn "_OSI.*Darwin" *.dsl
+rm *.dsl
+```
+
+### Backup Locations
+- `~/Desktop/EFI_BACKUP_NO_ACPI_107/` - Previous NO_ACPI 1.0.7 EFI
+- `~/Desktop/OpenCore_OFFICIAL_106/` - Official OC 1.0.6 package
+- `~/Desktop/EFI_OFFICIAL_106/` - New official EFI (ready to install)
+
+### Resources
+- OpenCore: https://github.com/acidanthera/OpenCorePkg/releases
+- OpenCore Guide: https://dortania.github.io/OpenCore-Install-Guide/
+- AMD Vanilla: https://github.com/AMD-OSX/AMD_Vanilla
+- NootRX: https://chefkiss.dev/applehax/nootrx/
+- AppleIGC: https://github.com/SongXiaoXi/AppleIGC
