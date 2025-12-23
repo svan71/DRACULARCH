@@ -1,0 +1,97 @@
+brew update && brew upgrade
+brew cleanup && brew autoremove
+brew list
+brew search
+brew info
+brew install
+brew uninstall
+brew services list
+brew services start
+brew services stop
+brew doctor
+diskutil list
+diskutil info
+df -h
+top -o cpu
+htop
+btop
+ps aux | grep
+kill -9
+sudo lsof -i :8080
+netstat -an | grep LISTEN
+ifconfig
+networksetup -listallhardwareports
+ping -c 3 google.com
+traceroute google.com
+nslookup
+dig
+curl -I
+curl -fsSL
+wget
+ssh
+scp
+rsync -avz
+ls -la
+eza -la --icons
+eza -la --icons --tree --level=2
+zi
+z
+cd ~/Documents
+cd ~/Downloads
+cd ~/Dracularch
+cat
+bat
+less
+head -20
+tail -20
+grep -r
+rg
+fd
+find . -name
+wc -l
+du -sh
+dust
+duf
+chmod +x
+chmod 644
+chmod 755
+chown
+mkdir -p
+rm -rf
+cp -r
+mv
+tar -xzf
+tar -czvf
+unzip
+git status
+git add .
+git commit -m ""
+git push
+git pull
+git log --oneline
+git diff
+git branch
+git checkout
+git stash
+git stash pop
+claude
+claude --dangerously-skip-permissions
+defaults read
+defaults write
+defaults delete
+open .
+open -a "Application Name"
+pbcopy
+pbpaste
+caffeinate -d
+pmset -g batt
+system_profiler SPHardwareDataType
+sw_vers
+uname -a
+whoami
+which
+type
+alias
+history
+clear
+exit
