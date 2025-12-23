@@ -1,0 +1,66 @@
+# ~/.blerc - ble.sh configuration with Catppuccin Mocha theme
+
+# Catppuccin Mocha color scheme for syntax highlighting
+ble-face -s syntax_default           fg=#cdd6f4
+ble-face -s syntax_command           fg=#a6e3a1
+ble-face -s syntax_quoted            fg=#f9e2af
+ble-face -s syntax_quotation         fg=#f9e2af
+ble-face -s syntax_escape            fg=#f5c2e7
+ble-face -s syntax_expr              fg=#89dceb
+ble-face -s syntax_error             fg=#f38ba8,bg=#313244
+ble-face -s syntax_varname           fg=#cba6f7
+ble-face -s syntax_delimiter         fg=#cdd6f4
+ble-face -s syntax_param_expansion   fg=#cba6f7
+ble-face -s syntax_history_expansion fg=#cba6f7
+ble-face -s syntax_function_name     fg=#a6e3a1
+ble-face -s syntax_comment           fg=#6c7086
+ble-face -s syntax_glob              fg=#f5c2e7
+ble-face -s syntax_brace             fg=#f5c2e7
+ble-face -s syntax_tilde             fg=#cba6f7
+ble-face -s syntax_document          fg=#cdd6f4,bg=#313244
+ble-face -s syntax_document_begin    fg=#f5c2e7
+
+# Autosuggestions (fish-like gray suggestions)
+ble-face -s auto_complete            fg=#6c7086
+
+# Command info/status
+ble-face -s command_builtin          fg=#89dceb
+ble-face -s command_builtin_dot      fg=#89dceb
+ble-face -s command_alias            fg=#a6e3a1
+ble-face -s command_function         fg=#a6e3a1
+ble-face -s command_file             fg=#cdd6f4
+ble-face -s command_keyword          fg=#f5c2e7
+ble-face -s command_jobs             fg=#fab387
+ble-face -s command_directory        fg=#cba6f7
+
+# Filename colors
+ble-face -s filename_directory       fg=#cba6f7
+ble-face -s filename_executable      fg=#a6e3a1
+ble-face -s filename_link            fg=#89dceb
+ble-face -s filename_orphan          fg=#f38ba8
+ble-face -s filename_setuid          fg=#cdd6f4,bg=#f38ba8
+ble-face -s filename_setgid          fg=#1e1e2e,bg=#f9e2af
+
+# Region/selection
+ble-face -s region                   fg=#cdd6f4,bg=#313244
+ble-face -s region_insert            fg=#cdd6f4,bg=#313244
+ble-face -s disabled                 fg=#6c7086
+ble-face -s overwrite_mode           fg=#1e1e2e,bg=#fab387
+
+# Enable autosuggestions (fish-like)
+bleopt complete_auto_complete=1
+
+# Suggest from history
+bleopt complete_auto_history=1
+
+# Delay before showing autosuggestion (ms)
+bleopt complete_auto_delay=50
+
+# Menu completion style
+bleopt complete_menu_style=dense
+
+# Edit mode (emacs-like)
+bleopt default_keymap=emacs
+
+# Disable bell
+bleopt edit_vbell=

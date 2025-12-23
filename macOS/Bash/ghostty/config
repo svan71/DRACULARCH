@@ -1,0 +1,58 @@
+# Ghostty configuration - Catppuccin Mocha theme with JetBrainsMono Nerd Font (macOS)
+
+# Theme - Catppuccin Mocha with true black background
+theme = Catppuccin Mocha
+background = 181825
+
+# Font configuration
+font-family = JetBrainsMono Nerd Font
+font-size = 13
+font-style = Bold
+font-feature = -calt
+font-thicken = true
+
+# Window Configuration
+window-width = 102
+window-height = 26
+window-vsync = true
+window-decoration = true
+window-padding-balance = true
+
+# Cursor Configuration
+cursor-style = block
+cursor-color = #f5e0dc
+cursor-text = #1e1e2e
+adjust-cursor-thickness = 3
+
+# Background and Transparency
+background-opacity = 0.95
+background-blur-radius = 20
+unfocused-split-opacity = 0.85
+
+# Shell integration - use Homebrew bash
+shell-integration = bash
+command = /usr/local/bin/bash
+
+# UI Configuration
+clipboard-trim-trailing-spaces = true
+mouse-hide-while-typing = true
+confirm-close-surface = false
+mouse-scroll-multiplier = 5
+clipboard-read = allow
+clipboard-write = allow
+copy-on-select = true
+
+# macOS specific
+macos-option-as-alt = true
+
+# Scrollback optimization
+scrollback-limit = 10000
+
+# Custom keybindings (use Cmd on macOS)
+keybind = super+v=paste_from_clipboard
+keybind = super+c=copy_to_clipboard
+keybind = super+shift+comma=reload_config
+keybind = super+n=new_window
+keybind = super+t=new_tab
+keybind = super+a=select_all
+keybind = shift+enter=text:\x1b\r
