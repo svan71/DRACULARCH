@@ -39,7 +39,8 @@ DRACULARCH/
 │   ├── themes/       # Kvantum, color-schemes, sddm, kate
 │   ├── icons/        # FireDragon icons
 │   └── wallpapers/
-├── macOS/            # Mac-related files (future)
+├── macOS/
+│   └── Bash/         # macOS terminal configs (bashrc, ghostty, fastfetch, etc.)
 └── Archive/          # Deprecated Fish configs
 ```
 
@@ -348,6 +349,87 @@ Find the claude.ai entry and replace with:
 - `#cba6f7` - Mauve (selection color for most sites)
 - `#c29df1` - Lighter mauve variant (used for claude.ai selection)
 
+## macOS Terminal Setup (bash.sh)
+
+**Script locations:**
+- `~/Documents/bash.sh` (working copy)
+- `/Volumes/external/WEB Scripts/Scripts/bash.sh` (Synology backup)
+- USB drive (for fresh installs)
+
+**Configs in repo:** `macOS/Bash/` (pulled from GitHub - NOT the script itself)
+
+### What it installs:
+- Homebrew (if needed)
+- Bash 5.x + ble.sh (fish-like autosuggestions)
+- Ghostty terminal (Catppuccin Mocha, Mantle background #181825)
+- Starship prompt with Apple icon
+- Fastfetch with kitty logo (mokka-fastfetch.png)
+- Modern CLI tools: eza, bat, zoxide, fzf, btop, carapace
+- JetBrainsMono Nerd Font
+- Claude Code with CLAUDE.md + settings.json from repo
+- Dracularch repo (clones via SSH if Synology mounted)
+
+### Configs pulled from GitHub:
+- `bashrc`, `bash_profile`, `blerc`
+- `ghostty/config` (102x26, Mantle bg, JetBrainsMono Bold 13pt)
+- `fastfetch/config.jsonc` + `mokka-fastfetch.png`
+- `starship.toml`, `bat/config`, `btop/btop.conf`
+- `bash_history` (common macOS commands)
+
+### Re-run behavior (idempotent):
+- **Homebrew packages**: Skips if installed, upgrades if outdated
+- **ble.sh**: Updates via git pull + make
+- **Claude Code**: Skips install if exists, always updates configs
+- **Configs**: Prompts - download from GitHub / backup to repo / skip
+- **Dracularch repo**: Skips clone if exists, does git pull instead
+- **Synology symlinks**: Recreates (harmless)
+
+### Synology Finder Symlinks:
+Creates `~/Mounts/` with symlinks to SMB subfolders for Finder sidebar:
+- `~/Mounts/Apple` → `/Volumes/Apple/Apple`
+- `~/Mounts/Web-Scripts` → `/Volumes/external/WEB Scripts`
+
+Drag these to Finder Favorites - macOS can't pin SMB subfolders directly.
+
+### Repo Setup (requires Synology):
+If Synology mounted, script will:
+1. Copy SSH keys from `/Volumes/external/WEB Scripts/Scripts/Setup Repo/ssh-backup/`
+2. Configure git (user.name, user.email)
+3. Clone Dracularch via SSH to `~/Dracularch`
+
+### SMB Optimization:
+Creates `/etc/nsmb.conf` with:
+```ini
+[default]
+signing_required=no
+validate_neg_off=yes
+smb_read=4194304
+smb_write=4194304
+mc_on=yes
+mc_prefer_wired=yes
+dir_cache_max_cnt=0
+```
+**Result:** ~285 MB/s writes to Synology (better than Linux!)
+
+Mounts on demand via Finder - click Network → Synology → pick share. No clutter, no login scripts.
+
+### Usage:
+```bash
+# Fresh install (mount Synology first for full setup):
+bash ~/Documents/bash.sh
+
+# Update packages + pull latest configs:
+bash ~/Documents/bash.sh
+# Choose option 1 (download from GitHub) or 3 (skip) at config prompt
+```
+
+### Notes:
+- Script is idempotent (safe to re-run)
+- ble.sh built from git (not Homebrew)
+- Fastfetch path auto-fixed for current user's $HOME
+- Creates ~/.hushlogin to suppress login message
+- **Script lives on USB/Synology only - NEVER in repo**
+
 ## Reminders
 - **AdGuard + Chrome + Twitter/X**: There's an issue with AdGuard extension on Chrome breaking Twitter/X. Needs investigation. Config files in `~/Downloads/` and `/mnt/synology/WEB Scripts/AdGaurd/`
 - **Windows 11**: Run [RemoveWindowsAI](https://github.com/zoicware/RemoveWindowsAI) - strips Copilot, Recall. Use backup mode, PowerShell 5.1.
@@ -355,6 +437,29 @@ Find the claude.ai entry and replace with:
 - **COSMIC Desktop**: Considering Cosmic.sh script. Dracula theme exists on cosmic-themes.org. Config in `~/.config/cosmic/`, uses `.ron` files. Install Arch + COSMIC to explore.
 
 ## Session History
+- Session 35: bash.sh enhancements - Claude Code, repo setup, Finder symlinks
+  - Added Claude Code install to bash.sh (pulls CLAUDE.md + settings.json from GitHub)
+  - Added config sync prompt on re-runs: download from GitHub / backup to repo / skip
+  - Added setup_repo() - restores SSH keys from Synology, clones Dracularch via SSH
+  - Added Synology symlink setup for Finder sidebar (~/Mounts/Apple, ~/Mounts/Web-Scripts)
+  - Symlink trick: macOS Finder can't pin SMB subfolders to Favorites, but symlinks work
+  - All functions have re-run checks: skip if already installed/configured, pull if repo exists
+  - Script location: ~/Documents/bash.sh (also on USB/Synology, NOT in repo)
+- Session 34: macOS Tahoe terminal setup + bash.sh script
+  - Fresh macOS Tahoe install - set up complete terminal environment
+  - Installed via Homebrew: bash 5.x, ghostty, starship, bat, eza, zoxide, fzf, fastfetch, btop, carapace, gawk
+  - Built ble.sh from git (~/.local/share/blesh/)
+  - JetBrainsMono Nerd Font installed
+  - Created configs: ~/.bashrc (macOS-adapted), ~/.bash_profile, ~/.blerc
+  - Ghostty: Catppuccin Mocha, Mantle background (#181825), 102x26, JetBrainsMono Bold 13pt
+  - Fastfetch with kitty logo (mokka-fastfetch.png)
+  - Created ~/Documents/bash.sh - pulls configs from GitHub, installs everything
+  - Added macOS/Bash/ to repo with all configs + bash_history (common macOS commands)
+  - SMB optimization: /etc/nsmb.conf with multichannel, 4MB buffers
+  - SMB speed: ~285 MB/s writes (better than Linux's ~245 MB/s!)
+  - Mounts on demand via Finder - no login scripts needed
+  - Verified no sensitive data in repo (passwords, keys, etc.)
+  - Script is idempotent - safe to re-run, updates existing installs
 - Session 33: Firefox userChrome.css Dracula theme overhaul
   - Converted URL bar dropdown from Catppuccin Mocha to Dracula colors
   - Removed problematic toolbar icon filter styling (caused white/peach icons)
@@ -486,7 +591,7 @@ Find the claude.ai entry and replace with:
 - Session 19: Mokka.sh Fish → Bash + ble.sh, Konsole removed
 - Session 18: Dracula.sh fresh install verified
 
-## Hackintosh EFI Notes
+## Hackintosh EFI Notes (AMD System)
 
 ### System Configuration
 - **CPU**: AMD Ryzen 9 7950X3D (AM5)
@@ -650,3 +755,74 @@ rm *.dsl
 - AMD Vanilla: https://github.com/AMD-OSX/AMD_Vanilla
 - NootRX: https://chefkiss.dev/applehax/nootrx/
 - AppleIGC: https://github.com/SongXiaoXi/AppleIGC
+
+## Hackintosh EFI Notes (Intel System)
+
+### System Configuration
+- **CPU**: Intel Core i9-14900K (LGA1700)
+- **Motherboard**: Gigabyte Z790 Aorus Master
+- **GPU**: AMD Radeon RX 6950 XT
+- **Ethernet**: Realtek RTL8125B 2.5GbE
+- **WiFi/BT**: BCM94360NG (native)
+- **Audio**: Realtek ALC1220-VB
+- **SMBIOS**: MacPro7,1
+- **OpenCore**: 1.0.6 (Official Acidanthera)
+
+### EFI Location
+`/Volumes/EFI/EFI/OC/`
+
+### Changes Made (Dec 22, 2025)
+
+**1. Migrated to Official OpenCore 1.0.6**
+- Migrated from NO_ACPI version to Official Acidanthera 1.0.6
+- Config rebuilt from official `Sample.plist` with settings migrated
+- Fixed PickerVariant: `BlackOSX\BsxM1` → `BlackOSX/BsxM1` (forward slash)
+- Config passes `ocvalidate` with zero errors
+
+**2. SSDT Darwin Wrapper Fix**
+- **SSDT-XHCI**: Added `If (!_OSI ("Darwin")) { Return (Zero) }` guard to `_DSM` method
+- `_DSM` was returning macOS properties (model, device-id, port-count) unconditionally
+- Now properly protected - only returns properties on macOS
+
+### Kexts Installed
+| Kext | Version | Purpose |
+|------|---------|---------|
+| Lilu | 1.7.2 | Core patching kext |
+| VirtualSMC | 1.3.8 | SMC emulation |
+| NootRX | 1.0.0 | RX 6950 XT graphics |
+| AppleALC | 1.9.7 | ALC1220-VB audio |
+| CpuTopologyRebuild | 2.0.2 | i9-14900K core topology |
+| CPUFriend | 1.3.1 | CPU power management |
+| CPUFriendDataProvider | 1.0.0 | CPUFriend data |
+| BlueToolFixup | 2.6.9 | BCM94360NG Bluetooth |
+| XHCI-unsupported | 0.9.2 | Z790 USB support |
+| LucyRTL8125Ethernet | 1.2.2 | RTL8125B 2.5GbE |
+| RestrictEvents | 1.1.7 | Memory warnings fix |
+
+### ACPI SSDTs (13 total)
+| SSDT | Protection Method | Purpose |
+|------|-------------------|---------|
+| SSDT-EC-USBX | `_STA` returns Zero for non-Darwin | Fake EC + USB power |
+| SSDT-PLUG-ALT | `_STA` returns Zero for non-Darwin | CPU power management |
+| SSDT-AWAC-DISABLE | `If (_OSI ("Darwin"))` in \_INI | RTC compatibility |
+| SSDT-SBUS | `If (_OSI ("Darwin"))` wraps file | SMBus fix |
+| SSDT-PPMC | `If (_OSI ("Darwin"))` wraps file | Power Management Controller |
+| SSDT-XHCI | `_STA` + `_DSM` Darwin checks (fixed) | USB port map |
+| SSDT-IMEI | `If (_OSI ("Darwin"))` in Scope | Intel MEI fix |
+| SSDT-SATA | `If (_OSI ("Darwin"))` wraps file | SATA controller |
+| SSDT-XSPI | `If (_OSI ("Darwin"))` wraps file | SPI controller |
+| SSDT-HDEF | `If (_OSI ("Darwin"))` wraps file | Audio device |
+| SSDT-ARPT | `If (_OSI ("Darwin"))` wraps file | WiFi device |
+| SSDT-ANS | `If (_OSI ("Darwin"))` wraps file | 3x NVMe devices |
+| SSDT-FWHD | `_STA` returns Zero for non-Darwin | Firmware Hub |
+
+### Config Notes
+- **CPUID Spoof**: Raptor Lake spoofed as Comet Lake for macOS compatibility
+- **iGPU Disabled**: DeviceProperties `disable-gpu` on PciRoot(0x0)/Pci(0x2,0x0)
+- **Boot Args**: `npci=0x2000`
+- **Resizable BAR**: Enabled (`ResizeGpuBars: 0`)
+
+### Backup Locations
+- `~/Desktop/EFI_INTEL_BACKUP/` - Previous NO_ACPI EFI
+- `~/Desktop/OpenCore_OFFICIAL_106_INTEL/` - Official OC 1.0.6 package
+- `~/Desktop/EFI_INTEL_OFFICIAL_106/` - New official EFI (ready to install)
