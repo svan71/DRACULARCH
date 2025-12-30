@@ -193,7 +193,7 @@ cp "/mnt/synology/WEB Scripts/Scripts/CachyOS Kernel/build3.sh" "/mnt/synology/W
 - **Mokka symbolic icons**: Consider overlaying Dracula white icons onto Catppuccin
 
 ## Session Notes
-- **Session 36**: Fixed package verification false positives + fire-backup.sh fixes. Pacman race condition fixed by trusting exit code. fire-backup.sh: added Synology auto-detect, fixed glob with spaces in path.
+- **Session 36**: Fixed pacman race condition (trust exit code). fire-backup.sh: Synology auto-detect + glob fix. Added Firefox restore docs + build3 quick command.
 - **Session 35**: bash.sh - Claude Code install, repo setup, Finder symlinks
 - **Session 34**: macOS Tahoe terminal setup, SMB ~285 MB/s
 - **Session 33**: Firefox userChrome.css Dracula theme
