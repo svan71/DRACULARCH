@@ -164,12 +164,29 @@ Script on USB/Synology installs: Homebrew, Bash 5.x + ble.sh, Ghostty (Catppucci
 - AllowSetDefault: Ctrl+Enter to set default boot drive
 - SSDT `_DSM` methods: wrap in `_OSI("Darwin")` checks
 
+## Firefox/FireDragon Restore
+
+**Script:** `/mnt/synology/WEB Scripts/Scripts/Fire Backup/fire-backup.sh`
+
+Auto-detects Synology when mounted, falls back to `~/Documents/fire-backups`. One backup each for Firefox and FireDragon.
+
+**Restore commands** (Firefox must be installed first):
+```bash
+# Firefox
+echo "y" | bash "/mnt/synology/WEB Scripts/Scripts/Fire Backup/fire-backup.sh" restore firefox-backup-* -b firefox
+
+# FireDragon
+echo "y" | bash "/mnt/synology/WEB Scripts/Scripts/Fire Backup/fire-backup.sh" restore firedragon-backup-* -b firedragon
+```
+
+**What's restored:** bookmarks, extensions, settings, passwords (encrypted), history, cookies, userChrome.css, containers.
+
 ## Reminders
 - **COSMIC Desktop**: Considering Cosmic.sh script. Dracula theme exists on cosmic-themes.org
 - **Mokka symbolic icons**: Consider overlaying Dracula white icons onto Catppuccin
 
 ## Session Notes
-- **Session 36**: Fixed package verification false positives (gdm/gnome-shell). Root cause: race condition with sleep + pacman -Qi. Solution: trust pacman exit code directly. Fixed in Dracula.sh and Mokka.sh.
+- **Session 36**: Fixed package verification false positives + fire-backup.sh fixes. Pacman race condition fixed by trusting exit code. fire-backup.sh: added Synology auto-detect, fixed glob with spaces in path.
 - **Session 35**: bash.sh - Claude Code install, repo setup, Finder symlinks
 - **Session 34**: macOS Tahoe terminal setup, SMB ~285 MB/s
 - **Session 33**: Firefox userChrome.css Dracula theme
