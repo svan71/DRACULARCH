@@ -181,6 +181,13 @@ echo "y" | bash "/mnt/synology/WEB Scripts/Scripts/Fire Backup/fire-backup.sh" r
 
 **What's restored:** bookmarks, extensions, settings, passwords (encrypted), history, cookies, userChrome.css, containers.
 
+## Quick Commands
+
+**"copy build 3 to documents":**
+```bash
+cp "/mnt/synology/WEB Scripts/Scripts/CachyOS Kernel/build3.sh" "/mnt/synology/WEB Scripts/Scripts/CachyOS Kernel/modprobed-combined.db" ~/Documents/
+```
+
 ## Reminders
 - **COSMIC Desktop**: Considering Cosmic.sh script. Dracula theme exists on cosmic-themes.org
 - **Mokka symbolic icons**: Consider overlaying Dracula white icons onto Catppuccin
