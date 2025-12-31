@@ -54,6 +54,5 @@
       "WebFetch(domain:store.kde.org)"
     ],
     "defaultMode": "default"
-  },
-  "alwaysThinkingEnabled": false
+  }
 }

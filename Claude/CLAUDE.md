@@ -3,6 +3,7 @@
 Guidance for Claude Code working with DRACULARCH repository.
 
 ## Steve's Preferences - READ FIRST
+- **"check notes" = read this CLAUDE.md file**
 - **Bash with ble.sh** - Fish-like UX, POSIX compatible
 - Simple and effective, no over-engineering
 - Ask questions one at a time
@@ -58,20 +59,35 @@ DRACULARCH/
 ## Critical Knowledge - Don't Break These
 
 ### Package Installation Verification (FIXED Dec 2025)
-**Problem**: False positives for gdm/gnome-shell showing as "failed" when actually installed.
+**Problem**: False positives — gdm/gnome-shell showing as "failed" when actually installed.
 
-**Root cause**: Race condition - script ran `pacman -S`, slept 0.1s, then checked `pacman -Qi`. The sleep was too short after batch install failures.
+**Root cause**: Trusting pacman's exit code instead of verifying actual state. Pacman returns non-zero for many reasons that aren't failures (package already installed with `--needed`, warnings, etc.). The backgrounded batch install made this worse.
 
-**Solution**: Trust pacman exit code directly instead of secondary verification:
+**Solution**: Ignore exit codes entirely. Verify with `pacman -Qi` (is_package_installed) after install:
 ```bash
-# OLD (broken) - race condition
-sudo pacman -S --noconfirm --needed "$package" >/dev/null 2>&1
-sleep 0.1
-if pacman -Qi "$package" >/dev/null 2>&1; then  # can fail due to race
-
-# NEW (fixed) - trust exit code
+# OLD (broken) - trusts exit code
 if sudo pacman -S --noconfirm --needed "$package" >/dev/null 2>&1; then
+    successful_installs+=("$package")
+else
+    failed_installs+=("$package")  # FALSE POSITIVE - package may actually be installed
+fi
+
+# NEW (fixed) - verify actual state
+sudo pacman -S --noconfirm --needed "$package" >/dev/null 2>&1 || true
+if is_package_installed "$package"; then
+    successful_installs+=("$package")
+else
+    failed_installs+=("$package")  # Only fails if genuinely not installed
+fi
 ```
+
+**Batch install fix** (install_packages function):
+- Removed backgrounding `( ... ) &` — caused exit code issues
+- Run batch with `|| true` — ignore exit code
+- After batch completes, verify each package with `is_package_installed`
+- Only retry packages that are genuinely missing
+
+**Key principle**: The filesystem state is the truth, not the exit code. Always verify with `pacman -Qi`.
 
 ### Dracula.sh (GNOME)
 - **blur-my-shell**: Enable LAST with 5-second delay (crashes otherwise)
@@ -94,11 +110,6 @@ if sudo pacman -S --noconfirm --needed "$package" >/dev/null 2>&1; then
 - **ScreenScaleFactors**: Remove from both `plasmashellrc` AND `kdeglobals`
 
 ### Wake/Sleep Fixes
-
-**Intel 14900K (Gigabyte Z790 Aorus Master):**
-- **FIXED**: Disable IOAPIC in BIOS
-- Sleep works, USB wake works
-- Windows side effect: I2C controller shows exclamation in Device Manager (harmless - only affects RGB software)
 
 **AMD 7950X3D:** Systemd service disables GPP0 wakeup (prevents spurious wake after suspend)
 
@@ -176,15 +187,18 @@ Script on USB/Synology installs: Homebrew, Bash 5.x + ble.sh, Ghostty (Catppucci
 
 **Script:** `/mnt/synology/WEB Scripts/Scripts/Fire Backup/fire-backup.sh`
 
-Auto-detects Synology when mounted, falls back to `~/Documents/fire-backups`. One backup each for Firefox and FireDragon.
+Backups stored in `/mnt/synology/WEB Scripts/Scripts/Fire Backup/fire-backups/`
 
-**Restore commands** (Firefox must be installed first):
+**Restore workflow** (globs don't work - need exact backup name):
 ```bash
-# Firefox
-echo "y" | bash "/mnt/synology/WEB Scripts/Scripts/Fire Backup/fire-backup.sh" restore firefox-backup-* -b firefox
+# 1. List available backups
+ls "/mnt/synology/WEB Scripts/Scripts/Fire Backup/fire-backups/"
+
+# 2. Restore with exact name (Firefox must be installed first)
+echo "y" | bash "/mnt/synology/WEB Scripts/Scripts/Fire Backup/fire-backup.sh" restore firefox-backup-2025-12-22_07-12-23 -b firefox
 
 # FireDragon
-echo "y" | bash "/mnt/synology/WEB Scripts/Scripts/Fire Backup/fire-backup.sh" restore firedragon-backup-* -b firedragon
+echo "y" | bash "/mnt/synology/WEB Scripts/Scripts/Fire Backup/fire-backup.sh" restore firedragon-backup-2025-12-22_07-12-28 -b firedragon
 ```
 
 **What's restored:** bookmarks, extensions, settings, passwords (encrypted), history, cookies, userChrome.css, containers.
@@ -201,11 +215,9 @@ cp "/mnt/synology/WEB Scripts/Scripts/CachyOS Kernel/build3.sh" "/mnt/synology/W
 - **Mokka symbolic icons**: Consider overlaying Dracula white icons onto Catppuccin
 
 ## Session Notes
-- **Session 40**: Intel wake FIXED - IOAPIC disabled in BIOS. Sleep + USB wake both work. Only side effect: I2C exclamation in Windows Device Manager (harmless).
-- **Session 39**: Identified wake culprits: RP03 (RTL8125) + RP04 (BCM4360 WiFi). Disabled wake on both, testing suspend now.
-- **Session 38**: Intel wake debugging - IOAPIC disabled fixes spurious wake but breaks USB wake. Testing with IOAPIC re-enabled to identify specific culprit.
-- **Session 37**: Intel wake fix - systemd service disables PEG/XHCI wake sources (IOAPIC stays enabled for Windows).
-- **Session 36**: Fixed pacman race condition (trust exit code). fire-backup.sh: Synology auto-detect + glob fix. Added Firefox restore docs + build3 quick command.
+- **Session 42**: Fixed Firefox restore docs - globs don't work, need exact backup name. List backups first, then restore with exact name.
+- **Session 41**: PROPERLY fixed package verification false positives. Previous "fix" (Session 36) was backwards — trusting exit codes was the problem, not the solution. Correct approach: ignore exit codes, verify with `is_package_installed` (`pacman -Qi`). Removed backgrounding from batch install. Also cleaned up verbose printer output (show friendly names not URIs, silent Canon driver install). Applied to Dracula.sh, Mokka.sh, macOS.sh.
+- **Session 36**: fire-backup.sh: Synology auto-detect + glob fix. Added Firefox restore docs + build3 quick command.
 - **Session 35**: bash.sh - Claude Code install, repo setup, Finder symlinks
 - **Session 34**: macOS Tahoe terminal setup, SMB ~285 MB/s
 - **Session 33**: Firefox userChrome.css Dracula theme
