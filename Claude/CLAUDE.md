@@ -89,10 +89,18 @@ if sudo pacman -S --noconfirm --needed "$package" >/dev/null 2>&1; then
 
 ### Both Scripts
 - **Printer**: Use `dnssd://` URIs, mDNS discovery, no hardcoded IPs
-- **AMD GPP0 fix**: Systemd service disables GPP0 wakeup (prevents wake after suspend)
 - **Carapace**: Use `bash-ble` mode (not `bash`), install `carapace-bin` (prebuilt)
 - **Ghostty/Starship**: In `extra` repo (prebuilt), use `install_packages` not AUR
 - **ScreenScaleFactors**: Remove from both `plasmashellrc` AND `kdeglobals`
+
+### Wake/Sleep Fixes
+
+**Intel 14900K (Gigabyte Z790 Aorus Master):**
+- **FIXED**: Disable IOAPIC in BIOS
+- Sleep works, USB wake works
+- Windows side effect: I2C controller shows exclamation in Device Manager (harmless - only affects RGB software)
+
+**AMD 7950X3D:** Systemd service disables GPP0 wakeup (prevents spurious wake after suspend)
 
 ## SMB/CIFS Direct Mount
 
@@ -124,7 +132,7 @@ curl -fsSL https://claude.ai/install.sh | bash && export PATH="$HOME/.local/bin:
 
 ## Hardware
 - Intel 14900K, 32GB, Samsung Odyssey G8 4K@240Hz
-- AMD 9950X3D, 64GB
+- AMD 7950X3D, 64GB
 - Mac M4 Pro, 24GB
 
 ## 14900K Tuning (Gigabyte Z790 Aorus Master)
@@ -149,7 +157,7 @@ Script on USB/Synology installs: Homebrew, Bash 5.x + ble.sh, Ghostty (Catppucci
 
 ## Hackintosh EFI Notes
 
-### AMD System (9950X3D)
+### AMD System (7950X3D)
 - OpenCore 1.0.6 Official, MacPro7,1, NootRX for RX 6600
 - All SSDTs use `_OSI("Darwin")` wrapping
 - AppleIntelI210Ethernet for Intel I225-V 2.5GbE
@@ -193,6 +201,10 @@ cp "/mnt/synology/WEB Scripts/Scripts/CachyOS Kernel/build3.sh" "/mnt/synology/W
 - **Mokka symbolic icons**: Consider overlaying Dracula white icons onto Catppuccin
 
 ## Session Notes
+- **Session 40**: Intel wake FIXED - IOAPIC disabled in BIOS. Sleep + USB wake both work. Only side effect: I2C exclamation in Windows Device Manager (harmless).
+- **Session 39**: Identified wake culprits: RP03 (RTL8125) + RP04 (BCM4360 WiFi). Disabled wake on both, testing suspend now.
+- **Session 38**: Intel wake debugging - IOAPIC disabled fixes spurious wake but breaks USB wake. Testing with IOAPIC re-enabled to identify specific culprit.
+- **Session 37**: Intel wake fix - systemd service disables PEG/XHCI wake sources (IOAPIC stays enabled for Windows).
 - **Session 36**: Fixed pacman race condition (trust exit code). fire-backup.sh: Synology auto-detect + glob fix. Added Firefox restore docs + build3 quick command.
 - **Session 35**: bash.sh - Claude Code install, repo setup, Finder symlinks
 - **Session 34**: macOS Tahoe terminal setup, SMB ~285 MB/s
