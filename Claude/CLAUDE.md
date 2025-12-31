@@ -236,7 +236,9 @@ cp "/mnt/synology/WEB Scripts/Scripts/CachyOS Kernel/build3.sh" "/mnt/synology/W
 - **Mokka symbolic icons**: Consider overlaying Dracula white icons onto Catppuccin
 
 ## Session Notes
-- **Session 45**: Weather widget fix complete. Added Phase 12 to `mokka-first-login.sh` that dynamically finds weather widget applet ID and configures all settings (Vincentown NJ, fahrenheit, inHg, mph) via kwriteconfig6 on first login. This solves the applet ID mismatch problem since IDs are assigned dynamically.
+- **Session 47**: Installing Garuda to find proper 4K 200% display scaling config. Current Mokka has browser gaps on both sides at 4K 200% - works on Garuda. Will compare configs. Also redoing Mokka backups with customizations (kitty images, ghostty config, etc.) from Garuda setup.
+- **Session 46**: Logout blur fix corrected. The fix is `Effect-blurplus` NoiseStrength=0, not Effect-logout BlurStrength.
+- **Session 45**: Weather widget fix complete. Added Phase 12 to `mokka-first-login.sh` that dynamically finds weather widget applet ID and configures all settings (Vincentown NJ, fahrenheit, inHg, mph) via kwriteconfig6 on first login.
 - **Session 44**: Weather widget location not restoring (shows Vancouver instead of Vincentown). Found repo appletsrc missing `[Configuration][Location]` section with `firstRun=false`. Added it + fixed pressureType to inHg. Also backed up Panel Colorizer presets to repo (`Mokka/configs/panel-colorizer/`). Session 43 TODO done - forceblur already updated in Mokka.sh.
 - **Session 43**: Mokka install review. Only failure: `kwin-effects-forceblur` (removed from AUR). Replaced with `kwin-scripts-forceblur`. Installed manually, KWin reloaded. Added USB mount command to notes. **TODO**: Update Mokka.sh with new package name.
 - **Session 42**: Fixed Firefox restore docs (need exact backup name, not glob). Added Fresh Install - Repo Setup section (SSH keys + setup-repo.sh). USB path on Dracula is `/run/media/steve/ARCH_202512/`.
