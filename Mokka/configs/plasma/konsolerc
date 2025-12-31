@@ -5,9 +5,13 @@ DefaultProfile=Default.profile
 ConfigVersion=1
 
 [KonsoleWindow]
+RememberWindowSize=true
 ShowMenuBarByDefault=false
 
 [MainWindow]
 MenuBar=Disabled
+RestorePositionForNextInstance=true
 StatusBar=Disabled
-ToolBarsMovable=Enabled
+
+[UiSettings]
+ColorScheme=

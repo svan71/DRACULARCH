@@ -1,5 +1,5 @@
 [Desktops]
-Id_1=62c04db4-ac59-4028-a76a-94d5edd38ccb
+Id_1=065ef40a-dbed-471a-a4b6-fb1f1cf1c0e6
 Number=1
 Rows=1
 
@@ -15,17 +15,10 @@ PaintAsTranslucent=true
 TopCornerRadius=20
 WindowClasses=xwaylandvideobridge
 
-[Effect-translucency]
-Active=0
-Inactive=0
-
 [Effect-wobblywindows]
 Drag=85
 Stiffness=10
 WobblynessLevel=1
-
-[NightColor]
-Active=false
 
 [Plugins]
 blurEnabled=false
@@ -34,7 +27,6 @@ desktopchangeosdEnabled=true
 fadeEnabled=true
 flipswitchEnabled=true
 forceblurEnabled=true
-kwin4_effect_roundedcornersEnabled=true
 magiclampEnabled=true
 scaleEnabled=false
 squashEnabled=false
@@ -44,9 +36,6 @@ wobblywindowsEnabled=true
 ActiveOutlineAlpha=253
 ActiveOutlineUseCustom=false
 ActiveOutlineUsePalette=true
-DisableOutlineFullScreen=false
-DisableOutlineMaximize=false
-DisableOutlineTile=false
 InactiveCornerRadius=20
 InactiveOutlineAlpha=255
 InactiveOutlinePalette=19
@@ -68,26 +57,14 @@ LayoutName=coverswitch
 [Tiling]
 padding=4
 
-[Tiling][62c04db4-ac59-4028-a76a-94d5edd38ccb][09e0af60-2695-4656-a2e7-b4cfee85ca72]
+[Tiling][065ef40a-dbed-471a-a4b6-fb1f1cf1c0e6][3a2859fd-81f4-493f-b2ca-9677ff5b0990]
 tiles={"layoutDirection":"horizontal","tiles":[{"width":0.25},{"width":0.5},{"width":0.25}]}
 
-[Tiling][62c04db4-ac59-4028-a76a-94d5edd38ccb][16290bf8-3876-448f-9042-d1f346a0c730]
-tiles={"layoutDirection":"horizontal","tiles":[{"width":0.25},{"width":0.5},{"width":0.25}]}
-
-[Tiling][62c04db4-ac59-4028-a76a-94d5edd38ccb][44cb13dd-74dd-4dea-9b24-e427e9ac833c]
-tiles={"layoutDirection":"horizontal","tiles":[{"width":0.25},{"width":0.5},{"width":0.25}]}
-
-[Tiling][62c04db4-ac59-4028-a76a-94d5edd38ccb][81a55072-4c2c-45ab-979f-60be3bab73d5]
-tiles={"layoutDirection":"horizontal","tiles":[{"width":0.25},{"width":0.5},{"width":0.25}]}
-
-[Tiling][62c04db4-ac59-4028-a76a-94d5edd38ccb][a77a2117-ed5b-4010-8676-131739cb6c5e]
+[Tiling][065ef40a-dbed-471a-a4b6-fb1f1cf1c0e6][d461f37b-0116-4004-b47b-e8cbfd59285c]
 tiles={"layoutDirection":"horizontal","tiles":[{"width":0.25},{"width":0.5},{"width":0.25}]}
 
 [Windows]
 BorderlessMaximizedWindows=true
-
-[Xwayland]
-XwaylandEavesdropsMouse=true
 
 [org.kde.kdecoration2]
 BorderSizeAuto=false
