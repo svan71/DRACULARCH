@@ -54,6 +54,8 @@ DRACULARCH/
 | `~/Dracularch/Claude/` | Repo copy → git push |
 | `/run/media/steve/ARCH_202512/` | USB on Dracula (Intel 14900K) |
 
+**USB mount:** If `/run/media/steve/ARCH_202512/` not mounted, run: `udisksctl mount -b /dev/sda1`
+
 **"sync" means:** Copy to repo → git push → copy to USB
 
 ## Fresh Install - Repo Setup
@@ -234,6 +236,9 @@ cp "/mnt/synology/WEB Scripts/Scripts/CachyOS Kernel/build3.sh" "/mnt/synology/W
 - **Mokka symbolic icons**: Consider overlaying Dracula white icons onto Catppuccin
 
 ## Session Notes
+- **Session 45**: Weather widget fix complete. Added Phase 12 to `mokka-first-login.sh` that dynamically finds weather widget applet ID and configures all settings (Vincentown NJ, fahrenheit, inHg, mph) via kwriteconfig6 on first login. This solves the applet ID mismatch problem since IDs are assigned dynamically.
+- **Session 44**: Weather widget location not restoring (shows Vancouver instead of Vincentown). Found repo appletsrc missing `[Configuration][Location]` section with `firstRun=false`. Added it + fixed pressureType to inHg. Also backed up Panel Colorizer presets to repo (`Mokka/configs/panel-colorizer/`). Session 43 TODO done - forceblur already updated in Mokka.sh.
+- **Session 43**: Mokka install review. Only failure: `kwin-effects-forceblur` (removed from AUR). Replaced with `kwin-scripts-forceblur`. Installed manually, KWin reloaded. Added USB mount command to notes. **TODO**: Update Mokka.sh with new package name.
 - **Session 42**: Fixed Firefox restore docs (need exact backup name, not glob). Added Fresh Install - Repo Setup section (SSH keys + setup-repo.sh). USB path on Dracula is `/run/media/steve/ARCH_202512/`.
 - **Session 41**: PROPERLY fixed package verification false positives. Previous "fix" (Session 36) was backwards — trusting exit codes was the problem, not the solution. Correct approach: ignore exit codes, verify with `is_package_installed` (`pacman -Qi`). Removed backgrounding from batch install. Also cleaned up verbose printer output (show friendly names not URIs, silent Canon driver install). Applied to Dracula.sh, Mokka.sh, macOS.sh.
 - **Session 36**: fire-backup.sh: Synology auto-detect + glob fix. Added Firefox restore docs + build3 quick command.
