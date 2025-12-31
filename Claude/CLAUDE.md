@@ -52,9 +52,28 @@ DRACULARCH/
 | `~/CLAUDE.md` | Active instructions (live) |
 | `~/.claude/settings.json` | Permissions (live) |
 | `~/Dracularch/Claude/` | Repo copy → git push |
-| `/run/media/steve/ARCH_202512/` | USB (scripts + configs) |
+| `/run/media/steve/ARCH_202512/` | USB on Dracula (Intel 14900K) |
 
 **"sync" means:** Copy to repo → git push → copy to USB
+
+## Fresh Install - Repo Setup
+
+**Script:** `/mnt/synology/WEB Scripts/Scripts/Setup Repo/setup-repo.sh`
+
+Restores SSH keys, configures git, sets up repo with SSH remote.
+
+```bash
+# 1. Copy SSH backup to Documents
+cp -r "/mnt/synology/WEB Scripts/Scripts/Setup Repo/ssh-backup" ~/Documents/
+
+# 2. Run setup (restores keys, configures git, clones/updates repo)
+bash "/mnt/synology/WEB Scripts/Scripts/Setup Repo/setup-repo.sh" setup
+
+# 3. If repo already cloned via HTTPS, switch to SSH
+cd ~/Dracularch && git remote set-url origin git@github.com:svan71/DRACULARCH.git
+```
+
+**Other commands:** `setup-repo.sh push`, `setup-repo.sh pull`, `setup-repo.sh status`
 
 ## Critical Knowledge - Don't Break These
 
@@ -215,7 +234,7 @@ cp "/mnt/synology/WEB Scripts/Scripts/CachyOS Kernel/build3.sh" "/mnt/synology/W
 - **Mokka symbolic icons**: Consider overlaying Dracula white icons onto Catppuccin
 
 ## Session Notes
-- **Session 42**: Fixed Firefox restore docs - globs don't work, need exact backup name. List backups first, then restore with exact name.
+- **Session 42**: Fixed Firefox restore docs (need exact backup name, not glob). Added Fresh Install - Repo Setup section (SSH keys + setup-repo.sh). USB path on Dracula is `/run/media/steve/ARCH_202512/`.
 - **Session 41**: PROPERLY fixed package verification false positives. Previous "fix" (Session 36) was backwards — trusting exit codes was the problem, not the solution. Correct approach: ignore exit codes, verify with `is_package_installed` (`pacman -Qi`). Removed backgrounding from batch install. Also cleaned up verbose printer output (show friendly names not URIs, silent Canon driver install). Applied to Dracula.sh, Mokka.sh, macOS.sh.
 - **Session 36**: fire-backup.sh: Synology auto-detect + glob fix. Added Firefox restore docs + build3 quick command.
 - **Session 35**: bash.sh - Claude Code install, repo setup, Finder symlinks
