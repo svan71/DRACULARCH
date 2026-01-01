@@ -121,6 +121,23 @@ verify_final_state() {
 - **Autostart cleanup**: Delete files BEFORE logout (race condition)
 
 ### Mokka.sh (KDE)
+
+**The Sacred 14 Plasma Configs** - ONLY these config files should be restored:
+1. `plasma-org.kde.plasma.desktop-appletsrc` - Panel/widget layout
+2. `plasmashellrc` - Plasma shell settings
+3. `kdeglobals` - Global KDE settings, colors
+4. `kwinrc` - Window manager, effects, compositing
+5. `kded5rc` - KDE daemon (legacy)
+6. `kded6rc` - KDE daemon (Plasma 6)
+7. `kcminputrc` - Input device settings
+8. `kscreenlockerrc` - Lock screen settings
+9. `baloofilerc` - File indexing
+10. `plasmanotifyrc` - Notifications
+11. `konsolerc` - Terminal settings
+12. `dolphinrc` - File manager settings
+13. `arkrc` - Archive manager
+14. `kwinoutputconfig.json` - Display resolution/scaling (fixes 4K 200% issue)
+
 - **TahoeLauncher**: Path = `/usr/share/plasma/plasmoids/TahoeLauncher/`
 - **Dolphin state**: Plasma 6 uses `~/.local/state/dolphinstaterc`
 - **Display scaling**: Remove `ScreenScaleFactors=` from kdeglobals/plasmashellrc, use `kwinoutputconfig.json` (not kscreen-doctor)
@@ -299,6 +316,11 @@ cp "/mnt/synology/WEB Scripts/Scripts/CachyOS Kernel/build3.sh" "/mnt/synology/W
 - **Mokka symbolic icons**: Consider overlaying Dracula white icons onto Catppuccin
 
 ## Session History
+- Session 58: Blur finally working! Logout screen perfect. Updates:
+  - Moved forceblur package from `Shared/` to `Mokka/packages/` (Mokka-only, not shared)
+  - Updated Mokka.sh: install forceblur from repo via `pacman -U` instead of dead AUR package
+  - Removed old kscreen-doctor scaling code from Mokka.sh (kwinoutputconfig.json handles it)
+  - Added "Sacred 14 Plasma Configs" list to CLAUDE.md with kwinoutputconfig.json as #14
 - Session 57: Grabbed `kwin-effects-forceblur-1.5.0-1.9-x86_64.pkg.tar.zst` from Garuda and saved to `Shared/`. This is the working blur package - archived from chaotic-aur but still functional. Install with `sudo pacman -U`. Updated CLAUDE.md with install instructions.
 - Session 56: Investigated Garuda Mokka blur setup. Key findings:
   - Garuda Mokka also has NO custom logout folder - falls back to Breeze like Arch
