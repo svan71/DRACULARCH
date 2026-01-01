@@ -338,10 +338,16 @@ cp "/mnt/synology/WEB Scripts/Scripts/CachyOS Kernel/build3.sh" "/mnt/synology/W
   - Updated TahoeLauncher favorites (kactivitymanagerd database)
   - Fixed SDDM login screen cat icon (was showing Garuda default)
   - Restored Dolphin settings on Garuda from repo
+- Session 47: Fresh Mokka install fixes + script improvements
+  - Fixed `kwin-effects-forceblur` → `kwin-scripts-forceblur` in mokka.sh (package removed from AUR)
+  - Fixed display scale not applying: added `kwinoutputconfig.json` to `plasma_configs` array
+  - Fixed fire-backup.sh paths with spaces bug (unquoted glob in `select_backup_for_restore`)
+  - Added `read_password()` function to all 3 scripts - shows `*` asterisks as you type
+  - Reordered browsers in mokka.sh and dracula.sh: Chrome, Firefox, Brave, Firedragon, Edge
 - Session 46: Logout blur fix corrected. The fix is `Effect-blurplus` NoiseStrength=0, not Effect-logout BlurStrength.
 - Session 45: Weather widget fix complete. Added Phase 12 to `mokka-first-login.sh` that dynamically finds weather widget applet ID and configures all settings (Vincentown NJ, fahrenheit, inHg, mph) via kwriteconfig6 on first login.
 - Session 44: Weather widget location not restoring (shows Vancouver instead of Vincentown). Found repo appletsrc missing `[Configuration][Location]` section with `firstRun=false`. Added it + fixed pressureType to inHg. Also backed up Panel Colorizer presets to repo (`Mokka/configs/panel-colorizer/`).
-- Session 43: Mokka install review. Only failure: `kwin-effects-forceblur` (removed from AUR). Replaced with `kwin-scripts-forceblur`. Installed manually, KWin reloaded. **TODO**: Update Mokka.sh with new package name.
+- Session 43: Mokka install review. Only failure: `kwin-effects-forceblur` (removed from AUR). Replaced with `kwin-scripts-forceblur`. Installed manually, KWin reloaded.
 - Session 42: Fixed Firefox restore docs (need exact backup name, not glob). Added Fresh Install - Repo Setup section (SSH keys + setup-repo.sh). USB path on Dracula is `/run/media/steve/ARCH_202512/`.
 - Session 41: PROPERLY fixed package verification false positives. Previous "fix" (Session 36) was backwards — trusting exit codes was the problem, not the solution. Correct approach: ignore exit codes, verify with `is_package_installed` (`pacman -Qi`). Removed backgrounding from batch install. Also cleaned up verbose printer output.
 - Session 27: Updated Mokka repo configs from Garuda testing
