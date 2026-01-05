@@ -2,83 +2,105 @@
   "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
   "logo": {
     "type": "kitty-direct",
-    "source": "/Users/steve/.config/fastfetch/mokka-fastfetch.png",
-    "width": 40
+    "source": "~/.config/fastfetch/arch-tahoe.png",
+    "width": 43,
+    "padding": {
+      "top": 1,
+      "left": 2
+    }
   },
   "display": {
-    "separator": " "
+    "separator": "  "
   },
   "modules": [
     {
       "type": "title",
-      "keyWidth": 10
+      "format": "{#0091ff}{user-name}{#5ac8fa}@{#0091ff}{host-name}{#reset}"
     },
+    "separator",
     {
       "type": "os",
       "key": " OS",
-      "keyColor": "#f9e2af"
+      "keyColor": "blue"
     },
-    {
-      "type": "kernel",
-      "key": "├ Kernel",
-      "keyColor": "#f9e2af"
-    },
-    {
-      "type": "packages",
-      "key": "├󰏖 Packages",
-      "keyColor": "#f9e2af"
-    },
-    {
-      "type": "shell",
-      "key": "├ Shell",
-      "keyColor": "#f9e2af"
-    },
-    {
-      "type": "uptime",
-      "key": "└󰅐 Uptime",
-      "keyColor": "#f9e2af"
-    },
-    "break",
-    {
-      "type": "wm",
-      "key": "󰧨 Window Manager",
-      "keyColor": "#89b4fa"
-    },
-    {
-      "type": "terminal",
-      "key": "├ Terminal",
-      "keyColor": "#89b4fa"
-    },
-    {
-      "type": "terminalfont",
-      "key": "└ Terminal Font",
-      "keyColor": "#89b4fa"
-    },
-    "break",
     {
       "type": "host",
       "key": "󰌢 Host",
-      "keyColor": "#a6e3a1"
+      "format": "{2}",
+      "keyColor": "blue"
+    },
+    {
+      "type": "kernel",
+      "key": " Kernel",
+      "keyColor": "blue"
+    },
+    {
+      "type": "uptime",
+      "key": "󰅐 Uptime",
+      "keyColor": "blue"
+    },
+    {
+      "type": "packages",
+      "key": "󰏖 Packages",
+      "keyColor": "cyan"
+    },
+    {
+      "type": "shell",
+      "key": " Shell",
+      "keyColor": "cyan"
+    },
+    {
+      "type": "de",
+      "key": " DE",
+      "keyColor": "cyan"
+    },
+    {
+      "type": "wm",
+      "key": "󰧨 WM",
+      "keyColor": "cyan"
+    },
+    {
+      "type": "wmtheme",
+      "key": " WM Theme",
+      "keyColor": "cyan"
+    },
+    {
+      "type": "theme",
+      "key": " Theme",
+      "keyColor": "cyan"
+    },
+    {
+      "type": "icons",
+      "key": " Icons",
+      "keyColor": "cyan"
+    },
+    {
+      "type": "terminal",
+      "key": " Terminal",
+      "keyColor": "white"
     },
     {
       "type": "cpu",
-      "key": "├󰻠 CPU",
-      "keyColor": "#a6e3a1"
+      "key": "󰻠 CPU",
+      "format": "{1}",
+      "keyColor": "white"
     },
     {
       "type": "gpu",
-      "key": "├󰍛 GPU",
-      "keyColor": "#a6e3a1"
+      "key": "󰍛 GPU",
+      "format": "{1} {2}",
+      "keyColor": "white"
     },
     {
       "type": "memory",
-      "key": "├󰑭 Memory",
-      "keyColor": "#a6e3a1"
+      "key": "󰑭 Memory",
+      "keyColor": "white"
     },
     {
-      "type": "display",
-      "key": "└󰍹 Display(s)",
-      "keyColor": "#a6e3a1"
-    }
+      "type": "localip",
+      "key": "󰈀 Local IP",
+      "keyColor": "white"
+    },
+    "break"
   ]
 }
