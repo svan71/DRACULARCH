@@ -6,101 +6,64 @@
     "width": 43,
     "padding": {
       "top": 1,
-      "left": 2
+      "left": 1
+    },
+    "color": {
+      "1": "#0091ff",
+      "2": "#0091ff",
+      "3": "#0091ff",
+      "4": "#0091ff",
+      "5": "#0091ff",
+      "6": "#0091ff"
     }
   },
   "display": {
-    "separator": "  "
+    "separator": "  ",
+    "color": {
+      "keys": "#5ac8fa",
+      "output": "#dedede"
+    }
   },
   "modules": [
+    "break",
     {
       "type": "title",
-      "format": "\u001b[38;2;0;145;255m{user-name}\u001b[38;2;90;200;250m@\u001b[38;2;0;145;255m{host-name}\u001b[0m"
+      "color": {
+        "user": "#0091ff",
+        "at": "#dedede",
+        "host": "#0091ff"
+      }
     },
-    "separator",
     {
-      "type": "os",
-      "key": " OS",
-      "keyColor": "blue"
+      "type": "separator",
+      "string": "─",
+      "outputColor": "#555555"
     },
+    "os",
     {
       "type": "host",
-      "key": "󰌢 Host",
-      "format": "{2}",
-      "keyColor": "blue"
+      "format": "{2}"
     },
-    {
-      "type": "kernel",
-      "key": " Kernel",
-      "keyColor": "blue"
-    },
-    {
-      "type": "uptime",
-      "key": "󰅐 Uptime",
-      "keyColor": "blue"
-    },
-    {
-      "type": "packages",
-      "key": "󰏖 Packages",
-      "keyColor": "cyan"
-    },
-    {
-      "type": "shell",
-      "key": " Shell",
-      "keyColor": "cyan"
-    },
-    {
-      "type": "de",
-      "key": " DE",
-      "keyColor": "cyan"
-    },
-    {
-      "type": "wm",
-      "key": "󰧨 WM",
-      "keyColor": "cyan"
-    },
-    {
-      "type": "wmtheme",
-      "key": " WM Theme",
-      "keyColor": "cyan"
-    },
-    {
-      "type": "theme",
-      "key": " Theme",
-      "keyColor": "cyan"
-    },
-    {
-      "type": "icons",
-      "key": " Icons",
-      "keyColor": "cyan"
-    },
-    {
-      "type": "terminal",
-      "key": " Terminal",
-      "keyColor": "white"
-    },
+    "kernel",
+    "uptime",
+    "packages",
+    "shell",
+    "de",
+    "wm",
+    "wmtheme",
+    "theme",
+    "icons",
+    "font",
+    "terminal",
     {
       "type": "cpu",
-      "key": "󰻠 CPU",
-      "format": "{1}",
-      "keyColor": "white"
+      "format": "{1}"
     },
     {
       "type": "gpu",
-      "key": "󰍛 GPU",
-      "format": "{1} {2}",
-      "keyColor": "white"
+      "format": "{2}"
     },
-    {
-      "type": "memory",
-      "key": "󰑭 Memory",
-      "keyColor": "white"
-    },
-    {
-      "type": "localip",
-      "key": "󰈀 Local IP",
-      "keyColor": "white"
-    },
-    "break"
+    "memory",
+    "localip"
   ]
 }
