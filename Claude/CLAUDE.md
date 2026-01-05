@@ -22,7 +22,7 @@ Guidance for Claude Code working with DRACULARCH repository.
 
 **GitHub:** github.com/svan71/DRACULARCH
 **Local repo:** ~/Dracularch/
-**USB:** /run/media/steve/ARCH_202512
+**USB:** `/run/media/steve/ARCH_*` (name changes monthly, e.g., ARCH_202601)
 
 ## Repo Structure
 ```
@@ -58,10 +58,17 @@ DRACULARCH/
 | `~/.claude/settings.json` | Permissions (live) |
 | `~/.claude.json` | Claude Code prefs (theme, notifications) |
 | `~/Dracularch/Claude/` | Repo copy → git push |
-| `/run/media/steve/ARCH_202512/` | USB (scripts + configs) |
+| `/run/media/steve/ARCH_*/` | USB (scripts + configs) - name changes monthly |
 | `/mnt/synology/WEB Scripts/Arch/Claude/USB Files/` | Synology (previous backups) |
 
-**USB mount:** If `/run/media/steve/ARCH_202512/` not mounted, run: `udisksctl mount -b /dev/sda1`
+**USB detection:**
+```bash
+# Find USB path
+USB_PATH=$(find /run/media/steve -maxdepth 1 -name "ARCH_*" -type d 2>/dev/null | head -1)
+
+# Mount if not found
+udisksctl mount -b /dev/sda1
+```
 
 **"sync" means:** Copy to repo → git push → copy to USB
 
@@ -86,36 +93,33 @@ cd ~/Dracularch && git remote set-url origin git@github.com:svan71/DRACULARCH.gi
 
 ## Critical Knowledge - Don't Break These
 
-### Package Installation Verification (FIXED Dec 2025)
-**Problem**: False positives — gdm/gnome-shell showing as "failed" when actually installed.
+### Package Installation Fix (Dec 2025)
 
-**Root cause**: Trusting pacman's exit code instead of verifying actual state. Pacman returns non-zero for many reasons that aren't failures (package already installed with `--needed`, warnings, etc.). The backgrounded batch install made this worse.
+**Problem**: Pacman provider prompts (e.g., "choose ttf-font provider") hang when output is captured or redirected, causing batch installs to fail silently.
 
-**Solution**: Ignore exit codes entirely. Verify with `pacman -Qi` (is_package_installed) after install:
+**Solution**: Use `yes "" |` to auto-accept default providers, output to logfile (not captured):
 ```bash
-# OLD (broken) - trusts exit code
-if sudo pacman -S --noconfirm --needed "$package" >/dev/null 2>&1; then
-    successful_installs+=("$package")
-else
-    failed_installs+=("$package")  # FALSE POSITIVE - package may actually be installed
-fi
-
-# NEW (fixed) - verify actual state
-sudo pacman -S --noconfirm --needed "$package" >/dev/null 2>&1 || true
-if is_package_installed "$package"; then
-    successful_installs+=("$package")
-else
-    failed_installs+=("$package")  # Only fails if genuinely not installed
-fi
+yes "" | sudo pacman -S --noconfirm --needed --overwrite '*' "${packages[@]}" >>"$LOGFILE" 2>&1
 ```
 
-**Batch install fix** (install_packages function):
-- Removed backgrounding `( ... ) &` — caused exit code issues
-- Run batch with `|| true` — ignore exit code
-- After batch completes, verify each package with `is_package_installed`
-- Only retry packages that are genuinely missing
+**Final verification**: Don't verify packages mid-install. Check once at the end before summary:
+```bash
+verify_final_state() {
+    for pkg in "${attempted_packages[@]}"; do
+        if pacman -Qi "$pkg" >/dev/null 2>&1 || yay -Q "$pkg" >/dev/null 2>&1; then
+            successful_installs+=("$pkg")
+        else
+            failed_installs+=("$pkg")
+        fi
+    done
+}
+```
 
-**Key principle**: The filesystem state is the truth, not the exit code. Always verify with `pacman -Qi`.
+**Key points**:
+- `yes "" |` feeds empty lines to accept default provider choices
+- Don't use `$()` subshell capture — breaks the pipe
+- Track attempts in `attempted_packages` array
+- Verify filesystem state at end, not during install
 
 ### Dracula.sh (GNOME)
 - **blur-my-shell**: Enable LAST with 5-second delay (crashes otherwise)
@@ -124,6 +128,23 @@ fi
 - **Autostart cleanup**: Delete files BEFORE logout (race condition)
 
 ### Mokka.sh (KDE)
+
+**The Sacred 14 Plasma Configs** - ONLY these config files should be restored:
+1. `plasma-org.kde.plasma.desktop-appletsrc` - Panel/widget layout
+2. `plasmashellrc` - Plasma shell settings
+3. `kdeglobals` - Global KDE settings, colors
+4. `kwinrc` - Window manager, effects, compositing
+5. `kded5rc` - KDE daemon (legacy)
+6. `kded6rc` - KDE daemon (Plasma 6)
+7. `kcminputrc` - Input device settings
+8. `kscreenlockerrc` - Lock screen settings
+9. `baloofilerc` - File indexing
+10. `plasmanotifyrc` - Notifications
+11. `konsolerc` - Terminal settings
+12. `dolphinrc` - File manager settings
+13. `arkrc` - Archive manager
+14. `kwinoutputconfig.json` - Display resolution/scaling (fixes 4K 200% issue)
+
 - **TahoeLauncher**: Path = `/usr/share/plasma/plasmoids/TahoeLauncher/`
 - **Dolphin state**: Plasma 6 uses `~/.local/state/dolphinstaterc`
 - **Display scaling**: Remove `ScreenScaleFactors=` from kdeglobals/plasmashellrc, use `kwinoutputconfig.json` (not kscreen-doctor)
@@ -154,122 +175,103 @@ fi
   OutlineThickness=4.5             # Active border thickness
   ActiveOutlineUsePalette=true     # Uses theme accent color
   ActiveOutlineAlpha=253
-  InactiveOutlineThickness=3.5     # Inactive border thickness
-  InactiveOutlinePalette=19        # Palette color index
+  InactiveOutlineThickness=0       # No inactive border
   InactiveOutlineUsePalette=true
-  InactiveOutlineAlpha=255
+  InactiveOutlineAlpha=204
+  InactiveShadowSize=30
   ```
+- **Force Blur**:
+  - KWin script path: `~/.local/share/kwin/scripts/forceblur/` (not effects)
+  - Package: `kwin-scripts-forceblur` (not effects)
+  - Blur whitelist in `kwinrc`: `[Script-forceblur]` section `blurMatching` key
+- **Forceblur (RECOMMENDED)** - Garuda's working blur:
+  - Package archived from chaotic-aur Nov 2025, saved to repo
+  - **Install on Arch**: `sudo pacman -U ~/Dracularch/Shared/kwin-effects-forceblur-1.5.0-1.9-x86_64.pkg.tar.zst`
+  - kwinrc settings:
+    ```
+    [Plugins]
+    blurEnabled=false              # Stock blur OFF
+    forceblurEnabled=true          # Forceblur ON
 
-### Both Scripts
-- **Printer**: Use `dnssd://` URIs, mDNS discovery, no hardcoded IPs. Canon TR8600 needs `cnijfilter2` AUR
-- **AMD GPP0 fix**: Systemd service disables GPP0 wakeup (prevents wake after suspend)
-- **Carapace**: Use `bash-ble` mode (not `bash`), install `carapace-bin` (prebuilt)
-- **Ghostty**: In `extra` repo (prebuilt), shell-integration = bash
-- **Starship**: In `extra` repo (prebuilt), use `install_packages` not AUR
-- **ScreenScaleFactors**: Remove from both `plasmashellrc` AND `kdeglobals`
+    [Effect-blurplus]              # Yes, section is "blurplus" not "forceblur"
+    BlurDecorations=true
+    BlurMatching=false
+    BlurNonMatching=true
+    BottomCornerRadius=20
+    DockCornerRadius=20
+    MenuCornerRadius=20
+    NoiseStrength=0                # Critical for clean logout!
+    PaintAsTranslucent=true
+    TopCornerRadius=20
+    WindowClasses=xwaylandvideobridge
+    ```
+  - After install: `qdbus org.kde.KWin /KWin reconfigure`
+- **Better Blur DX** (alternative, AUR):
+  - Package: `kwin-effects-better-blur-dx`
+  - kwinrc settings (**note: section uses HYPHENS not underscores**):
+    ```
+    [Plugins]
+    blurEnabled=false              # Stock blur OFF
+    better-blur-dxEnabled=true     # Better blur ON (HYPHENS!)
 
-## CachyOS Kernel
-Optional at install. Package name: `linux-cachyos` (LTO now default).
+    [Effect-better-blur-dx]        # HYPHENS not underscores!
+    BlurStrength=10                # Default 15 is too strong
+    NoiseStrength=0                # Default 5 - causes grainy logout
+    Brightness=100                 # Neutral
+    Saturation=100                 # Default 150 causes brownish tint!
+    Contrast=100                   # Neutral
+    BlurDecorations=true
+    BlurMatching=false
+    BlurNonMatching=true
+    BlurMenus=true
+    BlurDocks=true
+    CornerRadius=20
+    ```
+  - **Critical defaults that break logout**: Saturation=150 (brownish), NoiseStrength=5 (grainy)
 
-**Required configs:** CONFIG_TCP_CONG_BBR, CONFIG_NET_SCH_CAKE, CONFIG_IP_NF_IPTABLES (UFW), CONFIG_CIFS (SMB)
+### macOS.sh
+- Same structure as Dracula.sh but with macOS Tahoe theme
+- Blue/White/Gray color scheme
+- Uses same package installation pattern
 
-## SMB/CIFS Direct Mount
+## Session-Specific Notes
 
-**Why:** GVFS ~175 MB/s vs Direct CIFS ~245 MB/s (+40% faster)
+### ble.sh Completions
+- **SSH tab completion**: `source "$HOME/.ble-complete-ssh"` in ~/.bashrc after ble.sh attach
+- ble.sh reads bash_completion but SSH host completion needs extra hook
 
-**Credentials:** `~/.smbcredentials` (chmod 600)
-```
-username=steve
-password=<synology_password>
-```
+### EFI Partition
+- Script uses `efibootmgr` to set label
+- EFI labels: "Arch", "archOS" (macOS.sh)
 
-**fstab:**
-```
-//synology.local/external /mnt/synology cifs credentials=/home/steve/.smbcredentials,vers=3.1.1,multichannel,max_channels=4,rsize=4194304,wsize=4194304,uid=1000,gid=1000,_netdev,nofail 0 0
-//synology.local/plex /mnt/plex cifs credentials=/home/steve/.smbcredentials,vers=3.1.1,multichannel,max_channels=4,rsize=4194304,wsize=4194304,uid=1000,gid=1000,_netdev,nofail 0 0
-```
-
-## time.py - Automated Installer
-
-Pre-configured archinstall automation script on USB. Tested with archinstall 3.0.14.
-
-**Usage:**
+### Synology SMB Mount
+Standard mount in scripts:
 ```bash
-python3 time.py
+# /etc/fstab entry
+//192.168.1.101/Media /mnt/synology cifs credentials=/home/$USER/.smb_credentials,uid=1000,gid=1000,iocharset=utf8 0 0
 ```
 
-**What it does:**
-- Prompts for password (hashed, not stored)
-- Shows drives with mount warnings, double-confirms selection
-- Auto-updates archinstall, warns if version changed
-- Configures: linux-zen, Grub (removable), 512MB /boot + 50GB / + remainder /home (ext4)
-- Creates user `steve` with sudo, enables sshd, creates `/mnt/usb` and `/usr/local/bin/usb` helper
-
-**Post-reboot workflow:**
+### Carapace Completions (Bash + ble.sh)
 ```bash
-# Login as steve
-usb                      # mounts USB, cd's into it
-./mokka.sh               # or ./dracula.sh
+# In ~/.bashrc
+source <(carapace _carapace bash)
 ```
 
-**Version tracking:** Update `TESTED_ARCHINSTALL_VERSION` in script when archinstall changes.
+## System Info
 
-## SSH Workflow (Fresh Installs)
+### Hardware
+- **AMD**: 7950X3D, 64GB RAM, Gigabyte B650 Aorus Elite AX
+- **Intel**: 14900K, 32GB RAM, Gigabyte Z790 Aorus Master
+- **Monitor**: Samsung Odyssey G8 4K 240Hz (3840x2160)
+- **Network**: 2.5GbE to Synology DS1821+
 
-Claude Code needs browser OAuth. SSH from Mac (sshd already enabled by time.py):
+### Display Scaling
+- 4K at 200% scaling (2x)
+- Fonts: all at 11pt (Interface, Document, Monospace, Titlebar)
 
-```bash
-# Arch TTY: ip addr | grep 192
-# Mac: ssh steve@192.168.x.x
-export TERM=xterm-256color
-curl -fsSL https://claude.ai/install.sh | bash && export PATH="$HOME/.local/bin:$PATH" && claude
-```
+## macOS/Hackintosh Notes
 
-## Claude Code Notes
-- **USB check**: Use full path `ls /run/media/steve/ARCH_202512/` (parent dir fails)
-- **ble.sh check**: Use `bash -c '[[ ... ]]'` (Bash tool runs sh)
-- **Setup repo**: `cp -r "/mnt/synology/WEB Scripts/Scripts/Setup Repo/ssh-backup" ~/Documents/ && bash "/mnt/synology/WEB Scripts/Scripts/Setup Repo/setup-repo.sh" setup`
-
-## Hardware
-- Intel 14900K, 32GB, Samsung Odyssey G8 4K@240Hz
-- AMD 9950X3D, 64GB
-- Mac M4 Pro, 24GB
-
-## 14900K Tuning (Gigabyte Z790 Aorus Master)
-
-**Results:** 5.5GHz all-core, 6.2GHz boost, R23: 40,742, temps max 87°C
-
-**BIOS Settings:**
-| Setting | Value |
-|---------|-------|
-| Intel Default Profile | High (not Extreme) |
-| IA AC/DC Loadline | 55 |
-| IA VR Voltage Limit | 1400 (1.4V cap - critical) |
-| IA VR Current Limit | 0 (unlimited) |
-| Package Power Limit 1 & 2 | 4095 |
-| Core Current Limit | 512A |
-| P-core Ratio | 62 (6.2GHz) |
-| E-core Ratio | 46 (4.6GHz) |
-| Vcore LLC | High |
-| VF Offset Mode | Selective |
-
-**V/F Curve (Selective mode):**
-| Point | Ratio | Offset |
-|-------|-------|--------|
-| 1-5 | 8-43x | -0.090V |
-| 6 | 51x | -0.070V |
-| 7 | 56x | -0.060V |
-| 8 | 58x | -0.050V |
-| 9 | 60x | +0.100V |
-| 10-11 | - | Auto |
-
-**Key principles:** 1.4V hard cap prevents degradation, undervolt at low frequencies for efficiency, full voltage only at boost. Kernel compile with FullLTO + AVX-512 is the hardest stability test.
-
-## macOS Terminal Setup (bash.sh)
-
-Script on USB/Synology installs: Homebrew, Bash 5.x + ble.sh, Ghostty (Catppuccin Mocha), Starship, modern CLI tools, Claude Code.
-
-**SMB speed:** ~285 MB/s writes (better than Linux!) via `/etc/nsmb.conf` multichannel config.
+**SMB speed:** ~285 MB/s writes via `/etc/nsmb.conf` multichannel config.
 
 ## Hackintosh EFI Notes
 
@@ -315,105 +317,130 @@ echo "y" | bash "/mnt/synology/WEB Scripts/Scripts/Fire Backup/fire-backup.sh" r
 cp "/mnt/synology/WEB Scripts/Scripts/CachyOS Kernel/build3.sh" "/mnt/synology/WEB Scripts/Scripts/CachyOS Kernel/modprobed-combined.db" ~/Documents/
 ```
 
+## COSMIC Desktop Plans
+
+**Status:** Planning phase - will install Arch+COSMIC on separate disk to develop together
+
+### Theme Concept
+- **NOT using Dracula** - creating fresh custom theme
+- **Palette:** Black, blue, white, transparent
+- **Consider:** Catppuccin Mocha colors as base
+- **COSMIC uses `.ron` files** for theming (not GTK/dconf)
+
+### Catppuccin Mocha Palette (reference)
+```
+Base:      #1e1e2e (dark background)
+Mantle:    #181825 (darker bg)
+Crust:     #11111b (darkest)
+Text:      #cdd6f4 (white)
+Blue:      #89b4fa
+Sapphire:  #74c7ec
+Lavender:  #b4befe
+Mauve:     #cba6f7
+Green:     #a6e3a1
+Surface0:  #313244
+Surface1:  #45475a
+```
+
+### What Transfers from Dracula.sh (~60%)
+**Direct transfer:**
+- Package installation (pacman/yay logic)
+- System detection (CPU/GPU/RAM)
+- Kernel setup (CachyOS/Zen)
+- Performance tuning (sysctl, zram)
+- Services (UFW, avahi, CUPS, SMB)
+- CLI tools (eza, bat, fd, ripgrep, zoxide, starship, fzf)
+- Shell setup (bash, ble.sh, bashrc, blerc)
+- Fonts, Flatpak, GRUB/Plymouth
+- Browser installation, Claude Code
+
+**Needs COSMIC replacement:**
+- `gdm` → `cosmic-greeter`
+- `gnome-shell` → `cosmic-session`, `cosmic-comp`
+- `nautilus` → `cosmic-files`
+- GTK themes → `.ron` theme files
+- GNOME extensions → Not applicable
+- `gsettings`/`dconf` → `cosmic-config`
+
+### Icon Theme Recoloring Script
+
+**Location:** `/mnt/synology/WEB Scripts/Scripts/Icon Theme/`
+- `theme_icons.py` - Main recoloring script
+- `icon_theme_setup.sh` - Python venv setup
+
+**Current script limitations:**
+- Hardcoded paths (no CLI args)
+- Single hardcoded palette (Dracula)
+- Basic color detection (misses rgb(), rgba())
+- Sequential processing (slow)
+- No dry-run/preview mode
+
+**v2 Improvements (TODO when in COSMIC):**
+1. CLI interface (argparse): `--source`, `--output`, `--palette`, `--dry-run`, `--analyze`
+2. External palette JSON files (easy theme swapping)
+3. Better color parsing (hex, rgb, rgba, named)
+4. Parallel processing (multiprocessing + tqdm)
+5. Color analysis mode (scan theme, report unique colors, suggest mappings)
+6. Smarter mapping (cluster similar colors, map by hue ranges)
+
+### COSMIC Resources
+- **Themes:** cosmic-themes.org
+- **Package:** `cosmic` or `cosmic-epoch` meta-package
+- **Config location:** `~/.config/cosmic/`
+
 ## Reminders
 - **Windows 11**: Run [RemoveWindowsAI](https://github.com/zoicware/RemoveWindowsAI) - strips Copilot, Recall. Use backup mode, PowerShell 5.1.
-- **COSMIC Desktop**: Considering Cosmic.sh script. Dracula theme exists on cosmic-themes.org
 - **Mokka symbolic icons**: Consider overlaying Dracula white icons onto Catppuccin
 
 ## Session History
-- Session 28: Major Mokka plasma config update from Garuda
-  - Updated 9 plasma configs in repo from current Garuda system:
-    - kdeglobals (fonts 11pt, removed ScreenScaleFactors)
-    - kwinrc (blur/effects, Round-Corners)
-    - plasmashellrc (panel thickness 82)
-    - plasma-org.kde.plasma.desktop-appletsrc (Colorizer, clock, weather)
-    - kscreenlockerrc (fixed wallpaper path for Arch)
-    - kcminputrc, plasmanotifyrc, konsolerc (fixed profile to Default.profile)
-  - **NEW**: Added `kwinoutputconfig.json` for display scaling (replaces kscreen-doctor)
-    - Handles resolution/scale/refresh for Samsung G8 regardless of DP/HDMI port
-    - Uses edidIdentifier to match monitor, not connector name
-  - Updated Mokka.sh on USB:
-    - Added kwinoutputconfig.json to restore list
-    - Removed kscreen-doctor call (json file handles scaling)
-  - Updated TahoeLauncher favorites (kactivitymanagerd database)
-  - Fixed SDDM login screen cat icon (was showing Garuda default)
-  - Restored Dolphin settings on Garuda from repo
+- Session 59: COSMIC desktop planning session
+  - Discussed creating Cosmic.sh script (~60% of Dracula.sh transfers directly)
+  - Theme: NOT Dracula - custom black/blue/white/transparent, possibly Catppuccin Mocha base
+  - Reviewed icon recoloring script at `/mnt/synology/WEB Scripts/Scripts/Icon Theme/`
+  - Planned v2 icon script improvements (CLI, external palettes, parallel processing, analyze mode)
+  - Will install Arch+COSMIC on separate disk to develop together
+  - Also configured Spectacle for GNOME-style screenshots: `spectacle -r -b` (region, background mode, auto-save, quit)
+- Session 58: Blur finally working! Logout screen perfect. Updates:
+  - Moved forceblur package from `Shared/` to `Mokka/packages/` (Mokka-only, not shared)
+  - Updated Mokka.sh: install forceblur from repo via `pacman -U` instead of dead AUR package
+  - Removed old kscreen-doctor scaling code from Mokka.sh (kwinoutputconfig.json handles it)
+  - Added "Sacred 14 Plasma Configs" list to CLAUDE.md with kwinoutputconfig.json as #14
+- Session 57: Grabbed `kwin-effects-forceblur-1.5.0-1.9-x86_64.pkg.tar.zst` from Garuda and saved to `Shared/`. This is the working blur package - archived from chaotic-aur but still functional. Install with `sudo pacman -U`. Updated CLAUDE.md with install instructions.
+- Session 56: Investigated Garuda Mokka blur setup. Key findings:
+  - Garuda Mokka also has NO custom logout folder - falls back to Breeze like Arch
+  - Uses `kwin-effects-forceblur` (chaotic-aur) NOT `better-blur-dx`
+  - Plugin enabled as `forceblurEnabled=true` but config section is `[Effect-blurplus]`
+  - `NoiseStrength=0` is critical for clean logout
+- Session 55: Applied hyphenated blur config fix to kwinrc. Changed `[Effect-better_blur_dx]` → `[Effect-better-blur-dx]` and `better_blur_dxEnabled` → `better-blur-dxEnabled`. KWin reloaded, effect active. Still need to update Mokka.sh and repo configs.
+- Session 54: Garuda blur investigation complete. Findings:
+  - Garuda uses `kwin-effects-forceblur` from **chaotic-aur** (not standard AUR)
+  - Package was **archived Nov 20, 2025** - no longer maintained
+  - `kwin-effects-better-blur-dx` is the continuation/fork (standard AUR)
+  - **KEY DISCOVERY**: Config section uses HYPHENS: `[Effect-better-blur-dx]` not underscores!
+  - Previous attempts may have failed due to wrong section name `[Effect-better_blur_dx]`
+  - Plugin enable key also uses hyphens: `better-blur-dxEnabled=true`
+- Session 53: BLUR STILL NOT FIXED. Need to boot into Garuda (working reference) and extract EXACT settings.
+- Session 52: Logout still brownish after better_blur_dx install. Found default Saturation=150 was the culprit. Set BlurStrength=10, Saturation=100, Brightness=100, Contrast=100. These settings need to go in mokka.sh and repo kwinrc.
+- Session 51: Root cause of blur issues found - "blurplus" package never existed! Old configs referenced `blurplusEnabled=true` but no such effect was installed. Installed `kwin-effects-better-blur-dx` (AUR) which provides proper blur replacement. Settings: `blurEnabled=false` + `better_blur_dxEnabled=true` + `NoiseStrength=0`. Need to update mokka.sh to install this package and update repo kwinrc configs. Testing logout now.
+- Session 50: No blur at all (everything transparent). Opposite of Session 49 - `blurplusEnabled=true` was missing from kwinrc Plugins section. Added it via kwriteconfig6. Correct state: `blurEnabled=false` (stock blur off) + `blurplusEnabled=true` (blurplus on) + `NoiseStrength=0` (logout fix).
+- Session 49: Logout screen blur broken again (overblurred/brownish). Found `blurEnabled=true` in kwinrc Plugins section - should be `false`. Regular blur effect was running ON TOP of blurplus causing double-blur. Repo has correct `blurEnabled=false`. Something enabled it after fresh install - investigating what triggered this. Testing if logout/login applies fix.
+- Session 48: Fixed package installation failures caused by pacman provider prompts. `$()` subshell capture breaks `yes` pipe. Solution: `yes "" | sudo pacman ... >>"$LOGFILE" 2>&1`. Applied to all three scripts.
+- Session 47: Fresh Mokka install fixes + script improvements
+  - Fixed `kwin-effects-forceblur` → `kwin-scripts-forceblur` in mokka.sh (package removed from AUR)
+  - Fixed display scale not applying: added `kwinoutputconfig.json` to `plasma_configs` array
+  - Fixed fire-backup.sh paths with spaces bug (unquoted glob in `select_backup_for_restore`)
+  - Added `read_password()` function to all 3 scripts - shows `*` asterisks as you type
+  - Reordered browsers in mokka.sh and dracula.sh: Chrome, Firefox, Brave, Firedragon, Edge
 - Session 46: Logout blur fix corrected. The fix is `Effect-blurplus` NoiseStrength=0, not Effect-logout BlurStrength.
 - Session 45: Weather widget fix complete. Added Phase 12 to `mokka-first-login.sh` that dynamically finds weather widget applet ID and configures all settings (Vincentown NJ, fahrenheit, inHg, mph) via kwriteconfig6 on first login.
 - Session 44: Weather widget location not restoring (shows Vancouver instead of Vincentown). Found repo appletsrc missing `[Configuration][Location]` section with `firstRun=false`. Added it + fixed pressureType to inHg. Also backed up Panel Colorizer presets to repo (`Mokka/configs/panel-colorizer/`).
-- Session 43: Mokka install review. Only failure: `kwin-effects-forceblur` (removed from AUR). Replaced with `kwin-scripts-forceblur`. Installed manually, KWin reloaded. **TODO**: Update Mokka.sh with new package name.
-- Session 42: Fixed Firefox restore docs (need exact backup name, not glob). Added Fresh Install - Repo Setup section (SSH keys + setup-repo.sh). USB path on Dracula is `/run/media/steve/ARCH_202512/`.
-- Session 41: PROPERLY fixed package verification false positives. Previous "fix" (Session 36) was backwards — trusting exit codes was the problem, not the solution. Correct approach: ignore exit codes, verify with `is_package_installed` (`pacman -Qi`). Removed backgrounding from batch install. Also cleaned up verbose printer output.
+- Session 43: Mokka install review. Only failure: `kwin-effects-forceblur` (removed from AUR). Replaced with `kwin-scripts-forceblur`. Installed manually, KWin reloaded.
+- Session 42: Fixed Firefox restore docs (need exact backup name, not glob). Added Fresh Install - Repo Setup section (SSH keys + setup-repo.sh).
+- Session 28: Major Mokka plasma config update from Garuda
 - Session 27: Updated Mokka repo configs from Garuda testing
-  - Clock widget: Noto Sans Black, size 14, weight 900 (widgets render thinner than Qt apps)
-  - Weather widget: `org.kde.weatherWidget-3` → `weather.widget.plus`
-  - kdeglobals: font size 11 → 10, removed ScreenScaleFactors
-  - Pushed to GitHub - next Mokka install will use these settings
 - Session 26: Garuda clock/Colorizer settings + full terminal/Dolphin setup
-  - Digital clock: Noto Sans Bold 13pt, date beside time (`dddd, MMM d`), week numbers
-  - Panel Colorizer: foreground shadow enabled (size 5), tracks clock widget
-  - Installed: Ghostty, btop, zoxide, blesh-git, carapace-bin (via paru)
-  - Copied: bashrc, blerc, bat, btop, fastfetch, starship, Ghostty configs
-  - Set up SMB mounts (/mnt/synology, /mnt/plex) with fstab
-  - Restored zoxide db and bash history
-  - Note: Garuda uses `paru` not `yay`
-- Session 25: Weather widget deep dive on Garuda Linux (first Claude Code on Garuda)
-  - Explored weather widget options:
-    - **Weather Widget Plus** (`weather.widget.plus`) - fork with more customization, buggy compact mode
-    - **Chaac.Complete.Weather** - edited QML (removed °F suffix, adjusted spacing/icon), still frustrating
-    - **Default KDE** (`org.kde.plasma.weather`) - wettercom only provider shown, wettercom is DEAD
-  - **Solution**: Use NOAA provider with **Mount Holly, NJ** (close to Vincentown, has NWS office)
-  - Weather providers on system: `bbcukmet`, `dwd`, `envcan`, `noaa`, `wettercom` (in `/usr/lib/qt6/plugins/plasma/weather_ions/`)
-  - Applied Mokka fonts to Garuda kdeglobals (Noto Sans Bold 10pt everywhere)
-  - Tried separating system tray widgets into individual panel widgets:
-    - **What you get**: Control over order, direct click (no tray expand)
-    - **What you DON'T get**: Icon appearance control (icon theme), widget width control (widget design)
-    - System tray items can be reordered and set to "shown" anyway
-  - **Conclusion**: Stick with system tray layout, use NOAA provider for weather
+- Session 25: Weather widget deep dive on Garuda Linux
 - Session 24: Weather widget fix + Flameshot screenshot tool
-  - Removed broken `org.kde.plasma.weather` (wettercom provider dead)
-  - Removed `kweather` package entirely (question mark icon issue)
-  - Installed `plasma6-applets-weather-widget-3-git` (Weather Widget Plus)
-  - Weather Widget 3 config: metno provider, Vincentown NJ, Noto Sans Bold font
-  - Installed `plasma6-applets-plasmusic-toolbar` (media controls for panel)
-  - Installed `flameshot` for screenshots (tray icon, GNOME-like workflow)
-  - Print Screen key mapped to Flameshot
-  - Added `Mokka/configs/flameshot/flameshot.ini` to repo
-  - Updated plasma config: removed all kweather/old weather refs
 - Session 23: time.py archinstall automation script
-  - Updated config format for archinstall 3.0.14
-  - Added password prompt (hashed with SHA512, not stored)
-  - Improved drive selection: shows mounts, double-confirm, CAUTION warnings
-  - Added version detection: warns if archinstall version changes
-  - Config: linux-zen, Grub (removable for OpenCore), 512MB /boot + 50GB / + remainder /home
-  - Enables multilib repo, pipewire, bluetooth, NetworkManager
-  - custom_commands: mkdir /mnt/usb, systemctl enable sshd, creates /usr/local/bin/usb helper
-  - Post-reboot: `usb` command mounts USB and cd's into it
 - Session 22: macOS.sh brought to Dracula.sh parity
-  - Replaced Fish with Bash + ble.sh
-  - Fixed logging functions with tee guards (LOGFILE existence check)
-  - Fixed setup_kernel URLs → `Shared/Cachyos-*.tar.xz`
-  - Fixed install_aur_packages: `pacman -Qi` → `yay -Q`
-  - Fixed restore_gnome_extensions URL → `Dracula/assets/Extensions.tar.xz`
-  - Added full 2.5Gb network optimizations (sysctl settings)
-  - Fixed setup_grub: removed LTO kernel references
-  - Fixed Plymouth: added animation service, deferred mkinitcpio
-  - Added SMB credential collection and setup_smb_and_portals
-  - Fixed UFW with proper systemctl enable
-  - Added AMD GPP0 wake fix
-  - Replaced printer setup with dnssd auto-detect
-  - Updated carapace to bash-ble mode
-  - Fixed EFI label to "archOS"
-  - Reordered browsers: Firefox, Firedragon, Chrome, Brave, Edge (both scripts)
-  - Fixed default apps (audio: mpv → smplayer)
 - Session 21: Major repo reorganization
-  - Created Dracula/assets/ (moved 10 archives from root)
-  - Created Shared/ (CachyOS kernel files, renamed without spaces)
-  - Created macOS/ (moved 4 Mac files)
-  - Created Archive/ (deprecated Fish configs)
-  - Converted Dracula-Plymouth.zip and Dracula-Wallpaper.zip to .tar.xz
-  - Updated Dracula.sh: 10 GitHub URLs to new paths
-  - Updated Mokka.sh: 4 GitHub URLs to new paths
-- Session 20: Fresh Mokka verified, script fixes (thefuck, ScreenScaleFactors in kdeglobals, starship → extra)
-- Session 19: Mokka.sh Fish → Bash + ble.sh, Konsole removed
-- Session 18: Dracula.sh fresh install verified
