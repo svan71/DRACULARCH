@@ -15,7 +15,7 @@
   "modules": [
     {
       "type": "title",
-      "format": "{#0091ff}{user-name}{#5ac8fa}@{#0091ff}{host-name}{#reset}"
+      "format": "\u001b[38;2;0;145;255m{user-name}\u001b[38;2;90;200;250m@\u001b[38;2;0;145;255m{host-name}\u001b[0m"
     },
     "separator",
     {
