@@ -3,7 +3,7 @@
   "logo": {
     "type": "kitty-direct",
     "source": "~/.config/fastfetch/arch-tahoe.png",
-    "width": 43,
+    "width": 28,
     "padding": {
       "top": 1,
       "left": 1
