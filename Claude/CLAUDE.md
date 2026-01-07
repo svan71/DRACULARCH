@@ -3,7 +3,6 @@
 Guidance for Claude Code working with DRACULARCH repository.
 
 ## Steve's Preferences - READ FIRST
-- **"check notes" = read this CLAUDE.md file**
 - **Bash with ble.sh** - Fish-like UX, POSIX compatible
 - Simple and effective, no over-engineering
 - Ask questions one at a time
@@ -22,7 +21,7 @@ Guidance for Claude Code working with DRACULARCH repository.
 
 **GitHub:** github.com/svan71/DRACULARCH
 **Local repo:** ~/Dracularch/
-**USB:** `/run/media/steve/ARCH_*` (name changes monthly, e.g., ARCH_202601)
+**USB:** /run/media/steve/ARCH_202512
 
 ## Repo Structure
 ```
@@ -40,7 +39,8 @@ DRACULARCH/
 │   ├── themes/       # Kvantum, color-schemes, sddm, kate
 │   ├── icons/        # FireDragon icons
 │   └── wallpapers/
-├── macOS/            # Mac-related files (future)
+├── macOS/
+│   └── Bash/         # macOS terminal configs (bashrc, ghostty, fastfetch, etc.)
 └── Archive/          # Deprecated Fish configs
 ```
 
@@ -56,70 +56,13 @@ DRACULARCH/
 |----------|---------|
 | `~/CLAUDE.md` | Active instructions (live) |
 | `~/.claude/settings.json` | Permissions (live) |
-| `~/.claude.json` | Claude Code prefs (theme, notifications) |
 | `~/Dracularch/Claude/` | Repo copy → git push |
-| `/run/media/steve/ARCH_*/` | USB (scripts + configs) - name changes monthly |
+| `/run/media/steve/ARCH_202512/` | USB (scripts + configs) |
 | `/mnt/synology/WEB Scripts/Arch/Claude/USB Files/` | Synology (previous backups) |
-
-**USB detection:**
-```bash
-# Find USB path
-USB_PATH=$(find /run/media/steve -maxdepth 1 -name "ARCH_*" -type d 2>/dev/null | head -1)
-
-# Mount if not found
-udisksctl mount -b /dev/sda1
-```
 
 **"sync" means:** Copy to repo → git push → copy to USB
 
-## Fresh Install - Repo Setup
-
-**Script:** `/mnt/synology/WEB Scripts/Scripts/Setup Repo/setup-repo.sh`
-
-Restores SSH keys, configures git, sets up repo with SSH remote.
-
-```bash
-# 1. Copy SSH backup to Documents
-cp -r "/mnt/synology/WEB Scripts/Scripts/Setup Repo/ssh-backup" ~/Documents/
-
-# 2. Run setup (restores keys, configures git, clones/updates repo)
-bash "/mnt/synology/WEB Scripts/Scripts/Setup Repo/setup-repo.sh" setup
-
-# 3. If repo already cloned via HTTPS, switch to SSH
-cd ~/Dracularch && git remote set-url origin git@github.com:svan71/DRACULARCH.git
-```
-
-**Other commands:** `setup-repo.sh push`, `setup-repo.sh pull`, `setup-repo.sh status`
-
 ## Critical Knowledge - Don't Break These
-
-### Package Installation Fix (Dec 2025)
-
-**Problem**: Pacman provider prompts (e.g., "choose ttf-font provider") hang when output is captured or redirected, causing batch installs to fail silently.
-
-**Solution**: Use `yes "" |` to auto-accept default providers, output to logfile (not captured):
-```bash
-yes "" | sudo pacman -S --noconfirm --needed --overwrite '*' "${packages[@]}" >>"$LOGFILE" 2>&1
-```
-
-**Final verification**: Don't verify packages mid-install. Check once at the end before summary:
-```bash
-verify_final_state() {
-    for pkg in "${attempted_packages[@]}"; do
-        if pacman -Qi "$pkg" >/dev/null 2>&1 || yay -Q "$pkg" >/dev/null 2>&1; then
-            successful_installs+=("$pkg")
-        else
-            failed_installs+=("$pkg")
-        fi
-    done
-}
-```
-
-**Key points**:
-- `yes "" |` feeds empty lines to accept default provider choices
-- Don't use `$()` subshell capture — breaks the pipe
-- Track attempts in `attempted_packages` array
-- Verify filesystem state at end, not during install
 
 ### Dracula.sh (GNOME)
 - **blur-my-shell**: Enable LAST with 5-second delay (crashes otherwise)
@@ -128,26 +71,9 @@ verify_final_state() {
 - **Autostart cleanup**: Delete files BEFORE logout (race condition)
 
 ### Mokka.sh (KDE)
-
-**The Sacred 14 Plasma Configs** - ONLY these config files should be restored:
-1. `plasma-org.kde.plasma.desktop-appletsrc` - Panel/widget layout
-2. `plasmashellrc` - Plasma shell settings
-3. `kdeglobals` - Global KDE settings, colors
-4. `kwinrc` - Window manager, effects, compositing
-5. `kded5rc` - KDE daemon (legacy)
-6. `kded6rc` - KDE daemon (Plasma 6)
-7. `kcminputrc` - Input device settings
-8. `kscreenlockerrc` - Lock screen settings
-9. `baloofilerc` - File indexing
-10. `plasmanotifyrc` - Notifications
-11. `konsolerc` - Terminal settings
-12. `dolphinrc` - File manager settings
-13. `arkrc` - Archive manager
-14. `kwinoutputconfig.json` - Display resolution/scaling (fixes 4K 200% issue)
-
 - **TahoeLauncher**: Path = `/usr/share/plasma/plasmoids/TahoeLauncher/`
 - **Dolphin state**: Plasma 6 uses `~/.local/state/dolphinstaterc`
-- **Display scaling**: Remove `ScreenScaleFactors=` from kdeglobals/plasmashellrc, use `kwinoutputconfig.json` (not kscreen-doctor)
+- **Display scaling**: Remove `ScreenScaleFactors=`, use `kscreen-doctor output.1.scale.2` (200% is sharper than fractional)
 - **Logging functions**: Guard with `[[ -n "$LOGFILE" && -f "$LOGFILE" ]]` before tee
 - **Digital Clock Widget**:
   ```ini
@@ -175,272 +101,742 @@ verify_final_state() {
   OutlineThickness=4.5             # Active border thickness
   ActiveOutlineUsePalette=true     # Uses theme accent color
   ActiveOutlineAlpha=253
-  InactiveOutlineThickness=0       # No inactive border
+  InactiveOutlineThickness=3.5     # Inactive border thickness
+  InactiveOutlinePalette=19        # Palette color index
   InactiveOutlineUsePalette=true
-  InactiveOutlineAlpha=204
-  InactiveShadowSize=30
+  InactiveOutlineAlpha=255
   ```
-- **Force Blur**:
-  - KWin script path: `~/.local/share/kwin/scripts/forceblur/` (not effects)
-  - Package: `kwin-scripts-forceblur` (not effects)
-  - Blur whitelist in `kwinrc`: `[Script-forceblur]` section `blurMatching` key
-- **Forceblur (RECOMMENDED)** - Garuda's working blur:
-  - Package archived from chaotic-aur Nov 2025, saved to repo
-  - **Install on Arch**: `sudo pacman -U ~/Dracularch/Shared/kwin-effects-forceblur-1.5.0-1.9-x86_64.pkg.tar.zst`
-  - kwinrc settings:
-    ```
-    [Plugins]
-    blurEnabled=false              # Stock blur OFF
-    forceblurEnabled=true          # Forceblur ON
 
-    [Effect-blurplus]              # Yes, section is "blurplus" not "forceblur"
-    BlurDecorations=true
-    BlurMatching=false
-    BlurNonMatching=true
-    BottomCornerRadius=20
-    DockCornerRadius=20
-    MenuCornerRadius=20
-    NoiseStrength=0                # Critical for clean logout!
-    PaintAsTranslucent=true
-    TopCornerRadius=20
-    WindowClasses=xwaylandvideobridge
-    ```
-  - After install: `qdbus org.kde.KWin /KWin reconfigure`
-- **Better Blur DX** (alternative, AUR):
-  - Package: `kwin-effects-better-blur-dx`
-  - kwinrc settings (**note: section uses HYPHENS not underscores**):
-    ```
-    [Plugins]
-    blurEnabled=false              # Stock blur OFF
-    better-blur-dxEnabled=true     # Better blur ON (HYPHENS!)
+### Both Scripts
+- **Printer**: Use `dnssd://` URIs, mDNS discovery, no hardcoded IPs. Canon TR8600 needs `cnijfilter2` AUR
+- **AMD GPP0 fix**: Systemd service disables GPP0 wakeup (prevents wake after suspend)
+- **Carapace**: Use `bash-ble` mode (not `bash`), install `carapace-bin` (prebuilt)
+- **Ghostty**: In `extra` repo (prebuilt), shell-integration = bash
+- **Starship**: In `extra` repo (prebuilt), use `install_packages` not AUR
+- **ScreenScaleFactors**: Remove from both `plasmashellrc` AND `kdeglobals`
 
-    [Effect-better-blur-dx]        # HYPHENS not underscores!
-    BlurStrength=10                # Default 15 is too strong
-    NoiseStrength=0                # Default 5 - causes grainy logout
-    Brightness=100                 # Neutral
-    Saturation=100                 # Default 150 causes brownish tint!
-    Contrast=100                   # Neutral
-    BlurDecorations=true
-    BlurMatching=false
-    BlurNonMatching=true
-    BlurMenus=true
-    BlurDocks=true
-    CornerRadius=20
-    ```
-  - **Critical defaults that break logout**: Saturation=150 (brownish), NoiseStrength=5 (grainy)
+## Updating Dracula GTK Theme
 
-### macOS.sh
-- Same structure as Dracula.sh but with macOS Tahoe theme
-- Blue/White/Gray color scheme
-- Uses same package installation pattern
+1. Download latest from https://github.com/dracula/gtk/releases to `~/Downloads/Dracula`
+2. Copy custom icon: `cp ~/.themes/Dracula/gnome-shell/assets/view-app-grid.svg ~/Downloads/Dracula/gnome-shell/assets/`
+3. Append custom CSS to `~/Downloads/Dracula/gnome-shell/gnome-shell.css` (show-apps icon + hover effects)
+4. Trash old, copy new: `gio trash ~/.themes/Dracula && cp -r ~/Downloads/Dracula ~/.themes/`
+5. GTK4 fix: `cp ~/.themes/Dracula/gtk-4.0/*.css ~/.config/gtk-4.0/`
+6. GTK4 assets: `cp -r ~/.themes/Dracula/assets ~/.config/`
+7. Test GTK3 and GTK4 apps
+8. Package: `cd ~/.themes && tar -cJf Dracula-GTK.tar.xz Dracula`
+9. Sync: Copy to repo, git push, copy to USB
 
-## Session-Specific Notes
+**Custom CSS to append** (end of `gnome-shell/gnome-shell.css`):
+```css
+/* Show Apps Icon - Custom themed icon */
+.show-apps .show-apps-icon {
+  color: transparent !important;
+  background-image: url("assets/view-app-grid.svg");
+  background-size: contain;
+}
 
-### ble.sh Completions
-- **SSH tab completion**: `source "$HOME/.ble-complete-ssh"` in ~/.bashrc after ble.sh attach
-- ble.sh reads bash_completion but SSH host completion needs extra hook
+.show-apps .overview-icon,
+.show-apps .show-apps-icon {
+  color: transparent !important;
+}
 
-### EFI Partition
-- Script uses `efibootmgr` to set label
-- EFI labels: "Arch", "archOS" (macOS.sh)
+/* Show Apps Hover Effect - Dracula Purple */
+#panel .panel-button.show-apps:hover {
+  box-shadow: inset 0 0 0 100px rgba(189, 147, 249, 0.5);
+  color: white;
+  transition-duration: 200ms;
+}
 
-### Synology SMB Mount
-Standard mount in scripts:
+#panel .panel-button.show-apps:active,
+#panel .panel-button.show-apps:focus,
+#panel .panel-button.show-apps:checked {
+  box-shadow: inset 0 0 0 100px rgba(189, 147, 249, 0.7);
+  color: white;
+  transition-duration: 200ms;
+}
+
+/* Dash Show Apps Hover (if in dash) */
+#dash .show-apps:hover .overview-icon {
+  background-color: rgba(189, 147, 249, 0.3);
+}
+
+#dash .show-apps:active .overview-icon,
+#dash .show-apps:checked .overview-icon {
+  background-color: rgba(189, 147, 249, 0.5);
+}
+```
+
+## CachyOS Kernel
+Optional at install. Package name: `linux-cachyos` (LTO now default).
+
+**Required configs:** CONFIG_TCP_CONG_BBR, CONFIG_NET_SCH_CAKE, CONFIG_IP_NF_IPTABLES (UFW), CONFIG_CIFS (SMB)
+
+## SMB/CIFS Direct Mount
+
+**Why:** GVFS ~175 MB/s vs Direct CIFS ~245 MB/s (+40% faster)
+
+**Credentials:** `~/.smbcredentials` (chmod 600)
+```
+username=steve
+password=<synology_password>
+```
+
+**fstab:**
+```
+//synology.local/external /mnt/synology cifs credentials=/home/steve/.smbcredentials,vers=3.1.1,multichannel,max_channels=4,rsize=4194304,wsize=4194304,uid=1000,gid=1000,_netdev,nofail 0 0
+//synology.local/plex /mnt/plex cifs credentials=/home/steve/.smbcredentials,vers=3.1.1,multichannel,max_channels=4,rsize=4194304,wsize=4194304,uid=1000,gid=1000,_netdev,nofail 0 0
+```
+
+## time.py - Automated Installer
+
+Pre-configured archinstall automation script on USB. Tested with archinstall 3.0.14.
+
+**Usage:**
 ```bash
-# /etc/fstab entry
-//192.168.1.101/Media /mnt/synology cifs credentials=/home/$USER/.smb_credentials,uid=1000,gid=1000,iocharset=utf8 0 0
+python3 time.py
 ```
 
-### Carapace Completions (Bash + ble.sh)
+**What it does:**
+- Prompts for password (hashed, not stored)
+- Shows drives with mount warnings, double-confirms selection
+- Auto-updates archinstall, warns if version changed
+- Configures: linux-zen, Grub (removable), 512MB /boot + 50GB / + remainder /home (ext4)
+- Creates user `steve` with sudo, enables sshd, creates `/mnt/usb` and `/usr/local/bin/usb` helper
+
+**Post-reboot workflow:**
 ```bash
-# In ~/.bashrc
-source <(carapace _carapace bash)
+# Login as steve
+usb                      # mounts USB, cd's into it
+./mokka.sh               # or ./dracula.sh
 ```
 
-## System Info
+**Version tracking:** Update `TESTED_ARCHINSTALL_VERSION` in script when archinstall changes.
 
-### Hardware
-- **AMD**: 7950X3D, 64GB RAM, Gigabyte B650 Aorus Elite AX
-- **Intel**: 14900K, 32GB RAM, Gigabyte Z790 Aorus Master
-- **Monitor**: Samsung Odyssey G8 4K 240Hz (3840x2160)
-- **Network**: 2.5GbE to Synology DS1821+
+## SSH Workflow (Fresh Installs)
 
-### Display Scaling
-- 4K at 200% scaling (2x)
-- Fonts: all at 11pt (Interface, Document, Monospace, Titlebar)
+Claude Code needs browser OAuth. SSH from Mac (sshd already enabled by time.py):
 
-## macOS/Hackintosh Notes
-
-**SMB speed:** ~285 MB/s writes via `/etc/nsmb.conf` multichannel config.
-
-## Hackintosh EFI Notes
-
-### AMD System (7950X3D)
-- OpenCore 1.0.6 Official, MacPro7,1, NootRX for RX 6600
-- All SSDTs use `_OSI("Darwin")` wrapping
-- AppleIntelI210Ethernet for Intel I225-V 2.5GbE
-
-### Intel System (14900K)
-- OpenCore 1.0.6 Official, MacPro7,1, NootRX for RX 6950 XT
-- CPUID spoofed as Comet Lake, CpuTopologyRebuild for hybrid cores
-- LucyRTL8125Ethernet for RTL8125B 2.5GbE
-
-**Common fixes applied:**
-- PickerVariant: use forward slash `BlackOSX/BsxM1` not backslash
-- AllowSetDefault: Ctrl+Enter to set default boot drive
-- SSDT `_DSM` methods: wrap in `_OSI("Darwin")` checks
-
-## Firefox/FireDragon Restore
-
-**Script:** `/mnt/synology/WEB Scripts/Scripts/Fire Backup/fire-backup.sh`
-
-Backups stored in `/mnt/synology/WEB Scripts/Scripts/Fire Backup/fire-backups/`
-
-**Restore workflow** (globs don't work - need exact backup name):
 ```bash
-# 1. List available backups
-ls "/mnt/synology/WEB Scripts/Scripts/Fire Backup/fire-backups/"
-
-# 2. Restore with exact name (Firefox must be installed first)
-echo "y" | bash "/mnt/synology/WEB Scripts/Scripts/Fire Backup/fire-backup.sh" restore firefox-backup-2025-12-22_07-12-23 -b firefox
-
-# FireDragon
-echo "y" | bash "/mnt/synology/WEB Scripts/Scripts/Fire Backup/fire-backup.sh" restore firedragon-backup-2025-12-22_07-12-28 -b firedragon
+# Arch TTY: ip addr | grep 192
+# Mac: ssh steve@192.168.x.x
+export TERM=xterm-256color
+curl -fsSL https://claude.ai/install.sh | bash && export PATH="$HOME/.local/bin:$PATH" && claude
 ```
 
-**What's restored:** bookmarks, extensions, settings, passwords (encrypted), history, cookies, userChrome.css, containers.
+## Claude Code Notes
+- **USB check**: Use full path `ls /run/media/steve/ARCH_202512/` (parent dir fails)
+- **ble.sh check**: Use `bash -c '[[ ... ]]'` (Bash tool runs sh)
+- **Setup repo**: `cp -r "/mnt/synology/WEB Scripts/Scripts/Setup Repo/ssh-backup" ~/Documents/ && bash "/mnt/synology/WEB Scripts/Scripts/Setup Repo/setup-repo.sh" setup`
 
-## Quick Commands
+## Hardware
+- Intel 14900K, 32GB, Samsung Odyssey G8 4K@240Hz
+- AMD 9950X3D, 64GB
+- Mac M4 Pro, 24GB
 
-**"copy build 3 to documents":**
+## 14900K Tuning (Gigabyte Z790 Aorus Master)
+
+**Results:** 5.5GHz all-core, 6.2GHz boost, R23: 40,742, temps max 87°C
+
+**BIOS Settings:**
+| Setting | Value |
+|---------|-------|
+| Intel Default Profile | High (not Extreme) |
+| IA AC/DC Loadline | 55 |
+| IA VR Voltage Limit | 1400 (1.4V cap - critical) |
+| IA VR Current Limit | 0 (unlimited) |
+| Package Power Limit 1 & 2 | 4095 |
+| Core Current Limit | 512A |
+| P-core Ratio | 62 (6.2GHz) |
+| E-core Ratio | 46 (4.6GHz) |
+| Vcore LLC | High |
+| VF Offset Mode | Selective |
+
+**V/F Curve (Selective mode):**
+| Point | Ratio | Offset |
+|-------|-------|--------|
+| 1-5 | 8-43x | -0.090V |
+| 6 | 51x | -0.070V |
+| 7 | 56x | -0.060V |
+| 8 | 58x | -0.050V |
+| 9 | 60x | +0.100V |
+| 10-11 | - | Auto |
+
+**Key principles:** 1.4V hard cap prevents degradation, undervolt at low frequencies for efficiency, full voltage only at boost. Kernel compile with FullLTO + AVX-512 is the hardest stability test.
+
+## Firefox userChrome.css - Dracula Theme
+
+Full Dracula theming for Firefox URL bar and dropdown.
+
+**Location:** `~/.mozilla/firefox/<profile>/chrome/userChrome.css`
+
+**Key colors:**
+- `#2d2f3d` - URL bar (closed) - slightly lighter than page background
+- `#21222c` - URL bar + dropdown (open) - darker, seamless together
+- `#bd93f9` - Purple border on focus
+- `#44475a` - Hover/selection background (current-line)
+- `#f8f8f2` - Text (foreground)
+
+**Features:**
+- Dracula window control buttons (close/min/max) from GTK theme
+- URL bar dropdown with purple border and proper Dracula colors
+- Bookmark bar spacing to match Brave/Chrome
+- Font weight fixes for high-DPI displays
+- Bookmark star turns purple when starred
+
+**Bookmark spacing (2K @ 125%):**
+```css
+#PlacesToolbarItems > .bookmark-item {
+  padding-inline: 0px !important;
+  margin-inline: 6px !important;
+  font-size: 108% !important;
+}
+#PersonalToolbar {
+  padding-block: 2px !important;
+}
+```
+
+**Note:** Toolbar icons (back, forward, home, reload, downloads, extensions) use Firefox defaults - no custom styling needed. Previous filter-based approaches caused color issues.
+
+## Dark Reader Config - PENDING CHANGES
+
+**File:** `/mnt/synology/WEB Scripts/Google/Dark-Reader-Settings.json`
+
+Steve will restore from backup. Then apply these changes:
+
+### 1. Replace ALL Dracula selection colors with Catppuccin Mocha Mauve
+```
+Find:    "selectionColor": "#6272A4",
+Replace: "selectionColor": "#cba6f7",
+```
+
+### 2. Replace claude.ai config block entirely
+Find the claude.ai entry and replace with:
+```json
+{
+    "theme": {
+        "mode": 1,
+        "brightness": 115,
+        "contrast": 95,
+        "grayscale": 0,
+        "sepia": 0,
+        "useFont": false,
+        "fontFamily": "Open Sans",
+        "textStroke": 0,
+        "engine": "dynamicTheme",
+        "stylesheet": "",
+        "darkSchemeBackgroundColor": "#11111b",
+        "darkSchemeTextColor": "#ffffff",
+        "lightSchemeBackgroundColor": "#dcdad7",
+        "lightSchemeTextColor": "#181a1b",
+        "scrollbarColor": "auto",
+        "selectionColor": "#c29df1",
+        "styleSystemControls": false,
+        "lightColorScheme": "Default",
+        "darkColorScheme": "Catppuccin",
+        "immediateModify": false
+    },
+    "url": [
+        "claude.ai"
+    ]
+}
+```
+
+### Key Catppuccin Mocha colors for reference:
+- `#11111b` - Crust (darkest, used for claude.ai background)
+- `#1e1e2e` - Base (standard background)
+- `#cdd6f4` - Text
+- `#cba6f7` - Mauve (selection color for most sites)
+- `#c29df1` - Lighter mauve variant (used for claude.ai selection)
+
+## macOS Terminal Setup (bash.sh)
+
+**Script locations:**
+- `~/Documents/bash.sh` (working copy)
+- `/Volumes/external/WEB Scripts/Scripts/bash.sh` (Synology backup)
+- USB drive (for fresh installs)
+
+**Configs in repo:** `macOS/Bash/` (pulled from GitHub - NOT the script itself)
+
+### What it installs:
+- Homebrew (if needed)
+- Bash 5.x + ble.sh (fish-like autosuggestions)
+- Ghostty terminal (Catppuccin Mocha, Mantle background #181825)
+- Starship prompt with Apple icon
+- Fastfetch with kitty logo (mokka-fastfetch.png)
+- Modern CLI tools: eza, bat, zoxide, fzf, btop, carapace
+- JetBrainsMono Nerd Font
+- Claude Code with CLAUDE.md + settings.json from repo
+- Dracularch repo (clones via SSH if Synology mounted)
+
+### Configs pulled from GitHub:
+- `bashrc`, `bash_profile`, `blerc`
+- `ghostty/config` (102x26, Mantle bg, JetBrainsMono Bold 13pt)
+- `fastfetch/config.jsonc` + `mokka-fastfetch.png`
+- `starship.toml`, `bat/config`, `btop/btop.conf`
+- `bash_history` (common macOS commands)
+
+### Re-run behavior (idempotent):
+- **Homebrew packages**: Skips if installed, upgrades if outdated
+- **ble.sh**: Updates via git pull + make
+- **Claude Code**: Skips install if exists, always updates configs
+- **Configs**: Prompts - download from GitHub / backup to repo / skip
+- **Dracularch repo**: Skips clone if exists, does git pull instead
+
+### Repo Setup (requires Synology):
+If Synology mounted, script will:
+1. Copy SSH keys from `/Volumes/external/WEB Scripts/Scripts/Setup Repo/ssh-backup/`
+2. Configure git (user.name, user.email)
+3. Clone Dracularch via SSH to `~/Dracularch`
+
+### SMB Optimization:
+Creates `/etc/nsmb.conf` with:
+```ini
+[default]
+signing_required=no
+validate_neg_off=yes
+smb_read=4194304
+smb_write=4194304
+mc_on=yes
+mc_prefer_wired=yes
+dir_cache_max_cnt=0
+```
+**Result:** ~285 MB/s writes to Synology (better than Linux!)
+
+Mounts on demand via Finder - click Network → Synology → pick share. No clutter, no login scripts.
+
+### Usage:
 ```bash
-cp "/mnt/synology/WEB Scripts/Scripts/CachyOS Kernel/build3.sh" "/mnt/synology/WEB Scripts/Scripts/CachyOS Kernel/modprobed-combined.db" ~/Documents/
+# Fresh install (mount Synology first for full setup):
+bash ~/Documents/bash.sh
+
+# Update packages + pull latest configs:
+bash ~/Documents/bash.sh
+# Choose option 1 (download from GitHub) or 3 (skip) at config prompt
 ```
 
-## COSMIC Desktop Plans
+### Notes:
+- Script is idempotent (safe to re-run)
+- ble.sh built from git (not Homebrew)
+- Fastfetch path auto-fixed for current user's $HOME
+- Creates ~/.hushlogin to suppress login message
+- **Script lives on USB/Synology only - NEVER in repo**
 
-**Status:** Planning phase - will install Arch+COSMIC on separate disk to develop together
+## macOS Finder Favorites (Synology Shares)
 
-### Theme Concept
-- **NOT using Dracula** - creating fresh custom theme
-- **Palette:** Black, blue, white, transparent
-- **Consider:** Catppuccin Mocha colors as base
-- **COSMIC uses `.ron` files** for theming (not GTK/dconf)
+After fresh macOS install, recreate Synology shares in Finder Favorites:
 
-### Catppuccin Mocha Palette (reference)
-```
-Base:      #1e1e2e (dark background)
-Mantle:    #181825 (darker bg)
-Crust:     #11111b (darkest)
-Text:      #cdd6f4 (white)
-Blue:      #89b4fa
-Sapphire:  #74c7ec
-Lavender:  #b4befe
-Mauve:     #cba6f7
-Green:     #a6e3a1
-Surface0:  #313244
-Surface1:  #45475a
-```
+1. **Connect to Synology**: Finder → Go → Connect to Server → `smb://synology.local`
+2. **Mount each share**: Select and mount `Apple`, `External`, `Plex` individually
+3. **Drag to Favorites**: Once they appear in Locations (sidebar), drag each one up to the Favorites section
 
-### What Transfers from Dracula.sh (~60%)
-**Direct transfer:**
-- Package installation (pacman/yay logic)
-- System detection (CPU/GPU/RAM)
-- Kernel setup (CachyOS/Zen)
-- Performance tuning (sysctl, zram)
-- Services (UFW, avahi, CUPS, SMB)
-- CLI tools (eza, bat, fd, ripgrep, zoxide, starship, fzf)
-- Shell setup (bash, ble.sh, bashrc, blerc)
-- Fonts, Flatpak, GRUB/Plymouth
-- Browser installation, Claude Code
+They'll have eject icons (▲) indicating mounted network volumes. macOS remembers Favorites across reboots.
 
-**Needs COSMIC replacement:**
-- `gdm` → `cosmic-greeter`
-- `gnome-shell` → `cosmic-session`, `cosmic-comp`
-- `nautilus` → `cosmic-files`
-- GTK themes → `.ron` theme files
-- GNOME extensions → Not applicable
-- `gsettings`/`dconf` → `cosmic-config`
+**Auto-mount on login** (optional): System Settings → General → Login Items → add each mounted share under "Open at Login"
 
-### Icon Theme Recoloring Script
-
-**Location:** `/mnt/synology/WEB Scripts/Scripts/Icon Theme/`
-- `theme_icons.py` - Main recoloring script
-- `icon_theme_setup.sh` - Python venv setup
-
-**Current script limitations:**
-- Hardcoded paths (no CLI args)
-- Single hardcoded palette (Dracula)
-- Basic color detection (misses rgb(), rgba())
-- Sequential processing (slow)
-- No dry-run/preview mode
-
-**v2 Improvements (TODO when in COSMIC):**
-1. CLI interface (argparse): `--source`, `--output`, `--palette`, `--dry-run`, `--analyze`
-2. External palette JSON files (easy theme swapping)
-3. Better color parsing (hex, rgb, rgba, named)
-4. Parallel processing (multiprocessing + tqdm)
-5. Color analysis mode (scan theme, report unique colors, suggest mappings)
-6. Smarter mapping (cluster similar colors, map by hue ranges)
-
-### COSMIC Resources
-- **Themes:** cosmic-themes.org
-- **Package:** `cosmic` or `cosmic-epoch` meta-package
-- **Config location:** `~/.config/cosmic/`
+**Note**: Top-level SMB shares mount to `/Volumes/` and can be dragged directly to Favorites. For subfolders within shares (like WEB Scripts inside External), you'd need symlinks - but that's not needed here since Apple, External, and Plex are all top-level shares.
 
 ## Reminders
+- **AdGuard + Chrome + Twitter/X**: There's an issue with AdGuard extension on Chrome breaking Twitter/X. Needs investigation. Config files in `~/Downloads/` and `/mnt/synology/WEB Scripts/AdGaurd/`
 - **Windows 11**: Run [RemoveWindowsAI](https://github.com/zoicware/RemoveWindowsAI) - strips Copilot, Recall. Use backup mode, PowerShell 5.1.
-- **Mokka symbolic icons**: Consider overlaying Dracula white icons onto Catppuccin
+- **Mokka symbolic icons**: Consider overlaying Dracula's white symbolic icons onto Catppuccin theme for panel/Dolphin. Source: `/usr/share/icons/Dracula/symbolic/` (1,564 SVGs). Copy to `~/.local/share/icons/[theme]/symbolic/`
+- **COSMIC Desktop**: Considering Cosmic.sh script. Dracula theme exists on cosmic-themes.org. Config in `~/.config/cosmic/`, uses `.ron` files. Install Arch + COSMIC to explore.
 
 ## Session History
-- Session 59: COSMIC desktop planning session
-  - Discussed creating Cosmic.sh script (~60% of Dracula.sh transfers directly)
-  - Theme: NOT Dracula - custom black/blue/white/transparent, possibly Catppuccin Mocha base
-  - Reviewed icon recoloring script at `/mnt/synology/WEB Scripts/Scripts/Icon Theme/`
-  - Planned v2 icon script improvements (CLI, external palettes, parallel processing, analyze mode)
-  - Will install Arch+COSMIC on separate disk to develop together
-  - Also configured Spectacle for GNOME-style screenshots: `spectacle -r -b` (region, background mode, auto-save, quit)
-- Session 58: Blur finally working! Logout screen perfect. Updates:
-  - Moved forceblur package from `Shared/` to `Mokka/packages/` (Mokka-only, not shared)
-  - Updated Mokka.sh: install forceblur from repo via `pacman -U` instead of dead AUR package
-  - Removed old kscreen-doctor scaling code from Mokka.sh (kwinoutputconfig.json handles it)
-  - Added "Sacred 14 Plasma Configs" list to CLAUDE.md with kwinoutputconfig.json as #14
-- Session 57: Grabbed `kwin-effects-forceblur-1.5.0-1.9-x86_64.pkg.tar.zst` from Garuda and saved to `Shared/`. This is the working blur package - archived from chaotic-aur but still functional. Install with `sudo pacman -U`. Updated CLAUDE.md with install instructions.
-- Session 56: Investigated Garuda Mokka blur setup. Key findings:
-  - Garuda Mokka also has NO custom logout folder - falls back to Breeze like Arch
-  - Uses `kwin-effects-forceblur` (chaotic-aur) NOT `better-blur-dx`
-  - Plugin enabled as `forceblurEnabled=true` but config section is `[Effect-blurplus]`
-  - `NoiseStrength=0` is critical for clean logout
-- Session 55: Applied hyphenated blur config fix to kwinrc. Changed `[Effect-better_blur_dx]` → `[Effect-better-blur-dx]` and `better_blur_dxEnabled` → `better-blur-dxEnabled`. KWin reloaded, effect active. Still need to update Mokka.sh and repo configs.
-- Session 54: Garuda blur investigation complete. Findings:
-  - Garuda uses `kwin-effects-forceblur` from **chaotic-aur** (not standard AUR)
-  - Package was **archived Nov 20, 2025** - no longer maintained
-  - `kwin-effects-better-blur-dx` is the continuation/fork (standard AUR)
-  - **KEY DISCOVERY**: Config section uses HYPHENS: `[Effect-better-blur-dx]` not underscores!
-  - Previous attempts may have failed due to wrong section name `[Effect-better_blur_dx]`
-  - Plugin enable key also uses hyphens: `better-blur-dxEnabled=true`
-- Session 53: BLUR STILL NOT FIXED. Need to boot into Garuda (working reference) and extract EXACT settings.
-- Session 52: Logout still brownish after better_blur_dx install. Found default Saturation=150 was the culprit. Set BlurStrength=10, Saturation=100, Brightness=100, Contrast=100. These settings need to go in mokka.sh and repo kwinrc.
-- Session 51: Root cause of blur issues found - "blurplus" package never existed! Old configs referenced `blurplusEnabled=true` but no such effect was installed. Installed `kwin-effects-better-blur-dx` (AUR) which provides proper blur replacement. Settings: `blurEnabled=false` + `better_blur_dxEnabled=true` + `NoiseStrength=0`. Need to update mokka.sh to install this package and update repo kwinrc configs. Testing logout now.
-- Session 50: No blur at all (everything transparent). Opposite of Session 49 - `blurplusEnabled=true` was missing from kwinrc Plugins section. Added it via kwriteconfig6. Correct state: `blurEnabled=false` (stock blur off) + `blurplusEnabled=true` (blurplus on) + `NoiseStrength=0` (logout fix).
-- Session 49: Logout screen blur broken again (overblurred/brownish). Found `blurEnabled=true` in kwinrc Plugins section - should be `false`. Regular blur effect was running ON TOP of blurplus causing double-blur. Repo has correct `blurEnabled=false`. Something enabled it after fresh install - investigating what triggered this. Testing if logout/login applies fix.
-- Session 48: Fixed package installation failures caused by pacman provider prompts. `$()` subshell capture breaks `yes` pipe. Solution: `yes "" | sudo pacman ... >>"$LOGFILE" 2>&1`. Applied to all three scripts.
-- Session 47: Fresh Mokka install fixes + script improvements
-  - Fixed `kwin-effects-forceblur` → `kwin-scripts-forceblur` in mokka.sh (package removed from AUR)
-  - Fixed display scale not applying: added `kwinoutputconfig.json` to `plasma_configs` array
-  - Fixed fire-backup.sh paths with spaces bug (unquoted glob in `select_backup_for_restore`)
-  - Added `read_password()` function to all 3 scripts - shows `*` asterisks as you type
-  - Reordered browsers in mokka.sh and dracula.sh: Chrome, Firefox, Brave, Firedragon, Edge
-- Session 46: Logout blur fix corrected. The fix is `Effect-blurplus` NoiseStrength=0, not Effect-logout BlurStrength.
-- Session 45: Weather widget fix complete. Added Phase 12 to `mokka-first-login.sh` that dynamically finds weather widget applet ID and configures all settings (Vincentown NJ, fahrenheit, inHg, mph) via kwriteconfig6 on first login.
-- Session 44: Weather widget location not restoring (shows Vancouver instead of Vincentown). Found repo appletsrc missing `[Configuration][Location]` section with `firstRun=false`. Added it + fixed pressureType to inHg. Also backed up Panel Colorizer presets to repo (`Mokka/configs/panel-colorizer/`).
-- Session 43: Mokka install review. Only failure: `kwin-effects-forceblur` (removed from AUR). Replaced with `kwin-scripts-forceblur`. Installed manually, KWin reloaded.
-- Session 42: Fixed Firefox restore docs (need exact backup name, not glob). Added Fresh Install - Repo Setup section (SSH keys + setup-repo.sh).
-- Session 28: Major Mokka plasma config update from Garuda
+- Session 35: bash.sh enhancements - Claude Code, repo setup, Finder symlinks
+  - Added Claude Code install to bash.sh (pulls CLAUDE.md + settings.json from GitHub)
+  - Added config sync prompt on re-runs: download from GitHub / backup to repo / skip
+  - Added setup_repo() - restores SSH keys from Synology, clones Dracularch via SSH
+  - Added Synology symlink setup for Finder sidebar (~/Mounts/Apple, ~/Mounts/Web-Scripts)
+  - Symlink trick: macOS Finder can't pin SMB subfolders to Favorites, but symlinks work
+  - All functions have re-run checks: skip if already installed/configured, pull if repo exists
+  - Script location: ~/Documents/bash.sh (also on USB/Synology, NOT in repo)
+- Session 34: macOS Tahoe terminal setup + bash.sh script
+  - Fresh macOS Tahoe install - set up complete terminal environment
+  - Installed via Homebrew: bash 5.x, ghostty, starship, bat, eza, zoxide, fzf, fastfetch, btop, carapace, gawk
+  - Built ble.sh from git (~/.local/share/blesh/)
+  - JetBrainsMono Nerd Font installed
+  - Created configs: ~/.bashrc (macOS-adapted), ~/.bash_profile, ~/.blerc
+  - Ghostty: Catppuccin Mocha, Mantle background (#181825), 102x26, JetBrainsMono Bold 13pt
+  - Fastfetch with kitty logo (mokka-fastfetch.png)
+  - Created ~/Documents/bash.sh - pulls configs from GitHub, installs everything
+  - Added macOS/Bash/ to repo with all configs + bash_history (common macOS commands)
+  - SMB optimization: /etc/nsmb.conf with multichannel, 4MB buffers
+  - SMB speed: ~285 MB/s writes (better than Linux's ~245 MB/s!)
+  - Mounts on demand via Finder - no login scripts needed
+  - Verified no sensitive data in repo (passwords, keys, etc.)
+  - Script is idempotent - safe to re-run, updates existing installs
+- Session 33: Firefox userChrome.css Dracula theme overhaul
+  - Converted URL bar dropdown from Catppuccin Mocha to Dracula colors
+  - Removed problematic toolbar icon filter styling (caused white/peach icons)
+  - Toolbar icons now use Firefox defaults - match hamburger menu perfectly
+  - URL bar colors: `#2d2f3d` (closed), `#21222c` (open/dropdown)
+  - Purple border `#bd93f9` on focus, proper hover/selection colors
+  - Updated CLAUDE.md Firefox section with new color scheme
+- Session 32: SF Pro font migration + macOS-style rendering
+  - Installed SF Pro fonts (Display, Text, Rounded) from Synology to ~/.local/share/fonts/SFPro
+  - Installed SF Mono Nerd Font from GitHub (epk/SF-Mono-Nerd-Font)
+  - Copied SF Mono to Synology for future installs
+  - KDE system fonts: SF Pro Text Semibold 10pt (UI), SFMono Nerd Font Bold 10pt (fixed)
+  - Ghostty: SFMono Nerd Font Bold 13pt
+  - Digital Clock widget: SF Pro Display Black 13pt
+  - Weather widget: SF Pro Text 17pt
+  - macOS-style font rendering: hintnone, rgb subpixel, antialias true
+  - Firefox userChrome.css: Noto Sans → SF Pro Text (bookmarks, tabs, address bar)
+  - FireDragon userChrome.css: Noto Sans → SF Pro Text
+  - Font locations: ~/.local/share/fonts/SFPro/, ~/.local/share/fonts/SFMono/
+- Session 31: GNOME Show Apps cleanup + Loupe replaces EOG
+  - Hid 4 apps from Show Apps menu (Manage Printing, Mission Center, nvtop, Psensor)
+  - Method: Created override .desktop files in ~/.local/share/applications/ with NoDisplay=true
+  - Researched Eye of GNOME (eog) → replaced by Loupe in GNOME 45 (Sept 2023)
+  - Installed Loupe 49.1 (GPU-accelerated, GTK4/Libadwaita)
+  - Edited custom Loupe icon for Dracula theme
+  - Updated icon in ~/.icons/Dracula/ (scalable and scalable@2x)
+  - Uninstalled EOG completely (`sudo pacman -Rns eog`)
+  - Set Loupe as default image viewer (mimeapps.list)
+  - Updated Dracula-Icons.tar.xz in repo with custom Loupe icon
+  - Updated Dracula.sh: `eog` → `loupe` package, default app, app grid position
+- Session 30: Garuda fresh config - terminal + fonts + icons
+  - Fresh Garuda install - display gaps GONE (confirmed backed-up configs were the issue)
+  - Terminal setup: installed ghostty, btop, zoxide, blesh-git, carapace-bin (via paru)
+  - Garuda already had: starship, bat, fastfetch
+  - Copied all terminal configs from repo (bashrc, blerc, bat, btop, fastfetch, ghostty, starship, zoxide db)
+  - Set system fonts: Noto Sans Bold 10pt (9pt smallest), JetBrainsMono Nerd Font Bold 10pt fixed
+  - Copied custom icons to ~/.local/share/icons/hicolor/ (firedragon, ghostty, firefox, chrome, vscode SVGs)
+  - Icons not applying - need logout/login or plasmashell restart
+  - Next: continue Garuda config (Dolphin, panels, etc.) then backup clean configs to repo
+- Session 29: Mokka display issue diagnosis + fresh config plan
+  - Identified display issue: gaps on sides of browser at 200% scale (only on Mokka, not Garuda)
+  - Issue only at exactly 200% - 190% and 195% work fine (integer vs fractional scaling code paths)
+  - Switching to 200% for sharper display (no fractional blur)
+  - Plan: Fresh Garuda install → configure Dolphin, terminal, panels → backup clean configs to repo
+  - Suspect: kwinoutputconfig.json or ScreenScaleFactors in backed-up configs causing geometry mismatch
+  - Fixed settings.json permission syntax: `Bash(*)` → `Bash`
+- Session 28: COSMIC Desktop research + Mokka wallpaper updates
+  - Researched COSMIC theming: ~/.config/cosmic/, .ron files, cosmic-themes.org
+  - Dracula theme exists for COSMIC (1,059 downloads) + terminal theme on GitHub
+  - Discussed Plymouth dependency for GDM display settings (early KMS init)
+  - Explored Dracula symbolic icons (1,564 SVGs) - potential overlay for Mokka
+  - Updated Mokka-tree.jpg to higher res (606K → 2.7MB)
+  - Updated 3 wallpapers from orangci/walls-catppuccin-mocha repo:
+    - Abstract-swirls: 357K → 409K
+    - Horizon: 220K → 240K
+    - River-city: 854K → 996K
+  - Next: Install Arch + COSMIC to explore and build Cosmic.sh
 - Session 27: Updated Mokka repo configs from Garuda testing
+  - Clock widget: Noto Sans Black, size 14, weight 900 (widgets render thinner than Qt apps)
+  - Weather widget: `org.kde.weatherWidget-3` → `weather.widget.plus`
+  - kdeglobals: font size 11 → 10, removed ScreenScaleFactors
+  - Pushed to GitHub - next Mokka install will use these settings
 - Session 26: Garuda clock/Colorizer settings + full terminal/Dolphin setup
-- Session 25: Weather widget deep dive on Garuda Linux
+  - Digital clock: Noto Sans Bold 13pt, date beside time (`dddd, MMM d`), week numbers
+  - Panel Colorizer: foreground shadow enabled (size 5), tracks clock widget
+  - Installed: Ghostty, btop, zoxide, blesh-git, carapace-bin (via paru)
+  - Copied: bashrc, blerc, bat, btop, fastfetch, starship, Ghostty configs
+  - Set up SMB mounts (/mnt/synology, /mnt/plex) with fstab
+  - Restored zoxide db and bash history
+  - Note: Garuda uses `paru` not `yay`
+- Session 25: Weather widget deep dive on Garuda Linux (first Claude Code on Garuda)
+  - Explored weather widget options:
+    - **Weather Widget Plus** (`weather.widget.plus`) - fork with more customization, buggy compact mode
+    - **Chaac.Complete.Weather** - edited QML (removed °F suffix, adjusted spacing/icon), still frustrating
+    - **Default KDE** (`org.kde.plasma.weather`) - wettercom only provider shown, wettercom is DEAD
+  - **Solution**: Use NOAA provider with **Mount Holly, NJ** (close to Vincentown, has NWS office)
+  - Weather providers on system: `bbcukmet`, `dwd`, `envcan`, `noaa`, `wettercom` (in `/usr/lib/qt6/plugins/plasma/weather_ions/`)
+  - Applied Mokka fonts to Garuda kdeglobals (Noto Sans Bold 10pt everywhere)
+  - Tried separating system tray widgets into individual panel widgets:
+    - **What you get**: Control over order, direct click (no tray expand)
+    - **What you DON'T get**: Icon appearance control (icon theme), widget width control (widget design)
+    - System tray items can be reordered and set to "shown" anyway
+  - **Conclusion**: Stick with system tray layout, use NOAA provider for weather
 - Session 24: Weather widget fix + Flameshot screenshot tool
+  - Removed broken `org.kde.plasma.weather` (wettercom provider dead)
+  - Removed `kweather` package entirely (question mark icon issue)
+  - Installed `plasma6-applets-weather-widget-3-git` (Weather Widget Plus)
+  - Weather Widget 3 config: metno provider, Vincentown NJ, Noto Sans Bold font
+  - Installed `plasma6-applets-plasmusic-toolbar` (media controls for panel)
+  - Installed `flameshot` for screenshots (tray icon, GNOME-like workflow)
+  - Print Screen key mapped to Flameshot
+  - Added `Mokka/configs/flameshot/flameshot.ini` to repo
+  - Updated plasma config: removed all kweather/old weather refs
 - Session 23: time.py archinstall automation script
+  - Updated config format for archinstall 3.0.14
+  - Added password prompt (hashed with SHA512, not stored)
+  - Improved drive selection: shows mounts, double-confirm, CAUTION warnings
+  - Added version detection: warns if archinstall version changes
+  - Config: linux-zen, Grub (removable for OpenCore), 512MB /boot + 50GB / + remainder /home
+  - Enables multilib repo, pipewire, bluetooth, NetworkManager
+  - custom_commands: mkdir /mnt/usb, systemctl enable sshd, creates /usr/local/bin/usb helper
+  - Post-reboot: `usb` command mounts USB and cd's into it
 - Session 22: macOS.sh brought to Dracula.sh parity
+  - Replaced Fish with Bash + ble.sh
+  - Fixed logging functions with tee guards (LOGFILE existence check)
+  - Fixed setup_kernel URLs → `Shared/Cachyos-*.tar.xz`
+  - Fixed install_aur_packages: `pacman -Qi` → `yay -Q`
+  - Fixed restore_gnome_extensions URL → `Dracula/assets/Extensions.tar.xz`
+  - Added full 2.5Gb network optimizations (sysctl settings)
+  - Fixed setup_grub: removed LTO kernel references
+  - Fixed Plymouth: added animation service, deferred mkinitcpio
+  - Added SMB credential collection and setup_smb_and_portals
+  - Fixed UFW with proper systemctl enable
+  - Added AMD GPP0 wake fix
+  - Replaced printer setup with dnssd auto-detect
+  - Updated carapace to bash-ble mode
+  - Fixed EFI label to "archOS"
+  - Reordered browsers: Firefox, Firedragon, Chrome, Brave, Edge (both scripts)
+  - Fixed default apps (audio: mpv → smplayer)
 - Session 21: Major repo reorganization
+  - Created Dracula/assets/ (moved 10 archives from root)
+  - Created Shared/ (CachyOS kernel files, renamed without spaces)
+  - Created macOS/ (moved 4 Mac files)
+  - Created Archive/ (deprecated Fish configs)
+  - Converted Dracula-Plymouth.zip and Dracula-Wallpaper.zip to .tar.xz
+  - Updated Dracula.sh: 10 GitHub URLs to new paths
+  - Updated Mokka.sh: 4 GitHub URLs to new paths
+- Session 20: Fresh Mokka verified, script fixes (thefuck, ScreenScaleFactors in kdeglobals, starship → extra)
+- Session 19: Mokka.sh Fish → Bash + ble.sh, Konsole removed
+- Session 18: Dracula.sh fresh install verified
+
+## Hackintosh EFI Notes (AMD System)
+
+### System Configuration
+- **CPU**: AMD Ryzen 9 7950X3D (AM5)
+- **GPU**: AMD Radeon RX 6600 (8GB)
+- **SMBIOS**: MacPro7,1
+- **macOS**: 26.2 (Tahoe) Build 25C56
+- **OpenCore**: 1.0.6 (Official Acidanthera)
+
+### EFI Location
+`/Volumes/EFI/EFI/OC/`
+
+### Changes Made (Dec 22, 2025 - Updated)
+
+**1. SSDT Darwin Wrapper Fixes**
+- **SSDT-EC**: Wrapped USBX `_DSM` kUSB* properties in `_OSI("Darwin")` check
+- **SSDT-PLUG-ALT**: Wrapped C000 `_DSM` plugin-type in `_OSI("Darwin")` check
+- Both SSDTs previously relied only on `_STA` to hide devices from Linux
+- Now have explicit `_OSI("Darwin")` checks in `_DSM` methods for defense-in-depth
+- All other SSDTs (ANS, ARPT, GIGE, HDEF, SBUS) already had proper wrapping
+
+**2. Switched to Official OpenCore 1.0.6**
+- Migrated from NO_ACPI 1.0.7 to Official Acidanthera 1.0.6
+- Config rebuilt from official `Sample.plist` with settings migrated
+- Config passes `ocvalidate` with zero errors
+- NO_ACPI binaries were never actually required for this setup
+
+**3. Previous: Updated OpenCore to 1.0.7 (NO_ACPI)**
+- Replaced BOOTx64.efi, OpenCore.efi
+- Updated drivers: OpenCanopy, OpenRuntime, OpenLinuxBoot, ResetNvramEntry
+- Replaced Resources folder (retained BlackOSX theme)
+
+**4. AllowSetDefault Enabled**
+- `Misc → Security → AllowSetDefault` = true
+- Use **Ctrl+Enter** in boot picker to set default boot drive
+
+**5. Theme Configuration**
+- `Misc → Boot → PickerMode` = External
+- `Misc → Boot → PickerVariant` = `BlackOSX/BsxM1` (use forward slash, not backslash)
+- Theme files at: `Resources/Image/BlackOSX/BsxM1/`
+
+**6. Previous Changes (Dec 22, 2024)**
+- Cleaned 211 `._*` metadata files from EFI
+- Enabled Resizable BAR (`ResizeGpuBars: 0`)
+- Updated NootRX to Dec 15, 2024 nightly
+
+### Kexts Installed
+| Kext | Version |
+|------|---------|
+| Lilu | 1.7.2 |
+| VirtualSMC | 1.3.8 |
+| NootRX | 1.0.0 (Dec 2024) |
+| AppleALC | 1.9.7 |
+| AMDRyzenCPUPowerManagement | 0.7.2 |
+| AppleMCEReporterDisabler | 1.2 |
+| AMFIPass | 1.4.1 |
+| BlueToolFixup | 2.6.9 |
+| AppleIntelI210Ethernet | 2.3.1 |
+| RestrictEvents | 1.1.7 |
+
+### AMD Kernel Patches
+16 kernel patches from AMD Vanilla (verified current as of Dec 2025):
+- Core AMD patches (cpuid, commpage, mtrr, etc.)
+- CaseySJ IOPCIFamily patches for AM5 (both enabled)
+- Visual non-monotonic time patches
+- Algrey/Zormeister PAT fix for 15.0+
+- MaxKernel: 25.99.99 (covers Tahoe kernel 25.x)
+
+### ACPI SSDTs
+All SSDTs use proper `_OSI("Darwin")` wrapping for macOS-only execution:
+
+| SSDT | Protection Method |
+|------|------------------|
+| SSDT-ANS | `_OSI("Darwin")` wraps entire file (3 NVMe devices) |
+| SSDT-ARPT | `_OSI("Darwin")` in `_DSM` methods |
+| SSDT-GIGE | `_OSI("Darwin")` in `_DSM` methods |
+| SSDT-HDEF | `_OSI("Darwin")` in `_DSM` method |
+| SSDT-SBUS | `_OSI("Darwin")` in `_DSM` method |
+| SSDT-EC | `_OSI("Darwin")` in `_DSM` + `_STA` (fixed Dec 2025) |
+| SSDT-PLUG-ALT | `_OSI("Darwin")` in `_DSM` + `_STA` (fixed Dec 2025) |
+| SSDT-XHCI | `_OSI("Darwin")` in `_STA` methods |
+| SSDT-HPET | `_OSI("Darwin")` in methods |
+| SSDT-XOSI | `_OSI("Darwin")` in method |
+
+### Important Notes
+
+**Official OpenCore**
+This EFI uses **official Acidanthera OpenCore** binaries. NO_ACPI method not needed because:
+- All SSDTs have proper `_OSI("Darwin")` conditional wrapping
+- Config.plist uses only standard schema keys
+- Config passes official `ocvalidate` validation
+
+**Ethernet**
+- Using AppleIntelI210Ethernet for Intel I225-V (2.5Gbps working)
+- AppleIGC not compatible with macOS Tahoe on AMD (SDK mismatch + no VT-d)
+
+**Resizable BAR**
+- Config enabled (`ResizeGpuBars: 0`) but GPU shows 256MB BAR
+- Likely BIOS or NootRX driver limitation
+
+**OCAT Compatibility Warning**
+- OCAT may lag behind OpenCore releases
+- Opening config in OCAT may strip unrecognized keys
+- Use ProperTree or text editor for manual config edits
+
+### OpenCore Update Workflow
+1. Download new release from https://github.com/acidanthera/OpenCorePkg/releases
+2. Extract to `~/Desktop/OpenCore_OFFICIAL_XXX/`
+3. Start with new `Docs/Sample.plist`, rename to `config.plist`
+4. Migrate your settings using the migration script or manually
+5. Replace binaries: `EFI/BOOT/BOOTx64.efi`, `EFI/OC/OpenCore.efi`
+6. Replace drivers: `EFI/OC/Drivers/*.efi`
+7. **Keep**: `ACPI/*.aml`, `Kexts/`, `Resources/`
+8. Validate with `ocvalidate` before installing
+9. Backup old EFI before replacing
+
+### OpenCanopy Theme Requirements
+For themes to work, these folders must contain files:
+- `Resources/Font/` - Font_1x.bin, Font_1x.png, Font_2x.bin, Font_2x.png
+- `Resources/Label/` - .lbl and .l2x files for boot entry labels
+- `Resources/Image/<ThemeName>/` - theme icons
+
+If theme fails to load, check that Font and Label folders are not empty.
+
+### Useful Commands
+```bash
+# Mount EFI
+sudo diskutil mount disk0s1
+
+# Check GPU
+system_profiler SPDisplaysDataType
+
+# Check Ethernet
+system_profiler SPEthernetDataType
+
+# Clean EFI metadata
+dot_clean /Volumes/EFI/EFI
+
+# Validate config with official ocvalidate
+~/Desktop/OpenCore_OFFICIAL_106/Utilities/ocvalidate/ocvalidate /Volumes/EFI/EFI/OC/config.plist
+
+# Update NootRX
+curl -L -o /tmp/NootRX.zip "https://nightly.link/ChefKissInc/NootRX/workflows/main/master/Artifacts.zip"
+
+# Check AMD Vanilla patches (latest)
+curl -sL "https://raw.githubusercontent.com/AMD-OSX/AMD_Vanilla/master/patches.plist" -o /tmp/amd_vanilla_latest.plist
+
+# Check SSDT Darwin wrappers (decompile and search)
+cd /Volumes/EFI/EFI/OC/ACPI && for f in *.aml; do iasl -d "$f" 2>/dev/null; done
+grep -rn "_OSI.*Darwin" *.dsl
+rm *.dsl
+```
+
+### Backup Locations
+- `~/Desktop/EFI_BACKUP_NO_ACPI_107/` - Previous NO_ACPI 1.0.7 EFI
+- `~/Desktop/OpenCore_OFFICIAL_106/` - Official OC 1.0.6 package
+- `~/Desktop/EFI_OFFICIAL_106/` - New official EFI (ready to install)
+
+### Resources
+- OpenCore: https://github.com/acidanthera/OpenCorePkg/releases
+- OpenCore Guide: https://dortania.github.io/OpenCore-Install-Guide/
+- AMD Vanilla: https://github.com/AMD-OSX/AMD_Vanilla
+- NootRX: https://chefkiss.dev/applehax/nootrx/
+- AppleIGC: https://github.com/SongXiaoXi/AppleIGC
+
+## Hackintosh EFI Notes (Intel System)
+
+### System Configuration
+- **CPU**: Intel Core i9-14900K (LGA1700)
+- **Motherboard**: Gigabyte Z790 Aorus Master
+- **GPU**: AMD Radeon RX 6950 XT
+- **Ethernet**: Realtek RTL8125B 2.5GbE
+- **WiFi/BT**: BCM94360NG (native)
+- **Audio**: Realtek ALC1220-VB
+- **SMBIOS**: MacPro7,1
+- **OpenCore**: 1.0.6 (Official Acidanthera)
+
+### EFI Location
+`/Volumes/EFI/EFI/OC/`
+
+### Changes Made (Dec 30, 2025)
+
+**1. Fixed Windows Boot Logo Alignment**
+- Gigabyte logo was misaligned when booting Windows through OpenCore
+- Cause: `UEFI → Output → Resolution` was set to `Max`, forcing GOP resolution change before Windows handoff
+- Fix: Set `Resolution` to empty string (firmware default)
+- Also reverted `UIScale` from 2 back to 1 (UIScale 2 caused oversized boot picker icons)
+
+### Changes Made (Dec 22, 2025)
+
+**1. Migrated to Official OpenCore 1.0.6**
+- Migrated from NO_ACPI version to Official Acidanthera 1.0.6
+- Config rebuilt from official `Sample.plist` with settings migrated
+- Fixed PickerVariant: `BlackOSX\BsxM1` → `BlackOSX/BsxM1` (forward slash)
+- Config passes `ocvalidate` with zero errors
+
+**2. SSDT Darwin Wrapper Fix**
+- **SSDT-XHCI**: Added `If (!_OSI ("Darwin")) { Return (Zero) }` guard to `_DSM` method
+- `_DSM` was returning macOS properties (model, device-id, port-count) unconditionally
+- Now properly protected - only returns properties on macOS
+
+### Kexts Installed
+| Kext | Version | Purpose |
+|------|---------|---------|
+| Lilu | 1.7.2 | Core patching kext |
+| VirtualSMC | 1.3.8 | SMC emulation |
+| NootRX | 1.0.0 | RX 6950 XT graphics |
+| AppleALC | 1.9.7 | ALC1220-VB audio |
+| CpuTopologyRebuild | 2.0.2 | i9-14900K core topology |
+| CPUFriend | 1.3.1 | CPU power management |
+| CPUFriendDataProvider | 1.0.0 | CPUFriend data |
+| BlueToolFixup | 2.6.9 | BCM94360NG Bluetooth |
+| XHCI-unsupported | 0.9.2 | Z790 USB support |
+| LucyRTL8125Ethernet | 1.2.2 | RTL8125B 2.5GbE |
+| RestrictEvents | 1.1.7 | Memory warnings fix |
+
+### ACPI SSDTs (13 total)
+| SSDT | Protection Method | Purpose |
+|------|-------------------|---------|
+| SSDT-EC-USBX | `_STA` returns Zero for non-Darwin | Fake EC + USB power |
+| SSDT-PLUG-ALT | `_STA` returns Zero for non-Darwin | CPU power management |
+| SSDT-AWAC-DISABLE | `If (_OSI ("Darwin"))` in \_INI | RTC compatibility |
+| SSDT-SBUS | `If (_OSI ("Darwin"))` wraps file | SMBus fix |
+| SSDT-PPMC | `If (_OSI ("Darwin"))` wraps file | Power Management Controller |
+| SSDT-XHCI | `_STA` + `_DSM` Darwin checks (fixed) | USB port map |
+| SSDT-IMEI | `If (_OSI ("Darwin"))` in Scope | Intel MEI fix |
+| SSDT-SATA | `If (_OSI ("Darwin"))` wraps file | SATA controller |
+| SSDT-XSPI | `If (_OSI ("Darwin"))` wraps file | SPI controller |
+| SSDT-HDEF | `If (_OSI ("Darwin"))` wraps file | Audio device |
+| SSDT-ARPT | `If (_OSI ("Darwin"))` wraps file | WiFi device |
+| SSDT-ANS | `If (_OSI ("Darwin"))` wraps file | 3x NVMe devices |
+| SSDT-FWHD | `_STA` returns Zero for non-Darwin | Firmware Hub |
+
+### Config Notes
+- **CPUID Spoof**: Raptor Lake spoofed as Comet Lake for macOS compatibility
+- **iGPU Disabled**: DeviceProperties `disable-gpu` on PciRoot(0x0)/Pci(0x2,0x0)
+- **Boot Args**: `npci=0x2000`
+- **Resizable BAR**: Enabled (`ResizeGpuBars: 0`)
+
+### Backup Locations
+- `~/Desktop/EFI_INTEL_BACKUP/` - Previous NO_ACPI EFI
+- `~/Desktop/OpenCore_OFFICIAL_106_INTEL/` - Official OC 1.0.6 package
+- `~/Desktop/EFI_INTEL_OFFICIAL_106/` - New official EFI (ready to install)
