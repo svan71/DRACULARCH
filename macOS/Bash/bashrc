@@ -163,3 +163,4 @@ command -v zoxide &>/dev/null && eval "$(zoxide init bash)"
 
 # Run fastfetch on interactive shell start (Ghostty only)
 [[ "$TERM_PROGRAM" == "ghostty" ]] && [[ -f ~/.config/fastfetch/config.jsonc ]] && command -v fastfetch &>/dev/null && fastfetch
+export PATH="$HOME/.local/bin:$PATH"
