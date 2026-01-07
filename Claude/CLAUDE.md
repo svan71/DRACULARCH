@@ -21,7 +21,9 @@ Guidance for Claude Code working with DRACULARCH repository.
 
 **GitHub:** github.com/svan71/DRACULARCH
 **Local repo:** ~/Dracularch/
-**USB:** /run/media/steve/ARCH_202512
+**USB:** `ARCH_YYYYMM` (label changes monthly, e.g., ARCH_202601)
+- Linux: `/run/media/steve/ARCH_YYYYMM/`
+- macOS: `/Volumes/ARCH_YYYYMM/`
 
 ## Repo Structure
 ```
@@ -57,7 +59,8 @@ DRACULARCH/
 | `~/CLAUDE.md` | Active instructions (live) |
 | `~/.claude/settings.json` | Permissions (live) |
 | `~/Dracularch/Claude/` | Repo copy → git push |
-| `/run/media/steve/ARCH_202512/` | USB (scripts + configs) |
+| `/run/media/steve/ARCH_YYYYMM/` (Linux) | USB (scripts + configs) |
+| `/Volumes/ARCH_YYYYMM/` (macOS) | USB (scripts + configs) |
 | `/mnt/synology/WEB Scripts/Arch/Claude/USB Files/` | Synology (previous backups) |
 
 **"sync" means:** Copy to repo → git push → copy to USB
@@ -225,7 +228,9 @@ curl -fsSL https://claude.ai/install.sh | bash && export PATH="$HOME/.local/bin:
 ```
 
 ## Claude Code Notes
-- **USB check**: Use full path `ls /run/media/steve/ARCH_202512/` (parent dir fails)
+- **USB check**: Use full path (parent dir fails). Label = `ARCH_` + YYYYMM (changes monthly)
+  - Linux: `ls /run/media/steve/ARCH_YYYYMM/`
+  - macOS: `ls /Volumes/ARCH_YYYYMM/`
 - **ble.sh check**: Use `bash -c '[[ ... ]]'` (Bash tool runs sh)
 - **Setup repo**: `cp -r "/mnt/synology/WEB Scripts/Scripts/Setup Repo/ssh-backup" ~/Documents/ && bash "/mnt/synology/WEB Scripts/Scripts/Setup Repo/setup-repo.sh" setup`
 
