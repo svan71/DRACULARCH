@@ -441,6 +441,19 @@ They'll have eject icons (▲) indicating mounted network volumes. macOS remembe
 
 **Note**: Top-level SMB shares mount to `/Volumes/` and can be dragged directly to Favorites. For subfolders within shares (like WEB Scripts inside External), you'd need symlinks - but that's not needed here since Apple, External, and Plex are all top-level shares.
 
+## macOS Power Management (M4 Pro)
+
+Prevent unwanted wake events:
+```bash
+sudo pmset -a powernap 0      # Disable Power Nap (biggest offender)
+sudo pmset -a womp 0          # Disable Wake on LAN
+sudo pmset -a proximitywake 0 # Disable iPhone/Watch proximity wake
+```
+
+**Culprits identified:** DarkWakes every 30-60 min from `mDNSResponder`, `dasd` (Mail refresh, iCloud sync), `NotificationCenter`. All stopped by disabling Power Nap.
+
+**Note:** `disksleep 0` warning is cosmetic - SSDs don't spin down anyway.
+
 ## Reminders
 - **AdGuard + Chrome + Twitter/X**: There's an issue with AdGuard extension on Chrome breaking Twitter/X. Needs investigation. Config files in `~/Downloads/` and `/mnt/synology/WEB Scripts/AdGaurd/`
 - **Windows 11**: Run [RemoveWindowsAI](https://github.com/zoicware/RemoveWindowsAI) - strips Copilot, Recall. Use backup mode, PowerShell 5.1.
