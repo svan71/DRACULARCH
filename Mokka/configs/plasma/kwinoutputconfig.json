@@ -3,35 +3,6 @@
         "data": [
             {
                 "allowDdcCi": true,
-                "allowSdrSoftwareBrightness": false,
-                "autoRotation": "InTabletMode",
-                "brightness": 1,
-                "colorPowerTradeoff": "PreferAccuracy",
-                "colorProfileSource": "EDID",
-                "connectorName": "HDMI-A-2",
-                "detectedDdcCi": true,
-                "edidHash": "ccf3f2d6c779ea1dbf2e0faf4db47507",
-                "edidIdentifier": "SAM 29165 809841223 43 2022 0",
-                "edrPolicy": "always",
-                "highDynamicRange": false,
-                "iccProfilePath": "",
-                "mode": {
-                    "height": 2160,
-                    "refreshRate": 120000,
-                    "width": 3840
-                },
-                "overscan": 0,
-                "rgbRange": "Automatic",
-                "scale": 1.75,
-                "sdrBrightness": 351,
-                "sdrGamutWideness": 0,
-                "transform": "Normal",
-                "uuid": "d461f37b-0116-4004-b47b-e8cbfd59285c",
-                "vrrPolicy": "Never",
-                "wideColorGamut": false
-            },
-            {
-                "allowDdcCi": true,
                 "allowSdrSoftwareBrightness": true,
                 "autoRotation": "InTabletMode",
                 "brightness": 1,
@@ -56,7 +27,7 @@
                 "sdrBrightness": 351,
                 "sdrGamutWideness": 0,
                 "transform": "Normal",
-                "uuid": "3a2859fd-81f4-493f-b2ca-9677ff5b0990",
+                "uuid": "94b84f10-4df7-459e-af29-a6c15934a578",
                 "vrrPolicy": "Never",
                 "wideColorGamut": false
             }
@@ -71,21 +42,6 @@
                     {
                         "enabled": true,
                         "outputIndex": 0,
-                        "position": {
-                            "x": 0,
-                            "y": 0
-                        },
-                        "priority": 0,
-                        "replicationSource": ""
-                    }
-                ]
-            },
-            {
-                "lidClosed": false,
-                "outputs": [
-                    {
-                        "enabled": true,
-                        "outputIndex": 1,
                         "position": {
                             "x": 0,
                             "y": 0
