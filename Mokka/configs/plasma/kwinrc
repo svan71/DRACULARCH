@@ -3,21 +3,15 @@ Id_1=065ef40a-dbed-471a-a4b6-fb1f1cf1c0e6
 Number=1
 Rows=1
 
-[Effect-blur]
-BlurStrength=4
-NoiseStrength=3
-
-[Effect-blurplus]
+[Effect-better-blur-dx]
 BlurDecorations=true
 BlurMatching=false
+BlurMenus=true
 BlurNonMatching=true
-BottomCornerRadius=20
-DockCornerRadius=20
-MenuCornerRadius=20
+CornerRadius=20
 NoiseStrength=0
-PaintAsTranslucent=true
-TopCornerRadius=20
-WindowClasses=xwaylandvideobridge
+Saturation=100
+WindowClasses=xwaylandvideobridge\nvlc
 
 [Effect-wobblywindows]
 Drag=85
@@ -26,12 +20,11 @@ WobblynessLevel=1
 
 [Plugins]
 blurEnabled=false
-forceblurEnabled=true
 coverswitchEnabled=true
 desktopchangeosdEnabled=true
 fadeEnabled=true
 flipswitchEnabled=true
-kwin4_effect_roundedcornersEnabled=true
+forceblurEnabled=true
 magiclampEnabled=true
 scaleEnabled=false
 squashEnabled=false
@@ -62,17 +55,11 @@ LayoutName=coverswitch
 [Tiling]
 padding=4
 
-[Tiling][065ef40a-dbed-471a-a4b6-fb1f1cf1c0e6][3a2859fd-81f4-493f-b2ca-9677ff5b0990]
-tiles={"layoutDirection":"horizontal","tiles":[{"width":0.25},{"width":0.5},{"width":0.25}]}
-
-[Tiling][065ef40a-dbed-471a-a4b6-fb1f1cf1c0e6][94b84f10-4df7-459e-af29-a6c15934a578]
-tiles={"layoutDirection":"horizontal","tiles":[{"width":0.25},{"width":0.5},{"width":0.25}]}
-
-[Tiling][065ef40a-dbed-471a-a4b6-fb1f1cf1c0e6][d461f37b-0116-4004-b47b-e8cbfd59285c]
-tiles={"layoutDirection":"horizontal","tiles":[{"width":0.25},{"width":0.5},{"width":0.25}]}
-
 [Windows]
 BorderlessMaximizedWindows=true
+
+[Xwayland]
+Scale=2
 
 [org.kde.kdecoration2]
 BorderSizeAuto=false
