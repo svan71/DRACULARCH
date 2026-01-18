@@ -109,6 +109,10 @@ DRACULARCH/
   InactiveOutlineUsePalette=true
   InactiveOutlineAlpha=255
   ```
+- **Blur effect**: `kwin-effects-forceblur` from chaotic-aur (provides both forceblur + better-blur-dx)
+  - Config section: `[Effect-better-blur-dx]` (NOT `[Effect-blurplus]` - old format)
+  - Package in repo: `Mokka/packages/kwin-effects-forceblur-1.5.0-1.12-x86_64.pkg.tar.zst`
+  - No explicit `better_blur_dxEnabled=true` needed in `[Plugins]`
 
 ### Both Scripts
 - **Printer**: Use `dnssd://` URIs, mDNS discovery, no hardcoded IPs. Canon TR8600 needs `cnijfilter2` AUR
@@ -474,6 +478,22 @@ sudo pmset schedule cancelall  # Clear scheduled wakes (Calendar, Focus, Analyti
 - **COSMIC Desktop**: Considering Cosmic.sh script. Dracula theme exists on cosmic-themes.org. Config in `~/.config/cosmic/`, uses `.ron` files. Install Arch + COSMIC to explore.
 
 ## Session History
+- Session 37: Blur fix completed + repo/USB sync
+  - Confirmed snapshot restore fixed logout blur
+  - Updated repo kwinrc: `[Effect-blurplus]` → `[Effect-better-blur-dx]`
+  - Updated forceblur package: 1.5.0-1.9 → 1.5.0-1.12 (from chaotic-aur)
+  - Updated Mokka.sh on USB with new package URL
+  - `kwin-effects-forceblur` provides both forceblur AND better-blur-dx effects
+  - Applied all repo plasma configs to current Garuda to verify correctness
+  - Pushed to GitHub, synced to USB
+- Session 36: Logout screen blur fix (Garuda Mokka)
+  - Issue: Logout screen showing muddy brownish color instead of blurred background
+  - Cause: Repo kwinrc configs use old `blurplus` + `forceblur` plugins, but Garuda now uses `better-blur-dx`
+  - Restoring old repo configs broke blur because plugin settings are incompatible
+  - Garuda's default kwinrc: `/etc/skel/.config/kwinrc` (from `garuda-mokka` package)
+  - Fix: Replace kwinrc with Garuda's default (`cp /etc/skel/.config/kwinrc ~/.config/kwinrc`)
+  - If still broken after logout/login, restore from btrfs snapshot
+  - Key insight: `better-blur-dx` doesn't need explicit `better_blur_dxEnabled=true` in [Plugins]
 - Session 35: bash.sh enhancements - Claude Code, repo setup, Finder symlinks
   - Added Claude Code install to bash.sh (pulls CLAUDE.md + settings.json from GitHub)
   - Added config sync prompt on re-runs: download from GitHub / backup to repo / skip
