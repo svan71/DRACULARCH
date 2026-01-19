@@ -19,12 +19,13 @@ Stiffness=10
 WobblynessLevel=1
 
 [Plugins]
+better_blur_dxEnabled=true
 blurEnabled=false
 coverswitchEnabled=true
 desktopchangeosdEnabled=true
 fadeEnabled=true
 flipswitchEnabled=true
-better_blur_dxEnabled=true
+kwin4_effect_roundedcornersEnabled=true
 magiclampEnabled=true
 scaleEnabled=false
 squashEnabled=false
@@ -55,11 +56,11 @@ LayoutName=coverswitch
 [Tiling]
 padding=4
 
+[Tiling][065ef40a-dbed-471a-a4b6-fb1f1cf1c0e6][94b84f10-4df7-459e-af29-a6c15934a578]
+tiles={"layoutDirection":"horizontal","tiles":[{"width":0.25},{"width":0.5},{"width":0.25}]}
+
 [Windows]
 BorderlessMaximizedWindows=true
-
-[Xwayland]
-Scale=2
 
 [org.kde.kdecoration2]
 BorderSizeAuto=false

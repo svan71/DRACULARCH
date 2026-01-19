@@ -119,7 +119,7 @@ ForegroundPositive=166, 227, 161
 ForegroundVisited=203, 166, 247
 
 [General]
-BrowserApplication=firefox.desktop
+BrowserApplication=brave-browser.desktop
 ColorSchemeHash=8648bf1098bc3a0eeaa29f0e76fab31426bc8355
 TerminalApplication=/usr/bin/ghostty --gtk-single-instance=true
 TerminalService=com.mitchellh.ghostty.desktop
