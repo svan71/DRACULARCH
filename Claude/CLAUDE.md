@@ -114,6 +114,27 @@ DRACULARCH/
   - Plugin: `better_blur_dxEnabled=true` in `[Plugins]`
   - Mokka.sh installs from AUR (not forceblur - that's deprecated)
   - Garuda bundles it via `garuda-mokka` (forceblur conflicts with garuda-mokka)
+- **Logout screen blur**: Custom `Logout.qml` in Mokka-lookandfeel theme
+  - Problem: Plasma logout screen relies on kwin compositor blur, which broke with old plugins
+  - Solution: QML-based blur independent of compositor - loads wallpaper + applies Qt FastBlur
+  - Location: `Mokka/themes/Mokka-lookandfeel/contents/logout/Logout.qml`
+  - Key code:
+    ```qml
+    Image {
+        id: wallpaperImage
+        source: "file:///usr/share/wallpapers/garuda-mokka/Mokka-tree.jpg"
+        visible: false  // Hidden - source for blur
+    }
+    FastBlur {
+        source: wallpaperImage
+        radius: 50
+    }
+    Rectangle {
+        color: "black"
+        opacity: 0.3  // Darken overlay
+    }
+    ```
+  - Works regardless of which kwin blur plugin is installed
 
 ### Both Scripts
 - **Printer**: Use `dnssd://` URIs, mDNS discovery, no hardcoded IPs. Canon TR8600 needs `cnijfilter2` AUR
@@ -497,6 +518,8 @@ sudo pmset schedule cancelall  # Clear scheduled wakes (Calendar, Focus, Analyti
 - Session 36: Logout screen blur fix (Garuda Mokka)
   - Issue: Logout screen showing muddy brownish color instead of blurred background
   - Cause: Old `blurplus` + `forceblur` plugins incompatible with new `better-blur-dx`
+  - Solution: Custom `Logout.qml` with QML-based FastBlur (independent of compositor)
+  - Created `Mokka/themes/Mokka-lookandfeel/` with custom logout screen
 - Session 35: bash.sh enhancements - Claude Code, repo setup, Finder symlinks
   - Added Claude Code install to bash.sh (pulls CLAUDE.md + settings.json from GitHub)
   - Added setup_repo() - restores SSH keys from Synology, clones Dracularch via SSH
