@@ -109,10 +109,11 @@ DRACULARCH/
   InactiveOutlineUsePalette=true
   InactiveOutlineAlpha=255
   ```
-- **Blur effect**: `kwin-effects-forceblur` from chaotic-aur (provides both forceblur + better-blur-dx)
-  - Config section: `[Effect-better-blur-dx]` (NOT `[Effect-blurplus]` - old format)
-  - Package in repo: `Mokka/packages/kwin-effects-forceblur-1.5.0-1.12-x86_64.pkg.tar.zst`
-  - No explicit `better_blur_dxEnabled=true` needed in `[Plugins]`
+- **Blur effect**: `kwin-effects-better-blur-dx` from AUR
+  - Config section: `[Effect-better-blur-dx]` in kwinrc
+  - Plugin: `better_blur_dxEnabled=true` in `[Plugins]`
+  - Mokka.sh installs from AUR (not forceblur - that's deprecated)
+  - Garuda bundles it via `garuda-mokka` (forceblur conflicts with garuda-mokka)
 
 ### Both Scripts
 - **Printer**: Use `dnssd://` URIs, mDNS discovery, no hardcoded IPs. Canon TR8600 needs `cnijfilter2` AUR
@@ -478,175 +479,27 @@ sudo pmset schedule cancelall  # Clear scheduled wakes (Calendar, Focus, Analyti
 - **COSMIC Desktop**: Considering Cosmic.sh script. Dracula theme exists on cosmic-themes.org. Config in `~/.config/cosmic/`, uses `.ron` files. Install Arch + COSMIC to explore.
 
 ## Session History
+- Session 39: Switch from forceblur to better-blur-dx
+  - Mokka.sh now installs `kwin-effects-better-blur-dx` from AUR (not forceblur)
+  - Updated repo kwinrc: `forceblurEnabled=true` → `better_blur_dxEnabled=true`
+  - Deleted `Mokka/packages/kwin-effects-forceblur-*.pkg.tar.zst` from repo
+  - Updated Mokka.sh: removed forceblur download, added better-blur-dx to AUR packages
+  - Panel Colorizer presets confirmed up to date (version 6.4.0, Mokka presets bundled upstream)
+  - Checked Intel system wake config - no custom fixes needed (Garuda uses kernel defaults)
+  - AMD GPP0 fix only applies to AMD systems (PCIe wake bug)
+- Session 38: Fresh Garuda blur issue redux
+  - Garuda now ships `kwin-effects-better-blur-dx` via `garuda-mokka` package
+  - `kwin-effects-forceblur` conflicts with `garuda-mokka`
+  - Fix for Garuda: Reset kwinrc to skeleton (`cp /etc/skel/.config/kwinrc ~/.config/kwinrc`)
 - Session 37: Blur fix completed + repo/USB sync
-  - Confirmed snapshot restore fixed logout blur
   - Updated repo kwinrc: `[Effect-blurplus]` → `[Effect-better-blur-dx]`
-  - Updated forceblur package: 1.5.0-1.9 → 1.5.0-1.12 (from chaotic-aur)
-  - Updated Mokka.sh on USB with new package URL
-  - `kwin-effects-forceblur` provides both forceblur AND better-blur-dx effects
-  - Applied all repo plasma configs to current Garuda to verify correctness
-  - Pushed to GitHub, synced to USB
+  - Applied all repo plasma configs to current Garuda
 - Session 36: Logout screen blur fix (Garuda Mokka)
   - Issue: Logout screen showing muddy brownish color instead of blurred background
-  - Cause: Repo kwinrc configs use old `blurplus` + `forceblur` plugins, but Garuda now uses `better-blur-dx`
-  - Restoring old repo configs broke blur because plugin settings are incompatible
-  - Garuda's default kwinrc: `/etc/skel/.config/kwinrc` (from `garuda-mokka` package)
-  - Fix: Replace kwinrc with Garuda's default (`cp /etc/skel/.config/kwinrc ~/.config/kwinrc`)
-  - If still broken after logout/login, restore from btrfs snapshot
-  - Key insight: `better-blur-dx` doesn't need explicit `better_blur_dxEnabled=true` in [Plugins]
+  - Cause: Old `blurplus` + `forceblur` plugins incompatible with new `better-blur-dx`
 - Session 35: bash.sh enhancements - Claude Code, repo setup, Finder symlinks
   - Added Claude Code install to bash.sh (pulls CLAUDE.md + settings.json from GitHub)
-  - Added config sync prompt on re-runs: download from GitHub / backup to repo / skip
   - Added setup_repo() - restores SSH keys from Synology, clones Dracularch via SSH
-  - Added Synology symlink setup for Finder sidebar (~/Mounts/Apple, ~/Mounts/Web-Scripts)
-  - Symlink trick: macOS Finder can't pin SMB subfolders to Favorites, but symlinks work
-  - All functions have re-run checks: skip if already installed/configured, pull if repo exists
-  - Script location: ~/Documents/bash.sh (also on USB/Synology, NOT in repo)
-- Session 34: macOS Tahoe terminal setup + bash.sh script
-  - Fresh macOS Tahoe install - set up complete terminal environment
-  - Installed via Homebrew: bash 5.x, ghostty, starship, bat, eza, zoxide, fzf, fastfetch, btop, carapace, gawk
-  - Built ble.sh from git (~/.local/share/blesh/)
-  - JetBrainsMono Nerd Font installed
-  - Created configs: ~/.bashrc (macOS-adapted), ~/.bash_profile, ~/.blerc
-  - Ghostty: Catppuccin Mocha, Mantle background (#181825), 102x26, JetBrainsMono Bold 13pt
-  - Fastfetch with kitty logo (mokka-fastfetch.png)
-  - Created ~/Documents/bash.sh - pulls configs from GitHub, installs everything
-  - Added macOS/Bash/ to repo with all configs + bash_history (common macOS commands)
-  - SMB optimization: /etc/nsmb.conf with multichannel, 4MB buffers
-  - SMB speed: ~285 MB/s writes (better than Linux's ~245 MB/s!)
-  - Mounts on demand via Finder - no login scripts needed
-  - Verified no sensitive data in repo (passwords, keys, etc.)
-  - Script is idempotent - safe to re-run, updates existing installs
-- Session 33: Firefox userChrome.css Dracula theme overhaul
-  - Converted URL bar dropdown from Catppuccin Mocha to Dracula colors
-  - Removed problematic toolbar icon filter styling (caused white/peach icons)
-  - Toolbar icons now use Firefox defaults - match hamburger menu perfectly
-  - URL bar colors: `#2d2f3d` (closed), `#21222c` (open/dropdown)
-  - Purple border `#bd93f9` on focus, proper hover/selection colors
-  - Updated CLAUDE.md Firefox section with new color scheme
-- Session 32: SF Pro font migration + macOS-style rendering
-  - Installed SF Pro fonts (Display, Text, Rounded) from Synology to ~/.local/share/fonts/SFPro
-  - Installed SF Mono Nerd Font from GitHub (epk/SF-Mono-Nerd-Font)
-  - Copied SF Mono to Synology for future installs
-  - KDE system fonts: SF Pro Text Semibold 10pt (UI), SFMono Nerd Font Bold 10pt (fixed)
-  - Ghostty: SFMono Nerd Font Bold 13pt
-  - Digital Clock widget: SF Pro Display Black 13pt
-  - Weather widget: SF Pro Text 17pt
-  - macOS-style font rendering: hintnone, rgb subpixel, antialias true
-  - Firefox userChrome.css: Noto Sans → SF Pro Text (bookmarks, tabs, address bar)
-  - FireDragon userChrome.css: Noto Sans → SF Pro Text
-  - Font locations: ~/.local/share/fonts/SFPro/, ~/.local/share/fonts/SFMono/
-- Session 31: GNOME Show Apps cleanup + Loupe replaces EOG
-  - Hid 4 apps from Show Apps menu (Manage Printing, Mission Center, nvtop, Psensor)
-  - Method: Created override .desktop files in ~/.local/share/applications/ with NoDisplay=true
-  - Researched Eye of GNOME (eog) → replaced by Loupe in GNOME 45 (Sept 2023)
-  - Installed Loupe 49.1 (GPU-accelerated, GTK4/Libadwaita)
-  - Edited custom Loupe icon for Dracula theme
-  - Updated icon in ~/.icons/Dracula/ (scalable and scalable@2x)
-  - Uninstalled EOG completely (`sudo pacman -Rns eog`)
-  - Set Loupe as default image viewer (mimeapps.list)
-  - Updated Dracula-Icons.tar.xz in repo with custom Loupe icon
-  - Updated Dracula.sh: `eog` → `loupe` package, default app, app grid position
-- Session 30: Garuda fresh config - terminal + fonts + icons
-  - Fresh Garuda install - display gaps GONE (confirmed backed-up configs were the issue)
-  - Terminal setup: installed ghostty, btop, zoxide, blesh-git, carapace-bin (via paru)
-  - Garuda already had: starship, bat, fastfetch
-  - Copied all terminal configs from repo (bashrc, blerc, bat, btop, fastfetch, ghostty, starship, zoxide db)
-  - Set system fonts: Noto Sans Bold 10pt (9pt smallest), JetBrainsMono Nerd Font Bold 10pt fixed
-  - Copied custom icons to ~/.local/share/icons/hicolor/ (firedragon, ghostty, firefox, chrome, vscode SVGs)
-  - Icons not applying - need logout/login or plasmashell restart
-  - Next: continue Garuda config (Dolphin, panels, etc.) then backup clean configs to repo
-- Session 29: Mokka display issue diagnosis + fresh config plan
-  - Identified display issue: gaps on sides of browser at 200% scale (only on Mokka, not Garuda)
-  - Issue only at exactly 200% - 190% and 195% work fine (integer vs fractional scaling code paths)
-  - Switching to 200% for sharper display (no fractional blur)
-  - Plan: Fresh Garuda install → configure Dolphin, terminal, panels → backup clean configs to repo
-  - Suspect: kwinoutputconfig.json or ScreenScaleFactors in backed-up configs causing geometry mismatch
-  - Fixed settings.json permission syntax: `Bash(*)` → `Bash`
-- Session 28: COSMIC Desktop research + Mokka wallpaper updates
-  - Researched COSMIC theming: ~/.config/cosmic/, .ron files, cosmic-themes.org
-  - Dracula theme exists for COSMIC (1,059 downloads) + terminal theme on GitHub
-  - Discussed Plymouth dependency for GDM display settings (early KMS init)
-  - Explored Dracula symbolic icons (1,564 SVGs) - potential overlay for Mokka
-  - Updated Mokka-tree.jpg to higher res (606K → 2.7MB)
-  - Updated 3 wallpapers from orangci/walls-catppuccin-mocha repo:
-    - Abstract-swirls: 357K → 409K
-    - Horizon: 220K → 240K
-    - River-city: 854K → 996K
-  - Next: Install Arch + COSMIC to explore and build Cosmic.sh
-- Session 27: Updated Mokka repo configs from Garuda testing
-  - Clock widget: Noto Sans Black, size 14, weight 900 (widgets render thinner than Qt apps)
-  - Weather widget: `org.kde.weatherWidget-3` → `weather.widget.plus`
-  - kdeglobals: font size 11 → 10, removed ScreenScaleFactors
-  - Pushed to GitHub - next Mokka install will use these settings
-- Session 26: Garuda clock/Colorizer settings + full terminal/Dolphin setup
-  - Digital clock: Noto Sans Bold 13pt, date beside time (`dddd, MMM d`), week numbers
-  - Panel Colorizer: foreground shadow enabled (size 5), tracks clock widget
-  - Installed: Ghostty, btop, zoxide, blesh-git, carapace-bin (via paru)
-  - Copied: bashrc, blerc, bat, btop, fastfetch, starship, Ghostty configs
-  - Set up SMB mounts (/mnt/synology, /mnt/plex) with fstab
-  - Restored zoxide db and bash history
-  - Note: Garuda uses `paru` not `yay`
-- Session 25: Weather widget deep dive on Garuda Linux (first Claude Code on Garuda)
-  - Explored weather widget options:
-    - **Weather Widget Plus** (`weather.widget.plus`) - fork with more customization, buggy compact mode
-    - **Chaac.Complete.Weather** - edited QML (removed °F suffix, adjusted spacing/icon), still frustrating
-    - **Default KDE** (`org.kde.plasma.weather`) - wettercom only provider shown, wettercom is DEAD
-  - **Solution**: Use NOAA provider with **Mount Holly, NJ** (close to Vincentown, has NWS office)
-  - Weather providers on system: `bbcukmet`, `dwd`, `envcan`, `noaa`, `wettercom` (in `/usr/lib/qt6/plugins/plasma/weather_ions/`)
-  - Applied Mokka fonts to Garuda kdeglobals (Noto Sans Bold 10pt everywhere)
-  - Tried separating system tray widgets into individual panel widgets:
-    - **What you get**: Control over order, direct click (no tray expand)
-    - **What you DON'T get**: Icon appearance control (icon theme), widget width control (widget design)
-    - System tray items can be reordered and set to "shown" anyway
-  - **Conclusion**: Stick with system tray layout, use NOAA provider for weather
-- Session 24: Weather widget fix + Flameshot screenshot tool
-  - Removed broken `org.kde.plasma.weather` (wettercom provider dead)
-  - Removed `kweather` package entirely (question mark icon issue)
-  - Installed `plasma6-applets-weather-widget-3-git` (Weather Widget Plus)
-  - Weather Widget 3 config: metno provider, Vincentown NJ, Noto Sans Bold font
-  - Installed `plasma6-applets-plasmusic-toolbar` (media controls for panel)
-  - Installed `flameshot` for screenshots (tray icon, GNOME-like workflow)
-  - Print Screen key mapped to Flameshot
-  - Added `Mokka/configs/flameshot/flameshot.ini` to repo
-  - Updated plasma config: removed all kweather/old weather refs
-- Session 23: time.py archinstall automation script
-  - Updated config format for archinstall 3.0.14
-  - Added password prompt (hashed with SHA512, not stored)
-  - Improved drive selection: shows mounts, double-confirm, CAUTION warnings
-  - Added version detection: warns if archinstall version changes
-  - Config: linux-zen, Grub (removable for OpenCore), 512MB /boot + 50GB / + remainder /home
-  - Enables multilib repo, pipewire, bluetooth, NetworkManager
-  - custom_commands: mkdir /mnt/usb, systemctl enable sshd, creates /usr/local/bin/usb helper
-  - Post-reboot: `usb` command mounts USB and cd's into it
-- Session 22: macOS.sh brought to Dracula.sh parity
-  - Replaced Fish with Bash + ble.sh
-  - Fixed logging functions with tee guards (LOGFILE existence check)
-  - Fixed setup_kernel URLs → `Shared/Cachyos-*.tar.xz`
-  - Fixed install_aur_packages: `pacman -Qi` → `yay -Q`
-  - Fixed restore_gnome_extensions URL → `Dracula/assets/Extensions.tar.xz`
-  - Added full 2.5Gb network optimizations (sysctl settings)
-  - Fixed setup_grub: removed LTO kernel references
-  - Fixed Plymouth: added animation service, deferred mkinitcpio
-  - Added SMB credential collection and setup_smb_and_portals
-  - Fixed UFW with proper systemctl enable
-  - Added AMD GPP0 wake fix
-  - Replaced printer setup with dnssd auto-detect
-  - Updated carapace to bash-ble mode
-  - Fixed EFI label to "archOS"
-  - Reordered browsers: Firefox, Firedragon, Chrome, Brave, Edge (both scripts)
-  - Fixed default apps (audio: mpv → smplayer)
-- Session 21: Major repo reorganization
-  - Created Dracula/assets/ (moved 10 archives from root)
-  - Created Shared/ (CachyOS kernel files, renamed without spaces)
-  - Created macOS/ (moved 4 Mac files)
-  - Created Archive/ (deprecated Fish configs)
-  - Converted Dracula-Plymouth.zip and Dracula-Wallpaper.zip to .tar.xz
-  - Updated Dracula.sh: 10 GitHub URLs to new paths
-  - Updated Mokka.sh: 4 GitHub URLs to new paths
-- Session 20: Fresh Mokka verified, script fixes (thefuck, ScreenScaleFactors in kdeglobals, starship → extra)
-- Session 19: Mokka.sh Fish → Bash + ble.sh, Konsole removed
-- Session 18: Dracula.sh fresh install verified
 
 ## Hackintosh EFI Notes (AMD System)
 
