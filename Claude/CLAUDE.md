@@ -74,7 +74,6 @@ DRACULARCH/
 - **Autostart cleanup**: Delete files BEFORE logout (race condition)
 
 ### Mokka.sh (KDE)
-- **TahoeLauncher**: Path = `/usr/share/plasma/plasmoids/TahoeLauncher/`
 - **Dolphin state**: Plasma 6 uses `~/.local/state/dolphinstaterc`
 - **Display scaling**: Remove `ScreenScaleFactors=`, use `kscreen-doctor output.1.scale.2` (200% is sharper than fractional)
 - **Logging functions**: Guard with `[[ -n "$LOGFILE" && -f "$LOGFILE" ]]` before tee
