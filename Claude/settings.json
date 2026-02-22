@@ -1,13 +1,6 @@
 {
-  "spinnerTipsEnabled": false,
   "permissions": {
     "allow": [
-      "Read(/Users/steve/**)",
-      "Edit(/Users/steve/**)",
-      "Write(/Users/steve/**)",
-      "Read(/Volumes/**)",
-      "Edit(/Volumes/**)",
-      "Write(/Volumes/**)",
       "Read(/home/steve/**)",
       "Edit(/home/steve/**)",
       "Write(/home/steve/**)",
@@ -61,5 +54,7 @@
       "WebFetch(domain:store.kde.org)"
     ],
     "defaultMode": "default"
-  }
+  },
+  "model": "opus",
+  "spinnerTipsEnabled": false
 }
