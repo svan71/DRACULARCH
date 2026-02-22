@@ -74,6 +74,7 @@ DRACULARCH/
 - **Autostart cleanup**: Delete files BEFORE logout (race condition)
 
 ### Mokka.sh (KDE)
+- **TahoeLauncher**: Path = `/usr/share/plasma/plasmoids/TahoeLauncher/`
 - **Dolphin state**: Plasma 6 uses `~/.local/state/dolphinstaterc`
 - **Display scaling**: Remove `ScreenScaleFactors=`, use `kscreen-doctor output.1.scale.2` (200% is sharper than fractional)
 - **Logging functions**: Guard with `[[ -n "$LOGFILE" && -f "$LOGFILE" ]]` before tee
@@ -197,6 +198,9 @@ DRACULARCH/
 
 ## CachyOS Kernel
 Optional at install. Package name: `linux-cachyos` (LTO now default).
+
+**Builds:** `~/Documents/compiled-kernels/` (timestamped subdirs)
+**Repo only:** Kernel/headers tar.xz go to `Shared/` in repo + git push. Never copied to USB.
 
 **Required configs:** CONFIG_TCP_CONG_BBR, CONFIG_NET_SCH_CAKE, CONFIG_IP_NF_IPTABLES (UFW), CONFIG_CIFS (SMB)
 
