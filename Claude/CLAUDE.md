@@ -496,16 +496,32 @@ sudo pmset schedule cancelall  # Clear scheduled wakes (Calendar, Focus, Analyti
 
 **Note:** `disksleep 0` warning is cosmetic - SSDs don't spin down anyway.
 
-## ACTIVE INVESTIGATION: Double Prompt Bug (Ghostty 1.3 + ble.sh + starship)
+## WAITING FOR FIX: Double Prompt Bug (Ghostty 1.3.1 + ble.sh)
 
-**Issue:** Prompt line (`steve@Steves-Mac-Pro in ~`) renders twice in Ghostty on macOS.
-Started after Ghostty updated to 1.3.1 (installed 2026-01-06).
+**Status:** Upstream issue filed — waiting for ble.sh fix. Do NOT attempt local workarounds.
 
-**Root cause:** ble.sh confirmed as the trigger (disabling ble.sh eliminates double prompt). Ghostty 1.3.0 changed bash shell integration from bash-preexec to native PS0 + PROMPT_COMMAND, creating a three-way conflict with starship and ble.sh.
+**Issue:** Prompt renders twice on session start in Ghostty 1.3.1. Confirmed on both macOS and Linux (CachyOS).
+Started after Ghostty updated to 1.3.1 (macOS: 2026-01-06, Linux: confirmed 2026-03-18).
 
-**Key finding:** Double prompt happens even with `shell-integration = none` (Ghostty hooks fully disabled). So the bug is ble.sh + starship PROMPT_COMMAND conflict, possibly triggered by something in Ghostty 1.3's terminal behavior (escape sequences, PTY handling). Did NOT exist before Ghostty 1.3.
+**Root cause:** ble.sh + Ghostty 1.3.1 shell integration conflict. Disabling ble.sh eliminates double prompt. Ghostty changed bash shell integration between 1.3.0→1.3.1 (two specific commits identified by ble.sh maintainer). Not starship-specific — other user reproduces without starship.
 
-### All attempts on macOS (ALL FAILED):
+### Upstream tracking:
+- **Active issue:** github.com/akinomyoga/ble.sh/issues/684 (opened 2026-03-17, OPEN)
+  - Another user (Dominiquini) reported same bug on EndeavourOS, Ghostty 1.3.1, ble.sh 0.4.0-devel4
+  - ble.sh maintainer (akinomyoga) identified two Ghostty commits between 1.3.0→1.3.1 as culprits
+  - Waiting on Ghostty team (@jparise) to investigate
+- **Previous fixes (now insufficient):**
+  - Issue #543: Fixed with commit `430a174` (deferred ble-attach for Ghostty) — closed Jan 2025
+  - Issue #557: Fixed with commit `4338bbf` (updated workaround after Ghostty changed integration) — closed Feb 2025
+  - Both fixes are in our installed ble.sh but Ghostty 1.3.1 broke it again
+
+### Linux versions (as of 2026-03-18):
+- Ghostty 1.3.1-arch1 (GTK runtime, io_uring)
+- ble.sh 0.4.0_devel4.r2302.2f564e63 (built 2025-12-31, installed via blesh-git AUR)
+- Starship 1.24.2
+- Bash (CachyOS kernel 6.19.3)
+
+### All macOS workaround attempts (ALL FAILED):
 1. `bleopt prompt_command_changes_layout=1` - no effect
 2. `bleopt internal_suppress_bash_output=1` - no effect
 3. `shell-integration = none` - killed prompt entirely (blinking cursor)
@@ -516,26 +532,15 @@ Started after Ghostty updated to 1.3.1 (installed 2026-01-06).
 8. Both bleopt options together + `shell-integration = none` - STILL double prompts
 9. Downgrade Ghostty - not possible (private repo, no old binaries)
 
-### What to do on Linux:
-1. **Check Ghostty version** - is it also 1.3.x?
-2. **Test for double prompt** - open Ghostty, see if prompt renders twice
-3. If NO double prompt on Linux → macOS-specific (PTY, locale, terminal handling)
-4. If YES double prompt on Linux too → ble.sh + starship bug, file upstream issue
-5. **Try fixes that haven't been tested on Linux:**
-   - `bleopt prompt_ps1_final` to render prompt through ble.sh native system
-   - Pin starship to blehook PRECMD explicitly, disable PROMPT_COMMAND entirely
-   - Update ble.sh to latest git HEAD (`cd ~/.local/share/blesh && git pull && make`)
-   - Check ble.sh issue #543 for new fixes
+### When fix lands:
+- Update ble.sh: `yay -S blesh-git` (Linux) or `ble-update` (macOS)
+- On macOS also update ble.sh: `cd ~/.local/share/blesh && git pull && make`
+- Restart shell, verify single prompt
 
-### macOS config state (reverted to clean):
-- `~/.config/ghostty/config`: `shell-integration = bash`
-- `~/.bashrc`: original (PROMPT_COMMAND title line, carapace, normal starship init)
-- `~/.blerc`: clean (no workaround bleopt lines)
-
-### References:
-- ble.sh + Ghostty conflict: github.com/akinomyoga/ble.sh/issues/543
-- Ghostty 1.3.0 bash changes: ghostty.org/docs/install/release-notes/1-3-0
-- Starship detects BLE_VERSION → uses `blehook PRECMD` instead of PROMPT_COMMAND
+### Config state (both platforms, reverted to clean):
+- Ghostty config: `shell-integration = bash`
+- `.bashrc`: original (no workaround lines)
+- `.blerc`: clean (no workaround bleopt lines)
 
 ## Reminders
 - **AdGuard + Chrome + Twitter/X**: There's an issue with AdGuard extension on Chrome breaking Twitter/X. Needs investigation. Config files in `~/Downloads/` and `/mnt/synology/WEB Scripts/AdGaurd/`
