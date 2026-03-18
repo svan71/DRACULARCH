@@ -496,6 +496,47 @@ sudo pmset schedule cancelall  # Clear scheduled wakes (Calendar, Focus, Analyti
 
 **Note:** `disksleep 0` warning is cosmetic - SSDs don't spin down anyway.
 
+## ACTIVE INVESTIGATION: Double Prompt Bug (Ghostty 1.3 + ble.sh + starship)
+
+**Issue:** Prompt line (`steve@Steves-Mac-Pro in ~`) renders twice in Ghostty on macOS.
+Started after Ghostty updated to 1.3.1 (installed 2026-01-06).
+
+**Root cause:** ble.sh confirmed as the trigger (disabling ble.sh eliminates double prompt). Ghostty 1.3.0 changed bash shell integration from bash-preexec to native PS0 + PROMPT_COMMAND, creating a three-way conflict with starship and ble.sh.
+
+**Key finding:** Double prompt happens even with `shell-integration = none` (Ghostty hooks fully disabled). So the bug is ble.sh + starship PROMPT_COMMAND conflict, possibly triggered by something in Ghostty 1.3's terminal behavior (escape sequences, PTY handling). Did NOT exist before Ghostty 1.3.
+
+### All attempts on macOS (ALL FAILED):
+1. `bleopt prompt_command_changes_layout=1` - no effect
+2. `bleopt internal_suppress_bash_output=1` - no effect
+3. `shell-integration = none` - killed prompt entirely (blinking cursor)
+4. Hide BLE_VERSION during starship init (force PROMPT_COMMAND over blehook) - no effect
+5. Removed PROMPT_COMMAND title-setter line - no effect
+6. `shell-integration-features = no-cursor,no-title` - no effect
+7. `shell-integration = none` + BLE_VERSION hide combined - STILL double prompts
+8. Both bleopt options together + `shell-integration = none` - STILL double prompts
+9. Downgrade Ghostty - not possible (private repo, no old binaries)
+
+### What to do on Linux:
+1. **Check Ghostty version** - is it also 1.3.x?
+2. **Test for double prompt** - open Ghostty, see if prompt renders twice
+3. If NO double prompt on Linux → macOS-specific (PTY, locale, terminal handling)
+4. If YES double prompt on Linux too → ble.sh + starship bug, file upstream issue
+5. **Try fixes that haven't been tested on Linux:**
+   - `bleopt prompt_ps1_final` to render prompt through ble.sh native system
+   - Pin starship to blehook PRECMD explicitly, disable PROMPT_COMMAND entirely
+   - Update ble.sh to latest git HEAD (`cd ~/.local/share/blesh && git pull && make`)
+   - Check ble.sh issue #543 for new fixes
+
+### macOS config state (reverted to clean):
+- `~/.config/ghostty/config`: `shell-integration = bash`
+- `~/.bashrc`: original (PROMPT_COMMAND title line, carapace, normal starship init)
+- `~/.blerc`: clean (no workaround bleopt lines)
+
+### References:
+- ble.sh + Ghostty conflict: github.com/akinomyoga/ble.sh/issues/543
+- Ghostty 1.3.0 bash changes: ghostty.org/docs/install/release-notes/1-3-0
+- Starship detects BLE_VERSION → uses `blehook PRECMD` instead of PROMPT_COMMAND
+
 ## Reminders
 - **AdGuard + Chrome + Twitter/X**: There's an issue with AdGuard extension on Chrome breaking Twitter/X. Needs investigation. Config files in `~/Downloads/` and `/mnt/synology/WEB Scripts/AdGaurd/`
 - **Windows 11**: Run [RemoveWindowsAI](https://github.com/zoicware/RemoveWindowsAI) - strips Copilot, Recall. Use backup mode, PowerShell 5.1.
