@@ -10,8 +10,8 @@ elif [[ -f /usr/local/bin/brew ]]; then
     eval "$(/usr/local/bin/brew shellenv)"
 fi
 
-# ble.sh for fish-like autosuggestions (load early with noattach)
-[[ -f ~/.local/share/blesh/out/ble.sh ]] && source ~/.local/share/blesh/out/ble.sh --noattach
+# ble.sh for fish-like autosuggestions (defer attach to first prompt)
+[[ -f ~/.local/share/blesh/out/ble.sh ]] && source ~/.local/share/blesh/out/ble.sh --attach=prompt
 
 # Set terminal title to "ghostty"
 PROMPT_COMMAND='echo -ne "\033]0;ghostty\007"'
@@ -158,8 +158,7 @@ command -v starship &>/dev/null && eval "$(starship init bash)"
 # Zoxide MUST be last before ble.sh
 command -v zoxide &>/dev/null && eval "$(zoxide init bash)"
 
-# Attach ble.sh (must be before fastfetch for kitty images)
-[[ ${BLE_VERSION-} ]] && ble-attach
+# ble.sh attaches automatically at first prompt via --attach=prompt
 
 # Run fastfetch on interactive shell start (Ghostty only)
 [[ "$TERM_PROGRAM" == "ghostty" ]] && [[ -f ~/.config/fastfetch/config.jsonc ]] && command -v fastfetch &>/dev/null && fastfetch
