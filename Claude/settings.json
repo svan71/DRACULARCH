@@ -1,15 +1,33 @@
 {
   "permissions": {
     "allow": [
+      "Read(/Users/steve/**)",
+      "Edit(/Users/steve/**)",
+      "Write(/Users/steve/**)",
+      "Read(/Volumes/**)",
+      "Edit(/Volumes/**)",
+      "Write(/Volumes/**)",
       "Read(/home/steve/**)",
       "Edit(/home/steve/**)",
       "Write(/home/steve/**)",
       "Read(/run/media/steve/**)",
       "Edit(/run/media/steve/**)",
       "Write(/run/media/steve/**)",
-      "Read(/mnt/synology/WEB Scripts/**)",
-      "Edit(/mnt/synology/WEB Scripts/**)",
-      "Write(/mnt/synology/WEB Scripts/**)",
+      "Read(/mnt/synology/**)",
+      "Edit(/mnt/synology/**)",
+      "Write(/mnt/synology/**)",
+      "Read(D:\\**)",
+      "Edit(D:\\**)",
+      "Write(D:\\**)",
+      "Read(//Synology/External/**)",
+      "Edit(//Synology/External/**)",
+      "Write(//Synology/External/Claude/**)",
+      "Read(C:\\Users\\Steve\\.claude\\**)",
+      "Edit(C:\\Users\\Steve\\.claude\\**)",
+      "Write(C:\\Users\\Steve\\.claude\\**)",
+      "Read(C:\\Windows\\Setup\\Scripts\\**)",
+      "Edit(C:\\Windows\\Setup\\Scripts\\**)",
+      "Read(C:\\ProgramData\\Post-Update-Cleanup.log)",
       "Bash",
       "WebSearch",
       "WebFetch",
@@ -28,24 +46,40 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git push)",
+      "Bash(git fetch:*)",
+      "Bash(git reset:*)",
+      "Bash(git pull:*)",
       "Bash(grep:*)",
       "Bash(cat:*)",
       "Bash(find:*)",
-      "Bash(git fetch:*)",
-      "Bash(git reset:*)",
-      "WebFetch(domain:www.theregister.com)",
       "Bash(ls:*)",
       "Bash(cp:*)",
       "Bash(rm:*)",
       "Bash(mv:*)",
       "Bash(tar:*)",
+      "Bash(wc:*)",
+      "Bash(file:*)",
+      "Bash(stat:*)",
+      "Bash(du:*)",
       "Bash(yay --version:*)",
       "Bash(yay --noconfirm:*)",
       "Bash(yay -S:*)",
+      "Bash(yay -Rns:*)",
       "Bash(s-tui:*)",
       "Bash(sensors:*)",
-      "Bash(yay -Rns:*)",
-      "Bash(git pull:*)",
+      "Bash(powershell:*)",
+      "Bash(reg query:*)",
+      "Bash(reg add:*)",
+      "Bash(reg delete:*)",
+      "Bash(reg import:*)",
+      "Bash(reg export:*)",
+      "Bash(schtasks:*)",
+      "Bash(sc:*)",
+      "Bash(sc.exe:*)",
+      "Bash(taskkill:*)",
+      "Bash(tasklist:*)",
+      "Bash(start explorer.exe)",
+      "WebFetch(domain:www.theregister.com)",
       "WebFetch(domain:cosmic-themes.org)",
       "WebFetch(domain:draculatheme.com)",
       "WebFetch(domain:blog.system76.com)",
@@ -56,5 +90,19 @@
     "defaultMode": "default"
   },
   "model": "opus",
-  "spinnerTipsEnabled": false
+  "effortLevel": "medium",
+  "spinnerTipsEnabled": false,
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cp ~/.claude/CLAUDE.md /Volumes/external/Claude/CLAUDE.md 2>/dev/null; cp ~/.claude/settings.json /Volumes/external/Claude/settings.json 2>/dev/null; cp ~/.claude/settings.local.json /Volumes/external/Claude/settings.local.json 2>/dev/null; cp ~/.claude/CLAUDE.md \"/mnt/synology/WEB Scripts/Arch/Claude/USB Files/CLAUDE.md\" 2>/dev/null; cp ~/.claude/settings.json \"/mnt/synology/WEB Scripts/Arch/Claude/USB Files/settings.json\" 2>/dev/null; cp /c/Users/Steve/.claude/CLAUDE.md //Synology/External/Claude/CLAUDE.md 2>/dev/null; cp /c/Users/Steve/.claude/settings.json //Synology/External/Claude/settings.json 2>/dev/null; cp /c/Users/Steve/.claude/settings.local.json //Synology/External/Claude/settings.local.json 2>/dev/null; cp /c/Users/Steve/.claude/CLAUDE.md /d/Claude/CLAUDE.md 2>/dev/null; cp /c/Users/Steve/.claude/settings.json /d/Claude/settings.json 2>/dev/null; cp /c/Users/Steve/.claude/settings.local.json /d/Claude/settings.local.json 2>/dev/null; true",
+            "async": true
+          }
+        ]
+      }
+    ]
+  }
 }
