@@ -28,7 +28,7 @@ Guidance for Claude Code working with DRACULARCH repository.
 ## Repo Structure
 ```
 DRACULARCH/
-├── Claude/           # CLAUDE.md + settings.json
+├── Claude/           # CLAUDE.md + settings.json + memory/
 ├── Shared/           # Cachyos-Kernel.tar.xz, Cachyos-Headers.tar.xz
 ├── Dracula/
 │   ├── configs/      # bashrc, blerc, zoxide
@@ -229,6 +229,27 @@ Claude Code needs browser OAuth. SSH from Mac:
 export TERM=xterm-256color
 curl -fsSL https://claude.ai/install.sh | bash && export PATH="$HOME/.local/bin:$PATH" && claude
 ```
+
+## Claude Memory System
+
+Claude builds persistent memory across sessions in `~/.claude/projects/<path>/memory/`.
+
+**Memory paths per platform:**
+| Platform | Path |
+|----------|------|
+| Arch Linux | `~/.claude/projects/-home-steve/memory/` |
+| macOS | `~/.claude/projects/-Users-steve/memory/` |
+| Windows | `%USERPROFILE%\.claude\projects\C--Users-Steve\memory\` |
+
+**Backup memory before reinstall:**
+```bash
+cp ~/.claude/projects/-home-steve/memory/*.md ~/Dracularch/Claude/memory/
+cd ~/Dracularch && git add Claude/memory/ && git commit -m "Update Claude memory" && git push
+```
+
+**Restore is automatic** — Dracula.sh, Mokka.sh, and bash.sh all pull memory from the repo during install.
+
+**Windows:** Memory is NOT restored on reinstall — Windows builds its own context independently.
 
 ## Claude Code Notes
 - **USB check**: Use full path (parent dir fails). Label = `ARCH_` + YYYYMM (changes monthly)
