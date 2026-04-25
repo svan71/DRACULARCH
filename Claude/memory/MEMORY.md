@@ -1,4 +1,6 @@
 - [Steve's Profile](user_profile.md) — bash+ble.sh, hates typing, DRACULARCH maintainer, 3 machines
+- [User work context](user_work_context.md) — Steve's non-coding work: Nextdoor political debate, Christian apologetics, Windows deployment
+- [Local AI server project](project_local_ai_server.md) — Mac Mini AI server LIVE 2026-04-24 (Ollama + Open WebUI + MCP fs + Tailscale + Brave Search); pending: weekly update script, client setup, fine-tuning
 - [DRACULARCH Project](project_dracularch.md) — Arch setup scripts, GNOME Dracula + KDE Mocha, USB/Synology workflow
+- [Fine-tune Project](project_finetune.md) — Qwen 2.5 14B on MLX-LM on Mac Mini M4 Pro, active project
 - [Proactive Memory Saves](feedback_proactive_memory.md) — save session context during tasks, not just on request
-- [Fine-tune Project](project_finetune.md) — Qwen 2.5 14B on Intel/RX 6950 XT, active project, Unsloth+ROCm
