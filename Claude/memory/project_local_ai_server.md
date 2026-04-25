@@ -7,17 +7,17 @@ originSessionId: 0d10fd59-a95a-4785-a78c-b0edc0d8ff7b
 
 **Goal:** Mac Mini M4 Pro (24GB) as self-hosted AI server, accessible to all LAN devices and remotely via Tailscale.
 
-## CURRENT STATE (as of 2026-04-24, ~1am)
+## CURRENT STATE (as of 2026-04-24, ~7pm)
 
 **Everything below is installed, working, and auto-starts on boot:**
 
-| Component | Where | Port | Notes |
-|---|---|---|---|
-| Ollama | Mac Mini, native menubar app | 11434 | `OLLAMA_HOST=0.0.0.0` via LaunchAgent `~/Library/LaunchAgents/setenv.OLLAMA_HOST.plist`. Auto-launch via macOS Login Items. |
-| Open WebUI | Mac Mini, native (`uv tool install`) | 3000 | LaunchAgent `~/Library/LaunchAgents/com.steve.open-webui.plist`. Data at `~/.open-webui/data`. JWT secret at `~/.open-webui/.webui_secret_key` (16 bytes — short but works). |
-| mcpo + MCP filesystem | Mac Mini, native | 8765 | LaunchAgent `~/Library/LaunchAgents/com.steve.mcpo-filesystem.plist`. Allowed root: `/Users/steve` (read+write — same as Claude Code). Wired into Open WebUI as Tool Server "Filesystem". |
-| Tailscale | Mac Mini menubar app | — | Tailscale IP `100.126.147.42`, MagicDNS `steves-mac-mini.tail63bd06.ts.net`. |
-| Web search (DuckDuckGo) | Open WebUI built-in | — | `ENABLE_WEB_SEARCH=true`, engine `duckduckgo`, `BYPASS_WEB_SEARCH_EMBEDDING_AND_RETRIEVAL=true`, result_count 2, web_loader_timeout 5. Default-on per user setting. |
+| Component | Version | Where | Port | Notes |
+|---|---|---|---|---|
+| Ollama | 0.21.2 | Mac Mini, native menubar app | 11434 | `OLLAMA_HOST=0.0.0.0` via LaunchAgent `~/Library/LaunchAgents/setenv.OLLAMA_HOST.plist`. Auto-launch via macOS Login Items. |
+| Open WebUI | 0.9.2 | Mac Mini, native (`uv tool install`) | 3000 | LaunchAgent `~/Library/LaunchAgents/com.steve.open-webui.plist`. Data at `~/.open-webui/data`. JWT secret at `~/.open-webui/.webui_secret_key` (16 bytes — short but works). |
+| mcpo + MCP filesystem | — | Mac Mini, native | 8765 | LaunchAgent `~/Library/LaunchAgents/com.steve.mcpo-filesystem.plist`. Allowed root: `/Users/steve` (read+write — same as Claude Code). Wired into Open WebUI as Tool Server "Filesystem". |
+| Tailscale | — | Mac Mini menubar app | — | Tailscale IP `100.126.147.42`, MagicDNS `steves-mac-mini.tail63bd06.ts.net`. |
+| Web search (Brave) | — | Open WebUI built-in | — | Engine: `brave`, API key stored in DB + `~/Desktop/Brave API/api_key.txt`. Default-on per user setting. 2000 req/month free. |
 
 **Models pulled (via Ollama):**
 - `phi4:latest` (14B, ~9GB) — daily driver
