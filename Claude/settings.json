@@ -89,9 +89,9 @@
     ],
     "defaultMode": "default"
   },
-  "model": "opus",
-  "effortLevel": "medium",
+  "effortLevel": "xhigh",
   "spinnerTipsEnabled": false,
+  "theme": "dark-ansi",
   "hooks": {
     "Stop": [
       {
