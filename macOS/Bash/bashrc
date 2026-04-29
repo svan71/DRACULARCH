@@ -85,6 +85,10 @@ alias gp='git push'
 alias gl='git log --oneline'
 alias gd='git diff'
 
+# AI tool aliases
+alias deep='source ~/.config/mg-deepseek/key.env && claude --bare --settings ~/.config/mg-deepseek/claude-deepseek-settings.json --model deepseek-v4-pro'
+alias qwen='pgrep -x ollama >/dev/null || (ollama serve &>/dev/null &); ollama launch claude'
+
 # Backup file
 backup() { cp "$1" "$1.bak"; }
 

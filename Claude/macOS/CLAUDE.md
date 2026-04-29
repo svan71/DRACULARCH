@@ -25,6 +25,17 @@ DeepSeek routed through Claude Code using DeepSeek's Anthropic-compatible API.
 - Settings file: `~/.config/mg-deepseek/claude-deepseek-settings.json` — sets `ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic`
 - Key file: `~/.config/mg-deepseek/key.env` — not in repo (contains API key)
 - Use for: script analysis, code review, optimization — use Privacy Relay for scripts with personal info
+- Backed up to Synology: `/Volumes/External/WEB Scripts/Scripts/Jan Backup/mg-deepseek-settings.json` + `mg-deepseek-key.env`. bash.sh's `install_deepseek_config()` restores them on fresh install.
+- **"save deepseek files"** = copy `~/.config/mg-deepseek/claude-deepseek-settings.json` and `key.env` to that Synology path (renamed with `mg-deepseek-` prefix).
+
+### Qwen (`qwen` alias)
+Qwen 3.5 (`qwen3.5:397b-cloud`) routed through Claude Code via Ollama's built-in `launch claude` integration.
+- Install: `brew install ollama` (handled by bash.sh)
+- Pull model once on fresh install: `ollama pull qwen3.5:397b-cloud`
+- Alias in `~/.bashrc`: `alias qwen='pgrep -x ollama >/dev/null || (ollama serve &>/dev/null &); ollama launch claude'`
+- Auto-starts `ollama serve` if not already running, then launches Claude Code wired to the Ollama backend.
+- No Anthropic-compat proxy needed — Ollama's `launch claude` subcommand handles the translation internally.
+- No API key required for Ollama Cloud — model is selected interactively after launch.
 
 ### Jan (GUI — `jan`)
 Local AI frontend with two assistants and Tavily web search.
