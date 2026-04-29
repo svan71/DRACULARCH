@@ -72,6 +72,17 @@ Steve will say **"sanitize this"** or **"this has personal info"** — when that
 
 ---
 
+## OpenCode Config (this tool)
+
+Config files and their backup locations:
+- `~/.config/opencode/AGENTS.md` — this file. Backed up to DRACULARCH repo: `Claude/opencode/AGENTS.md`
+- `~/.local/share/opencode/auth.json` — API key. Backed up to Synology: `/Volumes/External/WEB Scripts/Scripts/Jan Backup/opencode_auth.json`
+- `~/.config/opencode/opencode.json` — currently minimal (schema only), no backup needed until populated
+
+**"save opencode files"** = copy auth.json to Synology path above, then push AGENTS.md via repo.
+
+---
+
 ## Jan Config (context)
 
 Jan is Steve's local AI frontend. Config lives at:
