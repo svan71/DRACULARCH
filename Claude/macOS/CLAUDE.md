@@ -10,6 +10,45 @@ Guidance for Claude Code on Steve's Macs (M4 Pro + two Hackintoshes).
 - Script output must be themed — use color variables.
 - **NEVER put .sh scripts in the DRACULARCH repo** — scripts live on USB/Synology only.
 
+## AI Tools — Current Setup
+
+Three AI tools configured and backed up. All restored by bash.sh on fresh installs.
+
+### Claude Code (`claude`)
+- Installed via `curl -fsSL https://claude.ai/install.sh | bash`
+- Config: `~/.claude/CLAUDE.md` (this file) + `~/.claude/settings.json` — both in DRACULARCH repo under `Claude/`
+- Memory: `~/.claude/projects/-Users-steve/memory/` — backed up to `~/Dracularch/Claude/memory/`
+
+### Deep (`deep` alias)
+DeepSeek routed through Claude Code using DeepSeek's Anthropic-compatible API.
+- Alias in `~/.bashrc`: `alias deep='source ~/.config/mg-deepseek/key.env && claude --bare --settings ~/.config/mg-deepseek/claude-deepseek-settings.json --model deepseek-v4-pro'`
+- Settings file: `~/.config/mg-deepseek/claude-deepseek-settings.json` — sets `ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic`
+- Key file: `~/.config/mg-deepseek/key.env` — not in repo (contains API key)
+- Use for: script analysis, code review, optimization — use Privacy Relay for scripts with personal info
+
+### Jan (GUI — `jan`)
+Local AI frontend with two assistants and Tavily web search.
+- **DeepSeek assistant** — deepseek-v4-pro via DeepSeek API
+- **Big Pickle assistant** — big-pickle via OpenCode Zen (free)
+- Both have Tavily search enabled via MCP
+- Backed up to Synology (see Jan Backup section below)
+
+### OpenCode (`opencode`)
+Terminal AI tool using Big Pickle (OpenCode Zen — free).
+- Config: `~/.config/opencode/AGENTS.md` — in DRACULARCH repo under `Claude/opencode/`
+- Auth: `~/.local/share/opencode/auth.json` — API key on Synology
+- **oh-my-opencode plugin**: DISABLED — crashes OpenCode 1.4.x, no ETA on fix
+- **Custom themes**: DISABLED — crashes on load, don't add theme files to `~/.config/opencode/themes/`
+
+### bash.sh — Key patterns in place
+- `set -euo pipefail` + `request_sudo()` keepalive + `trap release_sudo EXIT`
+- `download_to()` atomic helper (curl → .tmp → mv, cleans up on failure)
+- Parallel downloads with `& pids+=($!)` + `wait` error checking
+- Single `brew install "${packages[@]}"` call; fonts use `--cask`
+- Installs and restores: Claude Code, OpenCode, Jan — all idempotent
+
+---
+
 ## Repo + Sync Conventions
 
 **DRACULARCH** = github.com/svan71/DRACULARCH. Local clone at `~/Dracularch/`.
@@ -104,6 +143,44 @@ system_profiler SPEthernetDataType   # check Ethernet
 
 ### Dark Reader (pending)
 File: `/Volumes/external/WEB Scripts/Google/Dark-Reader-Settings.json`. Pending: replace all Dracula `#6272A4` selection colors with Catppuccin Mauve `#cba6f7`; replace claude.ai config with Catppuccin Mocha (bg `#11111b`, selection `#c29df1`).
+
+### OpenCode Backup
+
+OpenCode config backed up to:
+- `~/.config/opencode/AGENTS.md` → DRACULARCH repo: `Claude/opencode/AGENTS.md`
+- `~/.local/share/opencode/auth.json` → Synology: `/Volumes/External/WEB Scripts/Scripts/Jan Backup/opencode_auth.json`
+- `~/.config/opencode/opencode.json` — currently minimal, no backup needed until populated
+
+**"save opencode files"** = copy auth.json to Synology path above + push AGENTS.md via repo.
+
+### Jan Backup
+
+Jan config is backed up to Synology at `/Volumes/External/WEB Scripts/Scripts/Jan Backup/`:
+- `assistant.json` — DeepSeek assistant config + system prompt
+- `mcp_config.json` — MCP servers + Tavily API key
+- `localstorage.sqlite3` — Jan engine settings + DeepSeek API key
+
+**"save jan files" / "update jan backup"** = copy all three files from their live locations to that Synology path:
+- `~/Library/Application Support/jan/data/assistants/deepseek/assistant.json`
+- `~/Library/Application Support/jan/data/mcp_config.json`
+- `~/Library/WebKit/jan.ai.app/WebsiteData/Default/cVX73oUEz5Ky30V8E-8XF4dbF5fwsr3ebL34bPtfrrQ/cVX73oUEz5Ky30V8E-8XF4dbF5fwsr3ebL34bPtfrrQ/LocalStorage/localstorage.sqlite3`
+
+---
+
+### Privacy Relay (Deep workflow)
+
+Use when working on scripts with personal info before handing off to `deep`.
+
+1. You copy the file to a working location and say **"sanitize for deep: /path/to/copy"**
+2. Claude reads the copy, builds a substitution map, edits the copy in place (real → placeholder)
+3. You open the copy in Deep and do the work
+4. When done, say **"restore from deep"** — Claude edits the copy back (placeholder → real)
+
+Common personal info to catch: IPs, hostnames, usernames, email, SSH key paths, Synology share paths, paths containing real names.
+
+Use realistic-looking dummy values — not obvious placeholders like FAKE_USER. Examples: `johndoe`, `john@example.com`, `192.168.1.50`, `/Volumes/nas/backup`. Keep the map so restore is exact.
+
+---
 
 ### Ghostty + ble.sh double-prompt (ACTIVE BUG)
 Started with Ghostty 1.3.1. Confirmed on macOS + CachyOS. Upstream: [ble.sh issue #684](https://github.com/akinomyoga/ble.sh/issues/684). All local workarounds tried and failed. **Do not attempt new ones.** When fix lands: `cd ~/.local/share/blesh && git pull && make` → restart shell.
