@@ -87,7 +87,11 @@ alias gd='git diff'
 
 # AI tool aliases
 alias deep='source ~/.config/mg-deepseek/key.env && claude --bare --settings ~/.config/mg-deepseek/claude-deepseek-settings.json --model deepseek-v4-pro'
-alias qwen='pgrep -x ollama >/dev/null || (ollama serve &>/dev/null &); ollama launch claude'
+alias qwen='claude --bare --settings ~/.config/mg-qwen/claude-qwen-settings.json'
+alias flash='claude --bare --settings ~/.config/mg-flash/claude-flash-settings.json'
+alias opendeep='opencode --model deepseek/deepseek-v4-pro'
+alias openqwen='opencode --model openrouter/qwen/qwen3.6-plus'
+alias openflash='opencode --model openrouter/stepfun/step-3.5-flash'
 
 # Backup file
 backup() { cp "$1" "$1.bak"; }

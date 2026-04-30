@@ -6,13 +6,13 @@ Guidance for Claude Code on Steve's Macs (M4 Pro + two Hackintoshes).
 - **Bash with ble.sh** on all platforms. UX, POSIX compatible.
 - Simple and effective, no over-engineering.
 - Ask questions one at a time.
-- Hates typing — keep commands short.
-- Script output must be themed — use color variables.
+- Hates typing — keep commands short when possible.
+- Arch Scripts output must be themed — use color variables.
 - **NEVER put .sh scripts in the DRACULARCH repo** — scripts live on USB/Synology only.
 
 ## AI Tools — Current Setup
 
-Three AI tools configured and backed up. All restored by bash.sh on fresh installs.
+Five AI tools configured and backed up. All restored by bash.sh on fresh installs.
 
 ### Claude Code (`claude`)
 - Installed via `curl -fsSL https://claude.ai/install.sh | bash`
@@ -29,13 +29,18 @@ DeepSeek routed through Claude Code using DeepSeek's Anthropic-compatible API.
 - **"save deepseek files"** = copy `~/.config/mg-deepseek/claude-deepseek-settings.json` and `key.env` to that Synology path (renamed with `mg-deepseek-` prefix).
 
 ### Qwen (`qwen` alias)
-Qwen 3.5 (`qwen3.5:397b-cloud`) routed through Claude Code via Ollama's built-in `launch claude` integration.
-- Install: `brew install ollama` (handled by bash.sh)
-- Pull model once on fresh install: `ollama pull qwen3.5:397b-cloud`
-- Alias in `~/.bashrc`: `alias qwen='pgrep -x ollama >/dev/null || (ollama serve &>/dev/null &); ollama launch claude'`
-- Auto-starts `ollama serve` if not already running, then launches Claude Code wired to the Ollama backend.
-- No Anthropic-compat proxy needed — Ollama's `launch claude` subcommand handles the translation internally.
-- No API key required for Ollama Cloud — model is selected interactively after launch.
+Qwen 3.6 Plus (`qwen/qwen3.6-plus`) routed through Claude Code via OpenRouter's Anthropic-compatible API.
+- Alias in `~/.bashrc`: `alias qwen='claude --bare --settings ~/.config/mg-qwen/claude-qwen-settings.json'`
+- Settings file: `~/.config/mg-qwen/claude-qwen-settings.json` — sets `ANTHROPIC_BASE_URL=https://openrouter.ai/api`, model `qwen/qwen3.6-plus`, fast model `qwen/qwen3.6-flash`
+- API key in settings file (not separate key.env)
+- **"save qwen files"** = copy `~/.config/mg-qwen/claude-qwen-settings.json` to `/Volumes/External/WEB Scripts/Scripts/Jan Backup/` (renamed `mg-qwen-settings.json`).
+
+### Flash (`flash` alias)
+Stepfun Step-3.5 Flash (`stepfun/step-3.5-flash`) routed through Claude Code via OpenRouter's Anthropic-compatible API.
+- Alias in `~/.bashrc`: `alias flash='claude --bare --settings ~/.config/mg-flash/claude-flash-settings.json'`
+- Settings file: `~/.config/mg-flash/claude-flash-settings.json` — sets `ANTHROPIC_BASE_URL=https://openrouter.ai/api`, model `stepfun/step-3.5-flash` for all slots
+- API key in settings file (shared OpenRouter key with `qwen`)
+- **"save flash files"** = copy `~/.config/mg-flash/claude-flash-settings.json` to `/Volumes/External/WEB Scripts/Scripts/Jan Backup/` (renamed `mg-flash-settings.json`).
 
 ### Jan (GUI — `jan`)
 Local AI frontend with two assistants and Tavily web search.
@@ -45,9 +50,16 @@ Local AI frontend with two assistants and Tavily web search.
 - Backed up to Synology (see Jan Backup section below)
 
 ### OpenCode (`opencode`)
-Terminal AI tool using Big Pickle (OpenCode Zen — free).
+Terminal AI tool. Big Pickle removed 2026-04-30 (too slow under agent workload — works fine in Jan, sluggish in OpenCode TUI due to large per-turn payload). Now routes through OpenRouter + DeepSeek.
 - Config: `~/.config/opencode/AGENTS.md` — in DRACULARCH repo under `Claude/opencode/`
-- Auth: `~/.local/share/opencode/auth.json` — API key on Synology
+- TUI config: `~/.config/opencode/tui.json` — theme `claude-mocha`, `mouse: false` (so Ghostty native selection + right-click paste work)
+- Model declarations: `~/.config/opencode/opencode.json` declares `stepfun/step-3.5-flash` and `qwen/qwen3.6-plus` under `provider.openrouter.models` so they show in the picker
+- Auth: `~/.local/share/opencode/auth.json` — `openrouter` (shared key with Claude Code `qwen`/`flash` aliases) + `deepseek` providers
+- **Model aliases in `~/.bashrc`**:
+  - `opendeep` → `opencode --model deepseek/deepseek-v4-pro`
+  - `openqwen` → `opencode --model openrouter/qwen/qwen3.6-plus`
+  - `openflash` → `opencode --model openrouter/stepfun/step-3.5-flash`
+- **Per-model picker filtering**: NOT supported in OpenCode today (open issues sst/opencode#3411, #9203). Aliases are the workaround.
 - **oh-my-opencode plugin**: DISABLED — crashes OpenCode 1.4.x, no ETA on fix
 - **Custom themes**: DISABLED — crashes on load, don't add theme files to `~/.config/opencode/themes/`
 
@@ -72,11 +84,11 @@ Terminal AI tool using Big Pickle (OpenCode Zen — free).
 
 ## Hardware
 - Intel 14900K, 32GB, Samsung Odyssey G8 4K@240Hz (Hackintosh + Windows + Arch)
-- AMD 9950X3D, 64GB (Hackintosh + Arch)
-- Mac M4 Pro, 24GB
+- AMD 7950X3D, 64GB (Hackintosh + Arch)
+- Mac mini M4 Pro, 24GB
 
 ## Arch work from Mac
-For any Arch / Dracula.sh / Mokka.sh / Linux-specific guidance, read `~/Dracularch/Claude/CLAUDE.md`. Do not duplicate that content here.
+For any Arch / Dracula.sh / Mokka.sh / macOS.sh / Linux-specific guidance, read `~/Dracularch/Claude/CLAUDE.md`. Do not duplicate that content here.
 
 ---
 
@@ -152,17 +164,15 @@ system_profiler SPEthernetDataType   # check Ethernet
 
 ## Cross-Platform
 
-### Dark Reader (pending)
-File: `/Volumes/external/WEB Scripts/Google/Dark-Reader-Settings.json`. Pending: replace all Dracula `#6272A4` selection colors with Catppuccin Mauve `#cba6f7`; replace claude.ai config with Catppuccin Mocha (bg `#11111b`, selection `#c29df1`).
-
 ### OpenCode Backup
 
 OpenCode config backed up to:
 - `~/.config/opencode/AGENTS.md` → DRACULARCH repo: `Claude/opencode/AGENTS.md`
 - `~/.local/share/opencode/auth.json` → Synology: `/Volumes/External/WEB Scripts/Scripts/Jan Backup/opencode_auth.json`
-- `~/.config/opencode/opencode.json` — currently minimal, no backup needed until populated
+- `~/.config/opencode/tui.json` → Synology: `.../Jan Backup/opencode_tui.json` (theme + mouse setting)
+- `~/.config/opencode/opencode.json` → Synology: `.../Jan Backup/opencode_config.json` (model declarations)
 
-**"save opencode files"** = copy auth.json to Synology path above + push AGENTS.md via repo.
+**"save opencode files"** = copy auth.json, tui.json, opencode.json to Synology + push AGENTS.md via repo.
 
 ### Jan Backup
 
