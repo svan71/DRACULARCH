@@ -81,6 +81,12 @@ Big Pickle removed 2026-04-30 (works fine in Jan, sluggish in OpenCode TUI due t
 
 **"sync" means:** copy to repo → git push → copy to USB.
 
+**Files kept in sync** (live ↔ repo ↔ USB):
+- `CLAUDE.md` — Arch (`Claude/CLAUDE.md`) + macOS (`Claude/macOS/CLAUDE.md`) + Windows (Synology only)
+- `AGENTS.md` — OpenCode global (`Claude/opencode/AGENTS.md`)
+- `settings.json` — unified across all OSes (`Claude/settings.json`)
+- `bashrc` — macOS (`macOS/Bash/bashrc`)
+
 **USB label format:** `ARCH_YYYYMM` (changes monthly). macOS path: `/Volumes/ARCH_YYYYMM/`.
 
 **Synology (macOS):** `/Volumes/external/WEB Scripts/Scripts/`.

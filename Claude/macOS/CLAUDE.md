@@ -78,6 +78,12 @@ Terminal AI tool. Big Pickle removed 2026-04-30 (too slow under agent workload �
 
 **"sync" means:** copy to repo → git push → copy to USB.
 
+**Files kept in sync** (live ↔ repo ↔ USB):
+- `CLAUDE.md` — Arch (`Claude/CLAUDE.md`) + macOS (`Claude/macOS/CLAUDE.md`) + Windows (Synology only)
+- `AGENTS.md` — OpenCode global (`Claude/opencode/AGENTS.md`)
+- `settings.json` — unified across all OSes (`Claude/settings.json`)
+- `bashrc` — macOS (`macOS/Bash/bashrc`)
+
 **USB label format:** `ARCH_YYYYMM` (changes monthly). macOS path: `/Volumes/ARCH_YYYYMM/`.
 
 **Synology (macOS):** `/Volumes/external/WEB Scripts/Scripts/`.
