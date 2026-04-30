@@ -10,6 +10,7 @@ Guidance for OpenCode on Steve's Macs (M4 Pro + two Hackintoshes). Mirrors `~/.c
 - Arch Scripts output must be themed — use color variables.
 - **NEVER put .sh scripts in the DRACULARCH repo** — scripts live on USB/Synology only.
 - No unnecessary bullets and headers for simple answers. Match energy.
+- **Verify before "improving"** — before suggesting a change that depends on a file path, tool, or flag existing, confirm it (`ls`, `which`, `--help`). Don't apply a textbook "better" pattern without checking the actual artifact matches the assumption. A 2-second check beats a wasted edit + revert.
 
 ## AI Tools — Current Setup
 
