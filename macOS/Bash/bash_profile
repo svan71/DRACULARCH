@@ -1,3 +1,4 @@
 # ~/.bash_profile - macOS login shell config
+export LANG=en_US.UTF-8
 # Source .bashrc for interactive login shells
 [[ -f ~/.bashrc ]] && source ~/.bashrc
