@@ -13,12 +13,12 @@ Guidance for Claude Code on Steve's Macs (M4 Pro + two Hackintoshes).
 
 ## AI Tools — Current Setup
 
-Five AI tools configured and backed up. All restored by bash.sh on fresh installs.
+Three tools active. All restored by bash.sh on fresh installs.
 
 ### Claude Code (`claude`)
 - Installed via `curl -fsSL https://claude.ai/install.sh | bash`
 - Config: `~/.claude/CLAUDE.md` (this file) + `~/.claude/settings.json` — both in DRACULARCH repo under `Claude/`
-- Memory: `~/.claude/projects/-Users-steve/memory/` — backed up to `~/Dracularch/Claude/memory/`
+- Memory: `~/.claude/projects/-Users-steve/memory/` — backed up to Synology `Scripts/Claude/memory/`
 
 ### Deep (`deep` alias)
 DeepSeek routed through Claude Code using DeepSeek's Anthropic-compatible API.
@@ -26,50 +26,20 @@ DeepSeek routed through Claude Code using DeepSeek's Anthropic-compatible API.
 - Settings file: `~/.config/mg-deepseek/claude-deepseek-settings.json` — sets `ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic`
 - Key file: `~/.config/mg-deepseek/key.env` — not in repo (contains API key)
 - Use for: script analysis, code review, optimization — use Privacy Relay for scripts with personal info
-- Backed up to Synology: `/Volumes/External/WEB Scripts/Scripts/Jan Backup/mg-deepseek-settings.json` + `mg-deepseek-key.env`. bash.sh's `install_deepseek_config()` restores them on fresh install.
-- **"save deepseek files"** = copy `~/.config/mg-deepseek/claude-deepseek-settings.json` and `key.env` to that Synology path (renamed with `mg-deepseek-` prefix).
+- Backed up to Synology: `Scripts/Notes/mg-deepseek-settings.json` + `mg-deepseek-key.env`. bash.sh's `install_deepseek_config()` restores them on fresh install.
+- **"save deepseek files"** = copy `~/.config/mg-deepseek/claude-deepseek-settings.json` and `key.env` to `Scripts/Notes/` (renamed with `mg-deepseek-` prefix).
 
-### Qwen (`qwen` alias)
-Qwen 3.6 Plus (`qwen/qwen3.6-plus`) routed through Claude Code via OpenRouter's Anthropic-compatible API.
-- Alias in `~/.bashrc`: `alias qwen='claude --bare --settings ~/.config/mg-qwen/claude-qwen-settings.json'`
-- Settings file: `~/.config/mg-qwen/claude-qwen-settings.json` — sets `ANTHROPIC_BASE_URL=https://openrouter.ai/api`, model `qwen/qwen3.6-plus`, fast model `qwen/qwen3.6-flash`
-- API key in settings file (not separate key.env)
-- **"save qwen files"** = copy `~/.config/mg-qwen/claude-qwen-settings.json` to `/Volumes/External/WEB Scripts/Scripts/Jan Backup/` (renamed `mg-qwen-settings.json`).
-
-### Flash (`flash` alias)
-Stepfun Step-3.5 Flash (`stepfun/step-3.5-flash`) routed through Claude Code via OpenRouter's Anthropic-compatible API.
-- Alias in `~/.bashrc`: `alias flash='claude --bare --settings ~/.config/mg-flash/claude-flash-settings.json'`
-- Settings file: `~/.config/mg-flash/claude-flash-settings.json` — sets `ANTHROPIC_BASE_URL=https://openrouter.ai/api`, model `stepfun/step-3.5-flash` for all slots
-- API key in settings file (shared OpenRouter key with `qwen`)
-- **"save flash files"** = copy `~/.config/mg-flash/claude-flash-settings.json` to `/Volumes/External/WEB Scripts/Scripts/Jan Backup/` (renamed `mg-flash-settings.json`).
-
-### Jan (GUI — `jan`)
-Local AI frontend with two assistants and Tavily web search.
-- **DeepSeek assistant** — deepseek-v4-pro via DeepSeek API
-- **Big Pickle assistant** — big-pickle via OpenCode Zen (free)
-- Both have Tavily search enabled via MCP
-- Backed up to Synology (see Jan Backup section below)
-
-### OpenCode (`opencode`)
-Terminal AI tool. Big Pickle removed 2026-04-30 (too slow under agent workload — works fine in Jan, sluggish in OpenCode TUI due to large per-turn payload). Now routes through OpenRouter + DeepSeek.
-- Config: `~/.config/opencode/AGENTS.md` — in DRACULARCH repo under `Claude/opencode/`
-- TUI config: `~/.config/opencode/tui.json` — theme `claude-mocha`, `mouse: false` (so Ghostty native selection + right-click paste work)
-- Model declarations: `~/.config/opencode/opencode.json` declares `stepfun/step-3.5-flash` and `qwen/qwen3.6-plus` under `provider.openrouter.models` so they show in the picker
-- Auth: `~/.local/share/opencode/auth.json` — `openrouter` (shared key with Claude Code `qwen`/`flash` aliases) + `deepseek` providers
-- **Model aliases in `~/.bashrc`**:
-  - `opendeep` → `opencode --model deepseek/deepseek-v4-pro`
-  - `openqwen` → `opencode --model openrouter/qwen/qwen3.6-plus`
-  - `openflash` → `opencode --model openrouter/stepfun/step-3.5-flash`
-- **Per-model picker filtering**: NOT supported in OpenCode today (open issues sst/opencode#3411, #9203). Aliases are the workaround.
-- **oh-my-opencode plugin**: DISABLED — crashes OpenCode 1.4.x, no ETA on fix
-- **Custom themes**: DISABLED — crashes on load, don't add theme files to `~/.config/opencode/themes/`
+### Cherry Studio (`cherry`)
+Local AI GUI. Replaced Jan on 2026-05-01.
+- Backed up to Synology `Scripts/Notes/`: `cherry-config.json`, `cherry-agents.db`, `cherry-preferences`
+- **"save cherry files"** = copy those three files from `~/Library/Application Support/CherryStudio/` to `Scripts/Notes/`
 
 ### bash.sh — Key patterns in place
 - `set -euo pipefail` + `request_sudo()` keepalive + `trap release_sudo EXIT`
 - `download_to()` atomic helper (curl → .tmp → mv, cleans up on failure)
 - Parallel downloads with `& pids+=($!)` + `wait` error checking
 - Single `brew install "${packages[@]}"` call; fonts use `--cask`
-- Installs and restores: Claude Code, OpenCode, Jan — all idempotent
+- Installs and restores: Claude Code, DeepSeek config, Groq key — all idempotent
 
 ---
 
@@ -96,7 +66,7 @@ Terminal AI tool. Big Pickle removed 2026-04-30 (too slow under agent workload �
 **USB label format:** `ARCH_YYYYMM` (changes monthly). macOS path: `/Volumes/ARCH_YYYYMM/`.
 
 **Synology (macOS):** `/Volumes/External/WEB Scripts/Scripts/`.
-- Private Claude backup: `Scripts/Jan Backup/` (keys, settings.local.json, Cherry, Ghostty, OpenCode auth)
+- Private backup: `Scripts/Notes/` (keys, settings.local.json, Cherry, Ghostty, DeepSeek, Alpaca, plists)
 - Memory backup: `Scripts/Claude/memory/`
 
 ## Hardware
@@ -181,27 +151,14 @@ system_profiler SPEthernetDataType   # check Ethernet
 
 ## Cross-Platform
 
-### OpenCode Backup
+### Cherry Backup
 
-OpenCode config backed up to:
-- `~/.config/opencode/AGENTS.md` → DRACULARCH repo: `Claude/opencode/AGENTS.md`
-- `~/.local/share/opencode/auth.json` → Synology: `/Volumes/External/WEB Scripts/Scripts/Jan Backup/opencode_auth.json`
-- `~/.config/opencode/tui.json` → Synology: `.../Jan Backup/opencode_tui.json` (theme + mouse setting)
-- `~/.config/opencode/opencode.json` → Synology: `.../Jan Backup/opencode_config.json` (model declarations)
+Cherry config backed up to Synology at `Scripts/Notes/`:
+- `cherry-config.json` — main app config
+- `cherry-agents.db` — assistants, API keys, MCP configs
+- `cherry-preferences` — app preferences
 
-**"save opencode files"** = copy auth.json, tui.json, opencode.json to Synology + push AGENTS.md via repo.
-
-### Jan Backup
-
-Jan config is backed up to Synology at `/Volumes/External/WEB Scripts/Scripts/Jan Backup/`:
-- `assistant.json` — DeepSeek assistant config + system prompt
-- `mcp_config.json` — MCP servers + Tavily API key
-- `localstorage.sqlite3` — Jan engine settings + DeepSeek API key
-
-**"save jan files" / "update jan backup"** = copy all three files from their live locations to that Synology path:
-- `~/Library/Application Support/jan/data/assistants/deepseek/assistant.json`
-- `~/Library/Application Support/jan/data/mcp_config.json`
-- `~/Library/WebKit/jan.ai.app/WebsiteData/Default/cVX73oUEz5Ky30V8E-8XF4dbF5fwsr3ebL34bPtfrrQ/cVX73oUEz5Ky30V8E-8XF4dbF5fwsr3ebL34bPtfrrQ/LocalStorage/localstorage.sqlite3`
+**"save cherry files"** = copy those three files from `~/Library/Application Support/CherryStudio/` to `Scripts/Notes/`.
 
 ---
 
