@@ -37,6 +37,9 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
 
+# Unified API keys
+[ -f "$HOME/.config/api-keys.env" ] && source "$HOME/.config/api-keys.env"
+
 # Add ~/.local/bin to PATH
 [[ -d ~/.local/bin ]] && [[ ":$PATH:" != *":$HOME/.local/bin:"* ]] && PATH="$HOME/.local/bin:$PATH"
 

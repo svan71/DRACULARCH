@@ -89,9 +89,6 @@
     ],
     "defaultMode": "default"
   },
-  "effortLevel": "xhigh",
-  "spinnerTipsEnabled": false,
-  "theme": "dark-ansi",
   "hooks": {
     "Stop": [
       {
@@ -104,5 +101,26 @@
         ]
       }
     ]
-  }
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "/opt/homebrew/bin/npx -y ccstatusline@latest",
+    "padding": 0,
+    "refreshInterval": 10
+  },
+  "enabledPlugins": {
+    "watch@claude-video": true,
+    "context7@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-video": {
+      "source": {
+        "source": "github",
+        "repo": "bradautomates/claude-video"
+      }
+    }
+  },
+  "spinnerTipsEnabled": false,
+  "effortLevel": "high",
+  "theme": "dark-ansi"
 }
