@@ -75,19 +75,29 @@ Terminal AI tool. Big Pickle removed 2026-04-30 (too slow under agent workload �
 
 ## Repo + Sync Conventions
 
-**DRACULARCH** = github.com/svan71/DRACULARCH. Local clone at `~/Dracularch/`.
+**DRACULARCH** = github.com/svan71/DRACULARCH. Local clone at `~/Dracularch/`. **PUBLIC repo — no keys, no private data, no memory files ever.**
 
 **"sync" means:** copy to repo → git push → copy to USB.
 
-**Files kept in sync** (live ↔ repo ↔ USB):
+**Files kept in sync** (live ↔ repo ↔ USB) — non-sensitive only:
 - `CLAUDE.md` — Arch (`Claude/CLAUDE.md`) + macOS (`Claude/macOS/CLAUDE.md`) + Windows (Synology only)
 - `AGENTS.md` — OpenCode global (`Claude/opencode/AGENTS.md`)
-- `settings.json` — unified across all OSes (`Claude/settings.json`)
+- `settings.json` — unified across all OSes (`Claude/settings.json`) — no keys embedded
 - `bashrc` — macOS (`macOS/Bash/bashrc`)
+
+**Everything private → Synology only** (never repo, never USB):
+- All API keys and `.env` files
+- `settings.local.json` (MCP permissions)
+- Claude memory files (`Claude/memory/*.md`)
+- Cherry config and agents.db
+- Ghostty config
+- Any file containing personal info, IPs, credentials
 
 **USB label format:** `ARCH_YYYYMM` (changes monthly). macOS path: `/Volumes/ARCH_YYYYMM/`.
 
-**Synology (macOS):** `/Volumes/external/WEB Scripts/Scripts/`.
+**Synology (macOS):** `/Volumes/External/WEB Scripts/Scripts/`.
+- Private Claude backup: `Scripts/Jan Backup/` (keys, settings.local.json, Cherry, Ghostty, OpenCode auth)
+- Memory backup: `Scripts/Claude/memory/`
 
 ## Hardware
 - Intel 14900K, 32GB, Samsung Odyssey G8 4K@240Hz (Hackintosh + Windows + Arch)
@@ -210,6 +220,59 @@ Use realistic-looking dummy values — not obvious placeholders like FAKE_USER. 
 
 ---
 
-### Ghostty + ble.sh double-prompt (ACTIVE BUG)
-Started with Ghostty 1.3.1. Confirmed on macOS + CachyOS. Upstream: [ble.sh issue #684](https://github.com/akinomyoga/ble.sh/issues/684). All local workarounds tried and failed. **Do not attempt new ones.** When fix lands: `cd ~/.local/share/blesh && git pull && make` → restart shell.
+### Ghostty + ble.sh double-prompt (RESOLVED via tip build)
+Fix merged in Ghostty PR #11644, not yet in stable. Running `ghostty@tip` (1.3.2-main-+4dcb09ada) since 2026-05-02.
+- Installed via: `brew uninstall --cask ghostty && brew install --cask ghostty@tip`
+- Fix is in `/Applications/Ghostty.app/Contents/Resources/ghostty/shell-integration/bash/ghostty.bash` — checks `BLE_VERSION`, emits `OSC 133;P` instead of `OSC 133;A`.
+- When stable 1.3.2 releases: `brew uninstall --cask ghostty@tip && brew install --cask ghostty`
+
+---
+
+## Skill reach-for cheat sheet
+
+Plugins are installed for a reason. Match generously — if a task even loosely fits one of these, invoke the skill BEFORE doing the work. Skills are cheap; missing them is the failure mode.
+
+**Process / methodology (superpowers plugin):**
+- "let's build / add / design X", new feature, open-ended creative ask → `superpowers:brainstorming` (first, before writing any code)
+- Implementing a feature or non-trivial fix → `superpowers:test-driven-development`
+- Bug, test failure, "this isn't working", unexpected behavior → `superpowers:systematic-debugging`
+- Spec or multi-step task → `superpowers:writing-plans`, then `superpowers:executing-plans`
+- 2+ independent tasks → `superpowers:dispatching-parallel-agents`
+- Need isolated workspace → `superpowers:using-git-worktrees`
+- About to claim "done" / "fixed" / "passing" → `superpowers:verification-before-completion`
+- Received code review feedback → `superpowers:receiving-code-review`
+- Want this work reviewed → `superpowers:requesting-code-review`
+- Implementation complete, deciding how to integrate → `superpowers:finishing-a-development-branch`
+
+**Code quality:**
+- Big change, want a reuse/quality pass → `/simplify`
+- Review pending changes → `/review`
+- Security-sensitive changes → `/security-review`
+
+**CLAUDE.md / config / settings:**
+- Audit any CLAUDE.md file → `claude-md-management:claude-md-improver`
+- Update CLAUDE.md with session learnings → `claude-md-management:revise-claude-md`
+- Add a hook, env var, permission, automation ("from now on...", "whenever X") → `update-config`
+- Customize keybindings → `keybindings-help`
+- Cut down permission prompts → `fewer-permission-prompts`
+
+**Recurring / scheduled:**
+- "Run this every X", "poll until Y", routine reports → `loop` (interactive) or `schedule` (cloud agent)
+
+**Hugging Face / ML** (only when actually relevant):
+- "What's the best model for X", model recommendations → `huggingface-skills:huggingface-best`
+- Local LLM via GGUF / llama.cpp → `huggingface-skills:huggingface-local-models`
+- Train / fine-tune via HF Jobs (LLM) → `huggingface-skills:huggingface-llm-trainer`
+- Train / fine-tune vision (DETR, SAM, ViT, etc.) → `huggingface-skills:huggingface-vision-trainer`
+- Track training experiments → `huggingface-skills:huggingface-trackio`
+- HF Hub CLI ops (download/upload/repo/jobs) → `huggingface-skills:hf-cli`
+- AI/ML paper lookup or analysis → `huggingface-skills:huggingface-papers`
+- Build a Gradio UI → `huggingface-skills:huggingface-gradio`
+- ML in JS/TS (browser/Node) → `huggingface-skills:transformers-js`
+- Datasets API workflows → `huggingface-skills:huggingface-datasets`
+
+**Claude API / Anthropic SDK code:**
+- Code importing `anthropic` SDK, prompt caching tuning, model version migration → `claude-api`
+
+**Default rule:** if a skill might apply, invoke it. The skill content tells you whether it actually fits — far better than skipping it and guessing.
 
