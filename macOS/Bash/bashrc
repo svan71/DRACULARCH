@@ -86,7 +86,7 @@ alias gl='git log --oneline'
 alias gd='git diff'
 
 # AI tool aliases
-alias deep='source ~/.config/mg-deepseek/key.env && claude --bare --settings ~/.config/mg-deepseek/claude-deepseek-settings.json --model deepseek-v4-pro'
+alias deep='source ~/.config/mg-deepseek/key.env && claude --bare --settings ~/.config/mg-deepseek/claude-deepseek-settings.json --model deepseek-v4-pro --append-system-prompt-file ~/.config/mg-deepseek/coaching.md'
 alias qwen='claude --bare --settings ~/.config/mg-qwen/claude-qwen-settings.json'
 alias flash='claude --bare --settings ~/.config/mg-flash/claude-flash-settings.json'
 alias opendeep='opencode --model deepseek/deepseek-v4-pro'
