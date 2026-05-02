@@ -41,6 +41,23 @@ OpenAI's coding agent desktop app. Installed via `brew install --cask codex-app`
 - Backed up to Synology `Scripts/Notes/codex/`: `AGENTS.md`, `config.toml`, `auth.json`, `memories/*.md`, `rules/default.rules`. bash.sh's `install_codex_config()` restores them on fresh install. Ephemeral state (sqlite logs, plugin caches, sessions) is NOT backed up.
 - **"save codex files"** = copy `AGENTS.md`, `config.toml`, `auth.json`, `memories/`, `rules/default.rules` from `~/.codex/` to `Scripts/Notes/codex/`. Run after editing AGENTS.md, allow rules, or tweaking config.
 
+### "save files" / "save all" — full backup sweep
+Run all three save-X commands AND mirror Claude memory in one shot:
+1. `save deepseek files` — `~/.config/mg-deepseek/{settings,key,coaching}` → `Scripts/Notes/mg-deepseek-*`
+2. `save cherry files` — `~/Library/Application Support/CherryStudio/{config,agents.db,preferences}` → `Scripts/Notes/cherry-*`
+3. `save codex files` — `~/.codex/{AGENTS.md,config.toml,auth.json,memories/,rules/default.rules}` → `Scripts/Notes/codex/`
+4. Mirror Claude memory: `rsync -a --delete ~/.claude/projects/-Users-steve/memory/ /Volumes/external/WEB\ Scripts/Scripts/Claude/memory/`
+
+(Claude's own `~/.claude/CLAUDE.md` and `settings.json` are auto-mirrored on every Claude session-stop via the Stop hook in `settings.json`. The repo copies of CLAUDE.md / bashrc / settings.json need a manual `git push` separately — call them out if dirty during a save sweep.)
+
+### Cross-tool sync with Codex
+Codex (`~/.codex/AGENTS.md`) is Steve's other AI coding tool. The two configs share invariants (preferences, hardware, repos, AI stack) but each has tool-specific sections (Codex has Steve-debate tone + Search rules + allow rules; Claude has Skill cheat sheet + plugin details).
+
+- **"update codex"** = open `~/.codex/AGENTS.md` and add/update sections to reflect work just done in this Claude session that's relevant to Codex (new tools installed, new aliases, new conventions, project state changes). Don't duplicate Claude-specific content. Keep Codex-specific sections intact. After editing, also run "save codex files" to mirror to Synology.
+- **"update from codex"** = read `~/.codex/AGENTS.md`, look for things not yet in CLAUDE.md, ask before merging.
+- For ad-hoc context: read `~/.codex/AGENTS.md` anytime to see what Steve has told Codex about a topic.
+- Symmetric: when Steve is in Codex, the equivalent phrase **"update claude"** tells Codex to edit CLAUDE.md the same way.
+
 ### bash.sh — Key patterns in place
 - `set -euo pipefail` + `request_sudo()` keepalive + `trap release_sudo EXIT`
 - `download_to()` atomic helper (curl → .tmp → mv, cleans up on failure)
