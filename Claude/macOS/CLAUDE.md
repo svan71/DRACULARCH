@@ -58,6 +58,10 @@ Codex (`~/.codex/AGENTS.md`) is Steve's other AI coding tool. The two configs sh
 - For ad-hoc context: read `~/.codex/AGENTS.md` anytime to see what Steve has told Codex about a topic.
 - Symmetric: when Steve is in Codex, the equivalent phrase **"update claude"** tells Codex to edit CLAUDE.md the same way.
 
+**Audit trail (REQUIRED on every sync update):** at the bottom of the file you just edited, append a one-line entry to the `## Cross-tool sync log` section in this format:
+`- YYYY-MM-DD (from claude|codex): <one-line summary of what was added/changed>`
+This way each file's tail shows the timeline of cross-tool updates and which tool authored each change. Update the log in the **file you edited**, not the file you're running in.
+
 ### bash.sh — Key patterns in place
 - `set -euo pipefail` + `request_sudo()` keepalive + `trap release_sudo EXIT`
 - `download_to()` atomic helper (curl → .tmp → mv, cleans up on failure)
@@ -271,4 +275,12 @@ Plugins are installed for a reason. Match generously — if a task even loosely 
 - Code importing `anthropic` SDK, prompt caching tuning, model version migration → `claude-api`
 
 **Default rule:** if a skill might apply, invoke it. The skill content tells you whether it actually fits — far better than skipping it and guessing.
+
+---
+
+## Cross-tool sync log
+Append one line per `update claude` / `update codex` run. Format: `- YYYY-MM-DD (from claude|codex): <summary>`. Newest at the bottom.
+
+- 2026-05-02 (from claude): initial cross-tool sync setup — added "save files" sweep, "update codex"/"update claude" phrases, this audit-trail log
+
 
