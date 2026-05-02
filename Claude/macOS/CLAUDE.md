@@ -291,5 +291,6 @@ Append one line per `update claude` / `update codex` run. Format: `- YYYY-MM-DD 
 
 - 2026-05-02 (from claude): initial cross-tool sync setup — added "save files" sweep, "update codex"/"update claude" phrases, this audit-trail log
 - 2026-05-02 (from claude): redefined "sync" to exclude USB; added "update USB" workflow phrase (refreshes 4 public files: CLAUDE.md, claude settings.json, AGENTS.md, codex config.toml — never auth/keys)
+- 2026-05-02 (from claude): SESSION CHECKPOINT — Mac Mini AI server decommissioned (ollama removed, mlx/mlx-c autoremoved); bash.sh now installs codex-app cask + restores codex configs; deep coaching.md baked into the alias for autonomous behavior; memory pruned (13 stale deleted, 4 evergreens indexed); full vocabulary live: sync / update USB / save files / save {deepseek,cherry,codex} files / update {claude,codex} / update from {claude,codex}
 
 
