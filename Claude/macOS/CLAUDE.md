@@ -21,18 +21,25 @@ Three tools active. All restored by bash.sh on fresh installs.
 - Memory: `~/.claude/projects/-Users-steve/memory/` — backed up to Synology `Scripts/Claude/memory/`
 
 ### Deep (`deep` alias)
-DeepSeek routed through Claude Code using DeepSeek's Anthropic-compatible API.
-- Alias in `~/.bashrc`: `alias deep='source ~/.config/mg-deepseek/key.env && claude --bare --settings ~/.config/mg-deepseek/claude-deepseek-settings.json --model deepseek-v4-pro'`
+DeepSeek routed through Claude Code using DeepSeek's Anthropic-compatible API. Same Claude Code harness, full tool access — deep behaves as an autonomous agent thanks to the coaching system prompt.
+- Alias in `~/.bashrc`: `alias deep='source ~/.config/mg-deepseek/key.env && claude --bare --settings ~/.config/mg-deepseek/claude-deepseek-settings.json --model deepseek-v4-pro --append-system-prompt-file ~/.config/mg-deepseek/coaching.md'`
 - Settings file: `~/.config/mg-deepseek/claude-deepseek-settings.json` — sets `ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic`
 - Key file: `~/.config/mg-deepseek/key.env` — not in repo (contains API key)
+- Coaching file: `~/.config/mg-deepseek/coaching.md` — system-prompt coaching that makes deep act autonomous, terse, BSD-aware, output-disciplined. Edit when behavior needs adjusting.
 - Use for: script analysis, code review, optimization — use Privacy Relay for scripts with personal info
-- Backed up to Synology: `Scripts/Notes/mg-deepseek-settings.json` + `mg-deepseek-key.env`. bash.sh's `install_deepseek_config()` restores them on fresh install.
-- **"save deepseek files"** = copy `~/.config/mg-deepseek/claude-deepseek-settings.json` and `key.env` to `Scripts/Notes/` (renamed with `mg-deepseek-` prefix).
+- Backed up to Synology: `Scripts/Notes/mg-deepseek-settings.json` + `mg-deepseek-key.env` + `mg-deepseek-coaching.md`. bash.sh's `install_deepseek_config()` restores all three on fresh install.
+- **"save deepseek files"** = copy `~/.config/mg-deepseek/claude-deepseek-settings.json`, `key.env`, and `coaching.md` to `Scripts/Notes/` (renamed with `mg-deepseek-` prefix).
 
 ### Cherry Studio (`cherry`)
 Local AI GUI. Replaced Jan on 2026-05-01.
 - Backed up to Synology `Scripts/Notes/`: `cherry-config.json`, `cherry-agents.db`, `cherry-preferences`
 - **"save cherry files"** = copy those three files from `~/Library/Application Support/CherryStudio/` to `Scripts/Notes/`
+
+### Codex (`Codex.app` desktop)
+OpenAI's coding agent desktop app. Installed via `brew install --cask codex-app`.
+- Config dir: `~/.codex/` — `AGENTS.md` (prompt customization, equivalent to CLAUDE.md), `config.toml`, `auth.json` (OAuth tokens — private), `memories/`, `rules/default.rules` (allowlist)
+- Backed up to Synology `Scripts/Notes/codex/`: `AGENTS.md`, `config.toml`, `auth.json`, `memories/*.md`, `rules/default.rules`. bash.sh's `install_codex_config()` restores them on fresh install. Ephemeral state (sqlite logs, plugin caches, sessions) is NOT backed up.
+- **"save codex files"** = copy `AGENTS.md`, `config.toml`, `auth.json`, `memories/`, `rules/default.rules` from `~/.codex/` to `Scripts/Notes/codex/`. Run after editing AGENTS.md, allow rules, or tweaking config.
 
 ### bash.sh — Key patterns in place
 - `set -euo pipefail` + `request_sudo()` keepalive + `trap release_sudo EXIT`
@@ -66,7 +73,7 @@ Local AI GUI. Replaced Jan on 2026-05-01.
 **USB label format:** `ARCH_YYYYMM` (changes monthly). macOS path: `/Volumes/ARCH_YYYYMM/`.
 
 **Synology (macOS):** `/Volumes/External/WEB Scripts/Scripts/`.
-- Private backup: `Scripts/Notes/` (keys, settings.local.json, Cherry, Ghostty, DeepSeek, Alpaca, plists)
+- Private backup: `Scripts/Notes/` (keys, settings.local.json, Cherry, Ghostty, DeepSeek, Alpaca, Codex, plists)
 - Memory backup: `Scripts/Claude/memory/`
 
 ## Hardware
@@ -159,6 +166,21 @@ Cherry config backed up to Synology at `Scripts/Notes/`:
 - `cherry-preferences` — app preferences
 
 **"save cherry files"** = copy those three files from `~/Library/Application Support/CherryStudio/` to `Scripts/Notes/`.
+
+---
+
+### Codex Backup
+
+Codex config backed up to Synology at `Scripts/Notes/codex/`:
+- `AGENTS.md` — prompt customization (Codex equivalent of CLAUDE.md)
+- `config.toml` — settings (model, plugins, project trust list)
+- `auth.json` — OAuth tokens (private)
+- `memories/*.md` — accumulated session memories
+- `rules/default.rules` — bash allowlist (avoids re-allowing every command)
+
+**"save codex files"** = copy `AGENTS.md`, `config.toml`, `auth.json`, `memories/`, `rules/default.rules` from `~/.codex/` to `Scripts/Notes/codex/`. Run after editing AGENTS.md or allow rules.
+
+bash.sh's `install_codex_config()` restores all of this + installs the app via `brew install --cask codex-app`.
 
 ---
 
