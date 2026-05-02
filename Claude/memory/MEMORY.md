@@ -2,5 +2,19 @@
 - [User work context](user_work_context.md) — Steve's non-coding work: Nextdoor political debate, Christian apologetics, Windows deployment
 - [Local AI server project](project_local_ai_server.md) — Mac Mini AI server LIVE 2026-04-24 (Ollama + Open WebUI + MCP fs + Tailscale + Brave Search); pending: weekly update script, client setup, fine-tuning
 - [DRACULARCH Project](project_dracularch.md) — Arch setup scripts, GNOME Dracula + KDE Mocha, USB/Synology workflow
-- [Fine-tune Project](project_finetune.md) — Qwen 2.5 14B on MLX-LM on Mac Mini M4 Pro, active project
+- [Fine-tune Project](project_finetune.md) — Qwen3.5-9B + Qwen3-30B-A3B v4, RunPod Unsloth → Mac MLX → Jan
 - [Proactive Memory Saves](feedback_proactive_memory.md) — save session context during tasks, not just on request
+- [RunPod fine-tune lessons](feedback_runpod_finetune.md) — pin torch, set TORCH_CUDA_ARCH_LIST + MAX_JOBS, price worst-case before optimizing
+- [mlx_lm.server + Jan gotchas](feedback_mlx_lm_server.md) — freq_penalty ignored use repetition_penalty, Jan .metallib bug, fine-tune lost tool-calling, name hallucination
+- [OpenRouter → Alibaba Model Studio switch (planned)](project_openrouter_to_alibaba.md) — when $20 OpenRouter credit runs out, migrate Qwen to Alibaba Cloud Model Studio (international, NOT DashScope-China)
+- [AI delegation routing](feedback_ai_delegation_routing.md) — Opus brain + DeepSeek + GPT-5.5-pro executors; Qwen retired from delegation 2026-04-30
+- [AI delegation patterns](feedback_delegation_patterns.md) — chunking strategy, frontier peer-review trick, watch-window mechanics, verify-LLM-claims rule
+- [Ghostty terminfo location](reference_ghostty_terminfo.md) — lives only in the .app bundle; every LLM hallucinates a GitHub URL that 404s
+- [Jan → Cherry migration](project_jan_to_cherry.md) — switched 2026-05-01; Jan-specific configs in CLAUDE.md/bash.sh/Synology backup pending cleanup next session
+- [bash.sh update in progress](project_bashsh_update.md) — remove Jan/OpenCode/OpenRouter, rename Synology "Jan Backup"→"Notes", fix Tavily key source, add Groq restore
+- [Van's PC & Mac Repair site](project_vans_repair.md) — REBUILT 2026-05-01 Apple-grammar all-dark; rebrand pending (recommended: Van Computer Co.), photos pending, redeploy pending
+- [Cherry prompt storage](reference_cherry_prompt_storage.md) — chat Assistants (IndexedDB, edit via GUI) vs Agents (agents.db SQLite, plaintext); easy to confuse
+- [Trading Video Notes](reference_trading_video.md) — Alpaca setup, copy trading (Capitol Trades), wheel strategy from JP Morgan guy's YouTube tutorial
+- [Alpaca Paper Trading Setup](project_alpaca_trading.md) — MCP configured, waiting on API keys to activate
+- [Trading Bot Project](project_trading_bot.md) — LIVE 2026-05-02: full macro-aware bot on Synology, Alpaca paper accounts, daily market review sessions with Steve
+- [Trading vocabulary auto-routes](feedback_trading_vocabulary.md) — "trades", "market", "our stocks", "how'd we do" always = trading bot, never ask which project
