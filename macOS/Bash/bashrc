@@ -171,6 +171,6 @@ command -v zoxide &>/dev/null && eval "$(zoxide init bash)"
 
 # ble.sh attaches automatically at first prompt via --attach=prompt
 
-# Run fastfetch on interactive shell start (Ghostty only)
-[[ "$TERM_PROGRAM" == "ghostty" ]] && [[ -f ~/.config/fastfetch/config.jsonc ]] && command -v fastfetch &>/dev/null && fastfetch
+# Run fastfetch once on first Ghostty launch after fresh install, then require manual `fastfetch`
+[[ "$TERM_PROGRAM" == "ghostty" ]] && [[ -f ~/.config/fastfetch/config.jsonc ]] && command -v fastfetch &>/dev/null && [[ ! -f ~/.fastfetch_shown ]] && { fastfetch; touch ~/.fastfetch_shown; }
 export PATH="$HOME/.local/bin:$PATH"
