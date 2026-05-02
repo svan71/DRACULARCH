@@ -75,13 +75,21 @@ This way each file's tail shows the timeline of cross-tool updates and which too
 
 **DRACULARCH** = github.com/svan71/DRACULARCH. Local clone at `~/Dracularch/`. **PUBLIC repo — no keys, no private data, no memory files ever.**
 
-**"sync" means:** copy to repo → git push → copy to USB.
+**"sync" means:** copy to repo → git push. **USB is NOT part of `sync`.** USB is a static reference snapshot that's only refreshed on explicit **"update USB"** command (see below).
 
-**Files kept in sync** (live ↔ repo ↔ USB) — non-sensitive only:
+**Files kept in sync** (live ↔ repo) — non-sensitive only:
 - `CLAUDE.md` — Arch (`Claude/CLAUDE.md`) + macOS (`Claude/macOS/CLAUDE.md`) + Windows (Synology only)
-- `AGENTS.md` — OpenCode global (`Claude/opencode/AGENTS.md`)
 - `settings.json` — unified across all OSes (`Claude/settings.json`) — no keys embedded
 - `bashrc` — macOS (`macOS/Bash/bashrc`)
+- `bash_profile` — macOS (`macOS/Bash/bash_profile`)
+
+**"update USB"** = refresh the static reference copy on USB (`/Volumes/ARCH_YYYYMM/Claude/`). Only the 4 public config files Steve cares about as a record:
+- `CLAUDE.md` → `/Volumes/ARCH_*/Claude/macOS/CLAUDE.md`
+- Claude `settings.json` → `/Volumes/ARCH_*/Claude/settings.json`
+- Codex `AGENTS.md` → `/Volumes/ARCH_*/Claude/codex/AGENTS.md`
+- Codex `config.toml` → `/Volumes/ARCH_*/Claude/codex/config.toml`
+
+After copying, run `dot_clean /Volumes/ARCH_*/Claude` to strip macOS metadata files. **Never put auth/keys/cherry/deepseek/codex-auth on USB** — those stay Synology-only.
 
 **Everything private → Synology only** (never repo, never USB):
 - All API keys and `.env` files
@@ -282,5 +290,6 @@ Plugins are installed for a reason. Match generously — if a task even loosely 
 Append one line per `update claude` / `update codex` run. Format: `- YYYY-MM-DD (from claude|codex): <summary>`. Newest at the bottom.
 
 - 2026-05-02 (from claude): initial cross-tool sync setup — added "save files" sweep, "update codex"/"update claude" phrases, this audit-trail log
+- 2026-05-02 (from claude): redefined "sync" to exclude USB; added "update USB" workflow phrase (refreshes 4 public files: CLAUDE.md, claude settings.json, AGENTS.md, codex config.toml — never auth/keys)
 
 
