@@ -110,7 +110,11 @@
   },
   "enabledPlugins": {
     "watch@claude-video": true,
-    "context7@claude-plugins-official": true
+    "context7@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "huggingface-skills@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "claude-video": {
@@ -118,9 +122,16 @@
         "source": "github",
         "repo": "bradautomates/claude-video"
       }
+    },
+    "claude-plugins-official": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-official"
+      }
     }
   },
   "spinnerTipsEnabled": false,
   "effortLevel": "high",
-  "theme": "dark-ansi"
+  "theme": "dark-ansi",
+  "model": "sonnet"
 }
