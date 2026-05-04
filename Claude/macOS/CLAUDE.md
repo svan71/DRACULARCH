@@ -133,6 +133,30 @@ Installers should discover USB by label, not a fixed mount path. On macOS, use t
 - Private backup: `Scripts/Notes/` (keys, settings.local.json, Cherry, Ghostty, DeepSeek, Alpaca, Codex, plists)
 - Memory backup: `Scripts/Claude/memory/`
 
+## Cross-machine config sync (4 Macs: M4 mini, MacBook, AMD + Intel Hackintosh)
+
+Two different mechanisms depending on the file:
+
+### Claude configs — symlinked into the repo
+`~/CLAUDE.md`, `~/.claude/CLAUDE.md`, `~/.claude/settings.json` are symlinks into `~/Dracularch/Claude/` (macOS variant for the MD files). Edits flow via git push/pull.
+
+**Fuzzy intent — "are my Claude configs in sync" / "claude sync" / "pull the latest" / "did the other machines get the new CLAUDE.md":**
+1. `cd ~/Dracularch && git pull` — symlinks make new content live instantly
+2. (Optional) `cd ~/Dracularch && git status` to confirm nothing dirty locally before pulling
+
+If on a fresh machine that has the repo cloned but `~/.claude/CLAUDE.md` is still a real file, the trigger is **"set up CLAUDE.md symlinks"**: `rm` the real files and recreate as symlinks per the table above.
+
+### Codex configs — Synology mirror, no symlinks
+`~/.codex/AGENTS.md` and `~/.codex/config.toml` stay as real files. Stop hook auto-mirrors them to Synology `Notes/codex/` on every Claude session-end. config.toml has machine-specific state (trust list, plugin cache paths) so symlinks would conflict — kept per-machine.
+
+**Fuzzy intent — "are my Codex configs in sync with other machines" / "codex sync" / "pull codex configs" / "is AGENTS.md current here":**
+1. Check Synology mounted: `ls "/Volumes/External/WEB Scripts/Scripts/Notes/codex/" || warn`
+2. Diff to show what's different: `diff ~/.codex/AGENTS.md "/Volumes/External/WEB Scripts/Scripts/Notes/codex/AGENTS.md"` (and same for config.toml)
+3. If Synology is newer or different, copy down: `cp "/Volumes/External/WEB Scripts/Scripts/Notes/codex/AGENTS.md" ~/.codex/AGENTS.md` (warn before overwriting config.toml — it has machine-specific state, may be intentional)
+4. Report to Steve what was synced.
+
+To push edits the other way (Claude session learnings → Codex), use the **"update codex"** trigger. To push from Codex → Claude, use **"update claude"** in Codex.
+
 ## Hardware
 - Intel 14900K, 32GB, Samsung Odyssey G8 4K@240Hz (Hackintosh + Windows + Arch)
 - AMD 7950X3D, 64GB (Hackintosh + Arch)
@@ -339,3 +363,4 @@ Append one line per `update claude` / `update codex` run. Format: `- YYYY-MM-DD 
 - 2026-05-04 (from codex): cleaned DRACULARCH tracking for local state (histories, zoxide DBs, KDE activity DBs), added privacy .gitignore, updated Synology bash.sh to find ARCH_* USB by label for public Claude configs and restore Claude memory from Synology only.
 - 2026-05-04 (from codex): updated Dracula.sh, Mokka.sh, and macOS.sh on USB/Synology so private convenience restores (Claude memory when locally present, shell histories, zoxide DBs, Mokka KDE activity data) use local private snapshots or skip cleanly instead of pulling removed local state from DRACULARCH.
 - 2026-05-04 (from codex): added Codex Projects location and Arch Install plan — thin archinstall wrapper for disk/user/defaults plus first-boot gpt-setup to run Dracula/Mokka/macOS from USB/Synology.
+- 2026-05-04 (from claude): added "Cross-machine config sync" section — documents fuzzy-intent triggers for "claude sync" / "are configs in sync" (does git pull since Claude configs are now symlinks) and "codex sync" / "pull codex configs" (diff Synology Notes/codex/ vs ~/.codex/ and copy if newer). Decided NOT to symlink AGENTS.md/config.toml — Synology auto-mirror is sufficient and config.toml has machine-specific state that would break under symlinks.
