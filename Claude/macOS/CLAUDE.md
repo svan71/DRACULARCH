@@ -350,10 +350,6 @@ Plugins are installed for a reason. Match generously — if a task even loosely 
 
 ---
 
-## TODO — one-time cleanup
-
-Strip Windows-only entries from `Claude/settings.json` (paths `C:\\**`, `D:\\**`, `//Synology/External/**`, `C:\\Users\\Steve\\.claude\\**`, `C:\\Windows\\Setup\\Scripts\\**`, `C:\\ProgramData\\Post-Update-Cleanup.log`; Bash entries `powershell:*`, `reg query/add/delete/import/export:*`, `schtasks:*`, `sc:*`, `sc.exe:*`, `taskkill:*`, `tasklist:*`, `start explorer.exe`). Windows is now standalone on Synology (`\\Synology\External\Claude\Windows\` with mklink symlinks), no longer participates in this unified settings.json. **Delete this section after cleanup.**
-
 ## Cross-tool sync log
 Append one line per `update claude` / `update codex` run. Format: `- YYYY-MM-DD (from claude|codex): <summary>`. Newest at the bottom.
 
