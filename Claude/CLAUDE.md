@@ -75,7 +75,7 @@ As of 2026-05-04, `.gitignore` blocks the common leak paths, and these files wer
 - `Mokka/configs/activities/kactivitymanagerd/resources/`
 - `Claude/memory/`
 
-Fresh installs should restore private material from Synology/USB, not the public repo.
+Fresh installs should restore private material from Synology/USB, not the public repo. As of 2026-05-04, `Dracula.sh`, `Mokka.sh`, and `macOS.sh` use `SCRIPT_DIR`/`find_private_restore_dir()` for shell histories, zoxide `db.zo`, Mokka KDE activity data, and optional Claude memory; missing private snapshots are skipped without failing the install.
 
 ## Critical Knowledge - Don't Break These
 
@@ -255,11 +255,10 @@ Claude builds persistent memory across sessions in `~/.claude/projects/<path>/me
 
 **Backup memory before reinstall:**
 ```bash
-cp ~/.claude/projects/-home-steve/memory/*.md ~/Dracularch/Claude/memory/
-cd ~/Dracularch && git add Claude/memory/ && git commit -m "Update Claude memory" && git push
+cp ~/.claude/projects/-home-steve/memory/*.md "/Volumes/External/WEB Scripts/Scripts/Claude/memory/"
 ```
 
-**Restore is automatic** — Dracula.sh, Mokka.sh, and bash.sh all pull memory from the repo during install.
+**Restore rule:** Claude memory is private. It stays on Synology/private local media, never in DRACULARCH. `bash.sh` restores it from Synology. `Dracula.sh`, `Mokka.sh`, and `macOS.sh` restore it only if a local private snapshot is present, otherwise they skip cleanly.
 
 **Windows:** Memory is NOT restored on reinstall — Windows builds its own context independently.
 

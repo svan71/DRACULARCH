@@ -94,7 +94,11 @@ This way each file's tail shows the timeline of cross-tool updates and which too
 
 After copying, run `dot_clean /Volumes/ARCH_*/Claude` to strip macOS metadata files. **Never put auth/keys/cherry/deepseek/codex-auth on USB** — those stay Synology-only.
 
-Installers should discover USB by label, not a fixed mount path. On macOS, use the first matching `/Volumes/ARCH_*`; the monthly label is stable even when the actual device/path changes. Synology `bash.sh` now uses this as an optional source for public Claude configs, falling back to DRACULARCH raw GitHub if no USB snapshot is mounted.
+Installers should discover USB by label, not a fixed mount path. On macOS, use the first matching `/Volumes/ARCH_*`; on Linux scripts also check `/run/media/$USER/ARCH_*`, `/media/$USER/ARCH_*`, and `/mnt/ARCH_*`. The monthly label is stable even when the actual device/path changes.
+
+`bash.sh` uses USB only as an optional public Claude config source and restores Claude memory from Synology `Scripts/Claude/memory/`, never DRACULARCH.
+
+`Dracula.sh`, `Mokka.sh`, and `macOS.sh` now use `SCRIPT_DIR`/`find_private_restore_dir()` for private convenience restores. They restore shell histories, zoxide `db.zo`, and Mokka KDE activity data from the script/USB/Synology private snapshot when present, and skip cleanly when absent. They no longer pull those local-state files from GitHub.
 
 **Everything private → Synology only** (never repo, never USB):
 - All API keys and `.env` files
@@ -103,7 +107,8 @@ Installers should discover USB by label, not a fixed mount path. On macOS, use t
 - Cherry config and agents.db
 - Ghostty config
 - Any file containing personal info, IPs, credentials
-- Local state dumps: shell histories, zoxide `db.zo`, KDE activity database/logs
+
+**Low-risk convenience snapshots → USB/Synology only** (never repo): shell histories, zoxide `db.zo`, KDE activity database/logs.
 
 **USB label format:** `ARCH_YYYYMM` (changes monthly). macOS path: `/Volumes/ARCH_YYYYMM/`.
 
@@ -315,3 +320,4 @@ Append one line per `update claude` / `update codex` run. Format: `- YYYY-MM-DD 
 
 @RTK.md
 - 2026-05-04 (from codex): cleaned DRACULARCH tracking for local state (histories, zoxide DBs, KDE activity DBs), added privacy .gitignore, updated Synology bash.sh to find ARCH_* USB by label for public Claude configs and restore Claude memory from Synology only.
+- 2026-05-04 (from codex): updated Dracula.sh, Mokka.sh, and macOS.sh on USB/Synology so private convenience restores (Claude memory when locally present, shell histories, zoxide DBs, Mokka KDE activity data) use local private snapshots or skip cleanly instead of pulling removed local state from DRACULARCH.
