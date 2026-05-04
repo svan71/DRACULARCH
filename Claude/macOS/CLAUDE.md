@@ -117,6 +117,15 @@ For any Arch / Dracula.sh / Mokka.sh / macOS.sh / Linux-specific guidance, read 
 
 ## macOS
 
+### sudo / admin commands — always prompt Steve, never punt
+Claude Code can't read a sudo password from a TTY, but Steve doesn't want admin tasks bounced back as "run this yourself." When a command needs root, wrap it in osascript so macOS pops a GUI auth dialog Steve can fill in, then continue the work in-session:
+
+```
+osascript -e 'do shell script "<absolute-path command>" with administrator privileges'
+```
+
+Use absolute paths (e.g. `/usr/sbin/diskutil`, `/bin/cp`) since GUI-spawned shells have a minimal PATH. If a `sudo …` Bash call returns "a terminal is required to read the password", retry once via osascript instead of asking Steve to run it. Steve fills the prompt, Claude does the thing.
+
 ### bash.sh (installer)
 Lives on USB/Synology, NEVER in repo. Idempotent — safe to re-run. Read the script directly when working on it; don't rely on remembered behavior.
 
@@ -292,5 +301,6 @@ Append one line per `update claude` / `update codex` run. Format: `- YYYY-MM-DD 
 - 2026-05-02 (from claude): initial cross-tool sync setup — added "save files" sweep, "update codex"/"update claude" phrases, this audit-trail log
 - 2026-05-02 (from claude): redefined "sync" to exclude USB; added "update USB" workflow phrase (refreshes 4 public files: CLAUDE.md, claude settings.json, AGENTS.md, codex config.toml — never auth/keys)
 - 2026-05-02 (from claude): SESSION CHECKPOINT — Mac Mini AI server decommissioned (ollama removed, mlx/mlx-c autoremoved); bash.sh now installs codex-app cask + restores codex configs; deep coaching.md baked into the alias for autonomous behavior; memory pruned (13 stale deleted, 4 evergreens indexed); full vocabulary live: sync / update USB / save files / save {deepseek,cherry,codex} files / update {claude,codex} / update from {claude,codex}
+- 2026-05-03 (from claude): added "sudo / admin commands" rule under macOS — when a Bash sudo errors with "terminal is required", wrap the command in `osascript -e 'do shell script "..." with administrator privileges'` to throw Steve a GUI password prompt and continue in-session. Mirrored to Codex AGENTS.md.
 
 
