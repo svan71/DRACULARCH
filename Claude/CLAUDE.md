@@ -9,6 +9,7 @@ Guidance for Claude Code working with DRACULARCH repository.
 - Hates typing - keep commands short
 - Script output must be themed - use color variables
 - **NEVER put .sh scripts in the repo** - scripts live on USB/Synology only
+- **Verify before "improving"** - before suggesting a change that depends on a file path, tool, or flag existing, confirm it (`ls`, `which`, `--help`). Don't apply a textbook "better" pattern without checking the actual artifact matches the assumption. A 2-second check beats a wasted edit + revert.
 
 ## Repository Overview
 
@@ -476,9 +477,9 @@ bash ~/Documents/bash.sh
 - Creates ~/.hushlogin to suppress login message
 - **Script lives on USB/Synology only - NEVER in repo**
 
-## WAITING FOR FIX: Double Prompt Bug (Ghostty 1.3.1 + ble.sh)
+## Ghostty 1.3.1 + ble.sh double-prompt — VERIFY STATUS
 
-**Status:** Upstream issue filed — waiting for ble.sh fix. Do NOT attempt local workarounds.
+**Status (Linux, 2026-05-04):** macOS resolved this via Ghostty PR #11644 by running `ghostty@tip` (1.3.2-main). Linux Arch package is now at **ghostty 1.3.1-arch2** — the shell integration file (`/usr/share/ghostty/shell-integration/bash/ghostty.bash`) emits `OSC 133;P` instead of `133;A` (the same mechanism the upstream PR uses), but lacks the explicit `BLE_VERSION` guard the macOS tip build has. **Open a fresh Ghostty session and confirm whether double-prompt still occurs.** If gone → delete the rest of this section. If still happening → keep tracking until 1.3.2 lands in Arch `extra`.
 
 **Issue:** Prompt renders twice on session start in Ghostty 1.3.1. Confirmed on both macOS and Linux (CachyOS).
 Started after Ghostty updated to 1.3.1 (macOS: 2026-01-06, Linux: confirmed 2026-03-18).
@@ -521,6 +522,72 @@ Started after Ghostty updated to 1.3.1 (macOS: 2026-01-06, Linux: confirmed 2026
 - Ghostty config: `shell-integration = bash`
 - `.bashrc`: original (no workaround lines)
 - `.blerc`: clean (no workaround bleopt lines)
+
+## AI Tools — Linux
+
+### Claude Code (`claude`)
+Main agent. Config files (`CLAUDE.md`, `settings.json`) are symlinks into the DRACULARCH repo (see "CLAUDE.md / settings.json — Symlinked to Repo" above).
+
+### DeepSeek (`deep` alias)
+DeepSeek routed through Claude Code using DeepSeek's Anthropic-compatible API. Same Claude Code harness, full tool access — `deep` behaves as an autonomous agent thanks to the coaching system prompt.
+- Alias in `~/.bashrc`: `alias deep='source ~/.config/mg-deepseek/key.env && claude --bare --settings ~/.config/mg-deepseek/claude-deepseek-settings.json --model deepseek-v4-pro --append-system-prompt-file ~/.config/mg-deepseek/coaching.md'`
+- Files in `~/.config/mg-deepseek/`: `claude-deepseek-settings.json`, `key.env` (chmod 600), `coaching.md`
+- Restored from Synology `Scripts/Notes/mg-deepseek-{settings.json,key.env,coaching.md}` on fresh install
+- Use for: script analysis, code review, optimization. **Use Privacy Relay for scripts with personal info** (see below).
+
+### Advisor pattern — Opus brain, Sonnet hands
+Main session is pinned to Opus (`"model": "opus"` in `settings.json`). When spawning subagents via the Agent tool, **default to `model: "sonnet"`** — Opus stays in the main thread doing the thinking; Sonnet does the legwork (Explore, general-purpose, Plan, code-reviewer, code-simplifier, etc.). Only escalate a subagent to Opus if the task itself needs deep judgment in isolation. Haiku is rarely needed.
+
+### Skill reach-for cheat sheet
+The 6 plugins enabled in `settings.json` (context7, superpowers, claude-md-management, huggingface-skills, code-simplifier, watch@claude-video) are installed for a reason. Match generously — if a task even loosely fits one of these, invoke the skill BEFORE doing the work.
+
+**Process / methodology (superpowers plugin):**
+- "let's build / add / design X", new feature, open-ended creative ask → `superpowers:brainstorming` (first, before writing any code)
+- Implementing a feature or non-trivial fix → `superpowers:test-driven-development`
+- Bug, test failure, "this isn't working", unexpected behavior → `superpowers:systematic-debugging`
+- Spec or multi-step task → `superpowers:writing-plans`, then `superpowers:executing-plans`
+- 2+ independent tasks → `superpowers:dispatching-parallel-agents`
+- Need isolated workspace → `superpowers:using-git-worktrees`
+- About to claim "done" / "fixed" / "passing" → `superpowers:verification-before-completion`
+- Received code review feedback → `superpowers:receiving-code-review`
+- Want this work reviewed → `superpowers:requesting-code-review`
+- Implementation complete, deciding how to integrate → `superpowers:finishing-a-development-branch`
+
+**Code quality:**
+- Big change, want a reuse/quality pass → `/simplify`
+- Review pending changes → `/review`
+- Security-sensitive changes → `/security-review`
+
+**CLAUDE.md / config / settings:**
+- Audit any CLAUDE.md file → `claude-md-management:claude-md-improver`
+- Update CLAUDE.md with session learnings → `claude-md-management:revise-claude-md`
+- Add a hook, env var, permission, automation ("from now on...", "whenever X") → `update-config`
+- Customize keybindings → `keybindings-help`
+- Cut down permission prompts → `fewer-permission-prompts`
+
+**Recurring / scheduled:**
+- "Run this every X", "poll until Y", routine reports → `loop` (interactive) or `schedule` (cloud agent)
+
+**Hugging Face / ML** (only when actually relevant): see huggingface-skills plugin for model recommendations, local LLM via GGUF, training (LLM/vision), trackio, hf-cli, papers, gradio, transformers-js, datasets.
+
+**Claude API / Anthropic SDK code:** code importing `anthropic` SDK, prompt caching tuning, model version migration → `claude-api`.
+
+**Default rule:** if a skill might apply, invoke it. The skill content tells you whether it actually fits.
+
+### Privacy Relay (Deep workflow)
+
+Use when working on scripts with personal info before handing off to `deep`.
+
+1. Copy the file to a working location and say **"sanitize for deep: /path/to/copy"**
+2. Claude reads the copy, builds a substitution map, edits the copy in place (real → placeholder)
+3. Open the copy in Deep and do the work
+4. When done, say **"restore from deep"** — Claude edits the copy back (placeholder → real)
+
+Common personal info to catch: IPs, hostnames, usernames, email, SSH key paths, Synology share paths, paths containing real names.
+
+Use realistic-looking dummy values — not obvious placeholders like FAKE_USER. Examples: `johndoe`, `john@example.com`, `192.168.1.50`, `/mnt/nas/backup`. Keep the map so restore is exact.
+
+---
 
 ## Reminders
 - **Mokka symbolic icons**: Consider overlaying Dracula's white symbolic icons onto Catppuccin theme for panel/Dolphin. Source: `/usr/share/icons/Dracula/symbolic/` (1,564 SVGs). Copy to `~/.local/share/icons/[theme]/symbolic/`
