@@ -62,6 +62,23 @@ Codex (`~/.codex/AGENTS.md`) is Steve's other AI coding tool. The two configs sh
 `- YYYY-MM-DD (from claude|codex): <one-line summary of what was added/changed>`
 This way each file's tail shows the timeline of cross-tool updates and which tool authored each change. Update the log in the **file you edited**, not the file you're running in.
 
+
+### Codex Projects
+Codex project notes live under `~/Documents/Codex/Website/Projects/` with Synology backups under `Scripts/Notes/Projects/`.
+
+Active project:
+- `Arch Install` — local: `~/Documents/Codex/Website/Projects/Arch Install/README.md`; Synology: `Scripts/Notes/Projects/Arch Install/README.md`.
+
+Arch Install plan:
+- Keep official Arch ISO and `archinstall` for the safe/clear disk picker.
+- Build a thin `install.sh` wrapper that asks only for target disk, hostname, username, password, and post-install choice.
+- Fixed defaults: ext4, GRUB, pipewire, NetworkManager, `en_US.UTF-8`, `us`, `America/New_York`, US mirrors, sudo/root permission for the user, minimal/base install.
+- Post-install choice: `Dracula.sh` = GNOME + Dracula; `Mokka.sh` = KDE Plasma + Catppuccin Mocha; `macOS.sh` = GNOME + macOS/Tahoe-style theme.
+- GPU handling stays inside those `.sh` files.
+- Add `first-boot.sh`/`gpt-setup` to find `ARCH_*` USB/Synology after reboot and run the chosen script.
+- Disk wiping stays in the ISO-stage wrapper; theme/app/private restore stays in the first-boot helper.
+- Safety requirement: clear drive list with path, size, model, serial when available, existing partitions/OS hints, boot USB warning, and exact target disk confirmation before wipe.
+
 ### bash.sh — Key patterns in place
 - `set -euo pipefail` + `request_sudo()` keepalive + `trap release_sudo EXIT`
 - `download_to()` atomic helper (curl → .tmp → mv, cleans up on failure)
@@ -321,3 +338,4 @@ Append one line per `update claude` / `update codex` run. Format: `- YYYY-MM-DD 
 @RTK.md
 - 2026-05-04 (from codex): cleaned DRACULARCH tracking for local state (histories, zoxide DBs, KDE activity DBs), added privacy .gitignore, updated Synology bash.sh to find ARCH_* USB by label for public Claude configs and restore Claude memory from Synology only.
 - 2026-05-04 (from codex): updated Dracula.sh, Mokka.sh, and macOS.sh on USB/Synology so private convenience restores (Claude memory when locally present, shell histories, zoxide DBs, Mokka KDE activity data) use local private snapshots or skip cleanly instead of pulling removed local state from DRACULARCH.
+- 2026-05-04 (from codex): added Codex Projects location and Arch Install plan — thin archinstall wrapper for disk/user/defaults plus first-boot gpt-setup to run Dracula/Mokka/macOS from USB/Synology.

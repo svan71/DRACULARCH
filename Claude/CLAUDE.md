@@ -77,6 +77,40 @@ As of 2026-05-04, `.gitignore` blocks the common leak paths, and these files wer
 
 Fresh installs should restore private material from Synology/USB, not the public repo. As of 2026-05-04, `Dracula.sh`, `Mokka.sh`, and `macOS.sh` use `SCRIPT_DIR`/`find_private_restore_dir()` for shell histories, zoxide `db.zo`, Mokka KDE activity data, and optional Claude memory; missing private snapshots are skipped without failing the install.
 
+
+## Arch Install Project
+
+Project note lives outside the public repo:
+- Local Codex project: `~/Documents/Codex/Website/Projects/Arch Install/README.md`
+- Synology backup: `Scripts/Notes/Projects/Arch Install/README.md`
+
+Plan: keep official Arch ISO and `archinstall` for safe disk selection, but streamline Steve's repeated choices with a thin wrapper.
+
+Interactive questions:
+- target disk
+- hostname
+- username
+- password
+- post-install choice: Dracula GNOME, Mokka KDE, or macOS-style GNOME
+
+Fixed defaults:
+- ext4
+- GRUB
+- pipewire
+- NetworkManager
+- `en_US.UTF-8`
+- `us`
+- `America/New_York`
+- United States mirrors
+- user has sudo/root permission
+- minimal/base profile; GPU handling stays inside `Dracula.sh`, `Mokka.sh`, and `macOS.sh`
+
+Two-stage design:
+- `install.sh` runs from Arch ISO/USB, wraps `archinstall`, handles disk/user/defaults, and writes a first-boot marker.
+- `first-boot.sh`/`gpt-setup` runs after reboot, finds `ARCH_*` USB/Synology, then launches the chosen theme script and restores private files from Synology/local private snapshots.
+
+Safety requirements: disk picker must show device path, size, model, serial when available, existing OS/partitions when detectable, warn on the `ARCH_*` boot USB, and require typing the exact target disk before wipe.
+
 ## Critical Knowledge - Don't Break These
 
 ### Dracula.sh (GNOME)
