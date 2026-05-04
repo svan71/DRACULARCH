@@ -65,6 +65,22 @@ DRACULARCH/
 
 **"sync" means:** Copy public files to repo → git push. USB is a separate explicit snapshot/update step, not part of normal sync.
 
+## CLAUDE.md / settings.json — Symlinked to Repo
+
+To keep all machines in sync without manual copying, the live Claude config files are **symlinks into the cloned DRACULARCH repo**:
+
+- `~/CLAUDE.md` → `~/Dracularch/Claude/CLAUDE.md`
+- `~/.claude/CLAUDE.md` → `~/Dracularch/Claude/CLAUDE.md`
+- `~/.claude/settings.json` → `~/Dracularch/Claude/settings.json`
+
+(macOS uses `~/Dracularch/Claude/macOS/CLAUDE.md` as the symlink target instead — Linux MD and macOS MD are different files in the repo.)
+
+**Trigger phrase: "pull the latest" or "pull the latest md"** — Claude runs `cd ~/Dracularch && git pull`. Symlinks make the new content live instantly. No copy step needed.
+
+**First-time setup on a fresh machine** (Mokka, new macOS install, etc.): trigger phrase **"set up CLAUDE.md symlinks"** — Claude clones/pulls the repo if needed, removes the standalone `~/CLAUDE.md`, `~/.claude/CLAUDE.md`, `~/.claude/settings.json`, and replaces each with a symlink per the table above. Use the macOS repo path on macOS.
+
+The existing Stop hook continues to push backups to USB/Synology because `cp` follows symlinks (it copies the target's contents). No hook changes required.
+
 ## Public Repo Privacy Rules
 
 DRACULARCH is public. It must never track keys, auth files, `.env`, Claude memory, shell histories, zoxide DBs, KDE activity databases/logs, or other local state dumps. Those restore conveniences belong on Synology/USB private backup locations, not GitHub.
