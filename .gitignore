@@ -1,0 +1,25 @@
+# secrets / auth
+.env
+*.env
+auth.json
+settings.local.json
+*.pem
+*.p12
+id_rsa*
+id_ed25519*
+.smbcredentials
+*tavily_key*
+*key.env
+*api-keys.env
+*token*
+*secret*
+
+# local state
+*history*
+db.zo
+Mokka/configs/activities/kactivitymanagerd/resources/
+*.log
+.DS_Store
+
+# private assistant memory stays in Synology backups, never public repo
+Claude/memory/

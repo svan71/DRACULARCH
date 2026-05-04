@@ -38,7 +38,7 @@ Local AI GUI. Replaced Jan on 2026-05-01.
 ### Codex (`Codex.app` desktop)
 OpenAI's coding agent desktop app. Installed via `brew install --cask codex-app`.
 - Config dir: `~/.codex/` — `AGENTS.md` (prompt customization, equivalent to CLAUDE.md), `config.toml`, `auth.json` (OAuth tokens — private), `memories/`, `rules/default.rules` (allowlist)
-- Backed up to Synology `Scripts/Notes/codex/`: `AGENTS.md`, `config.toml`, `auth.json`, `memories/*.md`, `rules/default.rules`. bash.sh's `install_codex_config()` restores them on fresh install. Ephemeral state (sqlite logs, plugin caches, sessions) is NOT backed up.
+- Backed up to Synology `Scripts/Notes/codex/`: `AGENTS.md`, `config.toml`, `auth.json`, `memories/*.md`, `rules/default.rules`. **Auto-mirrored on every Claude session-stop via the Stop hook in `settings.json`** — no manual action needed for the backup itself. bash.sh's `install_codex_config()` restores them on fresh install. Ephemeral state (sqlite logs, plugin caches, sessions) is NOT backed up.
 - **"save codex files"** = copy `AGENTS.md`, `config.toml`, `auth.json`, `memories/`, `rules/default.rules` from `~/.codex/` to `Scripts/Notes/codex/`. Run after editing AGENTS.md, allow rules, or tweaking config.
 
 ### "save files" / "save all" — full backup sweep
@@ -48,7 +48,7 @@ Run all three save-X commands AND mirror Claude memory in one shot:
 3. `save codex files` — `~/.codex/{AGENTS.md,config.toml,auth.json,memories/,rules/default.rules}` → `Scripts/Notes/codex/`
 4. Mirror Claude memory: `rsync -a --delete ~/.claude/projects/-Users-steve/memory/ /Volumes/external/WEB\ Scripts/Scripts/Claude/memory/`
 
-(Claude's own `~/.claude/CLAUDE.md` and `settings.json` are auto-mirrored on every Claude session-stop via the Stop hook in `settings.json`. The repo copies of CLAUDE.md / bashrc / settings.json need a manual `git push` separately — call them out if dirty during a save sweep.)
+(Claude's own `~/.claude/CLAUDE.md` and `settings.json` are auto-mirrored on every Claude session-stop via the Stop hook in `settings.json`. The Codex files in step 3 are also auto-mirrored by the same hook — manual `save codex files` is still useful for an immediate push. The repo copies of CLAUDE.md / bashrc / settings.json need a manual `git push` separately — call them out if dirty during a save sweep.)
 
 ### Cross-tool sync with Codex
 Codex (`~/.codex/AGENTS.md`) is Steve's other AI coding tool. The two configs share invariants (preferences, hardware, repos, AI stack) but each has tool-specific sections (Codex has Steve-debate tone + Search rules + allow rules; Claude has Skill cheat sheet + plugin details).
@@ -68,6 +68,8 @@ This way each file's tail shows the timeline of cross-tool updates and which too
 - Parallel downloads with `& pids+=($!)` + `wait` error checking
 - Single `brew install "${packages[@]}"` call; fonts use `--cask`
 - Installs and restores: Claude Code, DeepSeek config, Groq key — all idempotent
+- Public Claude configs can restore from mounted `ARCH_*` USB by label, falling back to DRACULARCH raw GitHub
+- Claude memory restores from Synology `Scripts/Claude/memory/`, never from DRACULARCH
 
 ---
 
@@ -82,6 +84,7 @@ This way each file's tail shows the timeline of cross-tool updates and which too
 - `settings.json` — unified across all OSes (`Claude/settings.json`) — no keys embedded
 - `bashrc` — macOS (`macOS/Bash/bashrc`)
 - `bash_profile` — macOS (`macOS/Bash/bash_profile`)
+- `.gitignore` — blocks secrets, auth, Claude memory, histories, zoxide DBs, and KDE activity DBs from re-entering the public repo
 
 **"update USB"** = refresh the static reference copy on USB (`/Volumes/ARCH_YYYYMM/Claude/`). Only the 4 public config files Steve cares about as a record:
 - `CLAUDE.md` → `/Volumes/ARCH_*/Claude/macOS/CLAUDE.md`
@@ -91,6 +94,8 @@ This way each file's tail shows the timeline of cross-tool updates and which too
 
 After copying, run `dot_clean /Volumes/ARCH_*/Claude` to strip macOS metadata files. **Never put auth/keys/cherry/deepseek/codex-auth on USB** — those stay Synology-only.
 
+Installers should discover USB by label, not a fixed mount path. On macOS, use the first matching `/Volumes/ARCH_*`; the monthly label is stable even when the actual device/path changes. Synology `bash.sh` now uses this as an optional source for public Claude configs, falling back to DRACULARCH raw GitHub if no USB snapshot is mounted.
+
 **Everything private → Synology only** (never repo, never USB):
 - All API keys and `.env` files
 - `settings.local.json` (MCP permissions)
@@ -98,6 +103,7 @@ After copying, run `dot_clean /Volumes/ARCH_*/Claude` to strip macOS metadata fi
 - Cherry config and agents.db
 - Ghostty config
 - Any file containing personal info, IPs, credentials
+- Local state dumps: shell histories, zoxide `db.zo`, KDE activity database/logs
 
 **USB label format:** `ARCH_YYYYMM` (changes monthly). macOS path: `/Volumes/ARCH_YYYYMM/`.
 
@@ -216,7 +222,7 @@ Codex config backed up to Synology at `Scripts/Notes/codex/`:
 - `memories/*.md` — accumulated session memories
 - `rules/default.rules` — bash allowlist (avoids re-allowing every command)
 
-**"save codex files"** = copy `AGENTS.md`, `config.toml`, `auth.json`, `memories/`, `rules/default.rules` from `~/.codex/` to `Scripts/Notes/codex/`. Run after editing AGENTS.md or allow rules.
+**"save codex files"** = copy `AGENTS.md`, `config.toml`, `auth.json`, `memories/`, `rules/default.rules` from `~/.codex/` to `Scripts/Notes/codex/`. Auto-runs on every Claude session-stop via the Stop hook — manual command is still useful for an immediate push without ending the session.
 
 bash.sh's `install_codex_config()` restores all of this + installs the app via `brew install --cask codex-app`.
 
@@ -305,5 +311,7 @@ Append one line per `update claude` / `update codex` run. Format: `- YYYY-MM-DD 
 - 2026-05-02 (from claude): redefined "sync" to exclude USB; added "update USB" workflow phrase (refreshes 4 public files: CLAUDE.md, claude settings.json, AGENTS.md, codex config.toml — never auth/keys)
 - 2026-05-02 (from claude): SESSION CHECKPOINT — Mac Mini AI server decommissioned (ollama removed, mlx/mlx-c autoremoved); bash.sh now installs codex-app cask + restores codex configs; deep coaching.md baked into the alias for autonomous behavior; memory pruned (13 stale deleted, 4 evergreens indexed); full vocabulary live: sync / update USB / save files / save {deepseek,cherry,codex} files / update {claude,codex} / update from {claude,codex}
 - 2026-05-03 (from claude): added "sudo / admin commands" rule under macOS — when a Bash sudo errors with "terminal is required", wrap the command in `osascript -e 'do shell script "..." with administrator privileges'` to throw Steve a GUI password prompt and continue in-session. Mirrored to Codex AGENTS.md.
+- 2026-05-04 (from claude): extended Claude Stop hook in `~/.claude/settings.json` to also auto-mirror Codex files (`~/.codex/{AGENTS.md,config.toml,auth.json,memories/,rules/default.rules}` → `Scripts/Notes/codex/`); memories use `rsync -a --exclude=.git` to skip Codex's internal git tracking. Manual `save codex files` still works for immediate pushes; updated CLAUDE.md notes accordingly.
 
-
+@RTK.md
+- 2026-05-04 (from codex): cleaned DRACULARCH tracking for local state (histories, zoxide DBs, KDE activity DBs), added privacy .gitignore, updated Synology bash.sh to find ARCH_* USB by label for public Claude configs and restore Claude memory from Synology only.

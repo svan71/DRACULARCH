@@ -28,7 +28,7 @@ Guidance for Claude Code working with DRACULARCH repository.
 ## Repo Structure
 ```
 DRACULARCH/
-├── Claude/           # CLAUDE.md + settings.json + memory/
+├── Claude/           # CLAUDE.md + settings.json only; memory stays private on Synology
 ├── Shared/           # Cachyos-Kernel.tar.xz, Cachyos-Headers.tar.xz
 ├── Dracula/
 │   ├── configs/      # bashrc, blerc, zoxide
@@ -63,7 +63,19 @@ DRACULARCH/
 | `/Volumes/ARCH_YYYYMM/` (macOS) | USB (scripts + configs) |
 | `/mnt/synology/WEB Scripts/Arch/Claude/USB Files/` | Synology (previous backups) |
 
-**"sync" means:** Copy to repo → git push → copy to USB
+**"sync" means:** Copy public files to repo → git push. USB is a separate explicit snapshot/update step, not part of normal sync.
+
+## Public Repo Privacy Rules
+
+DRACULARCH is public. It must never track keys, auth files, `.env`, Claude memory, shell histories, zoxide DBs, KDE activity databases/logs, or other local state dumps. Those restore conveniences belong on Synology/USB private backup locations, not GitHub.
+
+As of 2026-05-04, `.gitignore` blocks the common leak paths, and these files were removed from tracking while left on local disk for convenience:
+- `*history*`
+- `db.zo`
+- `Mokka/configs/activities/kactivitymanagerd/resources/`
+- `Claude/memory/`
+
+Fresh installs should restore private material from Synology/USB, not the public repo.
 
 ## Critical Knowledge - Don't Break These
 
