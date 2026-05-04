@@ -245,6 +245,9 @@ Fix merged in Ghostty PR #11644, not yet in stable. Running `ghostty@tip` (1.3.2
 
 ---
 
+## Advisor pattern — Opus brain, Sonnet hands
+Main session is pinned to Opus (`"model": "opus"` in settings.json). When spawning subagents via the Agent tool, **default to `model: "sonnet"`** — Opus stays in the main thread doing the thinking; Sonnet does the legwork (Explore, general-purpose, Plan, code-reviewer, code-simplifier, etc.). Only escalate a subagent to Opus if the task itself needs deep judgment in isolation (e.g. an independent design review). Haiku is rarely needed — skip it unless the task is high-volume mechanical work where latency/cost dominate.
+
 ## Skill reach-for cheat sheet
 
 Plugins are installed for a reason. Match generously — if a task even loosely fits one of these, invoke the skill BEFORE doing the work. Skills are cheap; missing them is the failure mode.

@@ -104,7 +104,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "/opt/homebrew/bin/npx -y ccstatusline@latest",
+    "command": "npx -y ccstatusline@latest",
     "padding": 0,
     "refreshInterval": 10
   },
@@ -133,5 +133,5 @@
   "spinnerTipsEnabled": false,
   "effortLevel": "high",
   "theme": "dark-ansi",
-  "model": "sonnet"
+  "model": "opus"
 }
