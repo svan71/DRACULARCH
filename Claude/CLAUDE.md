@@ -477,9 +477,9 @@ bash ~/Documents/bash.sh
 - Creates ~/.hushlogin to suppress login message
 - **Script lives on USB/Synology only - NEVER in repo**
 
-## Ghostty 1.3.1 + ble.sh double-prompt — VERIFY STATUS
+## Ghostty 1.3.1 + ble.sh double-prompt — PARTIAL FIX
 
-**Status (Linux, 2026-05-04):** macOS resolved this via Ghostty PR #11644 by running `ghostty@tip` (1.3.2-main). Linux Arch package is now at **ghostty 1.3.1-arch2** — the shell integration file (`/usr/share/ghostty/shell-integration/bash/ghostty.bash`) emits `OSC 133;P` instead of `133;A` (the same mechanism the upstream PR uses), but lacks the explicit `BLE_VERSION` guard the macOS tip build has. **Open a fresh Ghostty session and confirm whether double-prompt still occurs.** If gone → delete the rest of this section. If still happening → keep tracking until 1.3.2 lands in Arch `extra`.
+**Status (Linux, 2026-05-04):** Tested on `ghostty 1.3.1-2` (extra). **First window opens clean (single prompt). Subsequent windows still double-prompt.** Env diff between windows is empty except `BLE_SESSION_ID` — so the trigger is internal to ble.sh's startup path on a second invocation, not something Ghostty passes differently. Same upstream bug (akinomyoga/ble.sh#684); keep tracking until **ghostty 1.3.2** lands in Arch `extra`. macOS already fixed via `ghostty@tip` (PR #11644 has the explicit `BLE_VERSION` guard the Arch 1.3.1-2 build is missing).
 
 **Issue:** Prompt renders twice on session start in Ghostty 1.3.1. Confirmed on both macOS and Linux (CachyOS).
 Started after Ghostty updated to 1.3.1 (macOS: 2026-01-06, Linux: confirmed 2026-03-18).
