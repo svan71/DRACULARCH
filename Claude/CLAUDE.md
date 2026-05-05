@@ -202,7 +202,7 @@ Safety requirements: disk picker must show device path, size, model, serial when
 - **Printer**: Use `dnssd://` URIs, mDNS discovery, no hardcoded IPs. Canon TR8600 needs `cnijfilter2` AUR
 - **AMD GPP0 fix**: Systemd service disables GPP0 wakeup (prevents wake after suspend)
 - **Carapace**: Use `bash-ble` mode (not `bash`), install `carapace-bin` (prebuilt)
-- **Ghostty**: In `extra` repo (prebuilt), shell-integration = bash
+- **Ghostty**: In `extra` repo (prebuilt), shell-integration = none (see double-prompt fix section)
 - **Starship**: In `extra` repo (prebuilt), use `install_packages` not AUR
 - **ScreenScaleFactors**: Remove from both `plasmashellrc` AND `kdeglobals`
 
@@ -477,51 +477,46 @@ bash ~/Documents/bash.sh
 - Creates ~/.hushlogin to suppress login message
 - **Script lives on USB/Synology only - NEVER in repo**
 
-## Ghostty 1.3.1 + ble.sh double-prompt — PARTIAL FIX
+## Ghostty 1.3.1 + ble.sh double-prompt — FIXED (2026-05-05)
 
-**Status (Linux, 2026-05-04):** Tested on `ghostty 1.3.1-2` (extra). **First window opens clean (single prompt). Subsequent windows still double-prompt.** Env diff between windows is empty except `BLE_SESSION_ID` — so the trigger is internal to ble.sh's startup path on a second invocation, not something Ghostty passes differently. Same upstream bug (akinomyoga/ble.sh#684); keep tracking until **ghostty 1.3.2** lands in Arch `extra`. macOS already fixed via `ghostty@tip` (PR #11644 has the explicit `BLE_VERSION` guard the Arch 1.3.1-2 build is missing).
+**Status:** Working fix confirmed on Linux (14900K / Ghostty 1.3.1-arch2, ble.sh r2319). All other systems still have the double-prompt until configs are updated.
 
-**Issue:** Prompt renders twice on session start in Ghostty 1.3.1. Confirmed on both macOS and Linux (CachyOS).
-Started after Ghostty updated to 1.3.1 (macOS: 2026-01-06, Linux: confirmed 2026-03-18).
+**Root cause:** Ghostty auto-injects its bash shell integration, which conflicts with ble.sh initialization. The fix is to disable Ghostty's auto-injection and manually source the integration script before ble.sh instead.
 
-**Root cause:** ble.sh + Ghostty 1.3.1 shell integration conflict. Disabling ble.sh eliminates double prompt. Ghostty changed bash shell integration between 1.3.0→1.3.1 (two specific commits identified by ble.sh maintainer). Not starship-specific — other user reproduces without starship.
+### The fix (apply to all systems)
 
-### Upstream tracking:
-- **Active issue:** github.com/akinomyoga/ble.sh/issues/684 (opened 2026-03-17, OPEN)
-  - Another user (Dominiquini) reported same bug on EndeavourOS, Ghostty 1.3.1, ble.sh 0.4.0-devel4
-  - ble.sh maintainer (akinomyoga) identified two Ghostty commits between 1.3.0→1.3.1 as culprits
-  - Waiting on Ghostty team (@jparise) to investigate
-- **Previous fixes (now insufficient):**
-  - Issue #543: Fixed with commit `430a174` (deferred ble-attach for Ghostty) — closed Jan 2025
-  - Issue #557: Fixed with commit `4338bbf` (updated workaround after Ghostty changed integration) — closed Feb 2025
-  - Both fixes are in our installed ble.sh but Ghostty 1.3.1 broke it again
+**1. Ghostty config** — set `shell-integration = none` (prevents auto-injection):
+```
+shell-integration = none
+```
 
-### Linux versions (as of 2026-03-18):
-- Ghostty 1.3.1-arch1 (GTK runtime, io_uring)
-- ble.sh 0.4.0_devel4.r2302.2f564e63 (built 2025-12-31, installed via blesh-git AUR)
-- Starship 1.24.2
-- Bash (CachyOS kernel 6.19.3)
+**2. `.bashrc`** — manually source Ghostty integration BEFORE ble.sh:
+```bash
+# Ghostty shell integration (sourced manually before ble.sh for correct ordering)
+[[ -n "$GHOSTTY_RESOURCES_DIR" && -f "$GHOSTTY_RESOURCES_DIR/shell-integration/bash/ghostty.bash" ]] && \
+    source "$GHOSTTY_RESOURCES_DIR/shell-integration/bash/ghostty.bash"
 
-### All macOS workaround attempts (ALL FAILED):
-1. `bleopt prompt_command_changes_layout=1` - no effect
-2. `bleopt internal_suppress_bash_output=1` - no effect
-3. `shell-integration = none` - killed prompt entirely (blinking cursor)
-4. Hide BLE_VERSION during starship init (force PROMPT_COMMAND over blehook) - no effect
-5. Removed PROMPT_COMMAND title-setter line - no effect
-6. `shell-integration-features = no-cursor,no-title` - no effect
-7. `shell-integration = none` + BLE_VERSION hide combined - STILL double prompts
-8. Both bleopt options together + `shell-integration = none` - STILL double prompts
-9. Downgrade Ghostty - not possible (private repo, no old binaries)
+# ble.sh
+[[ -f /usr/share/blesh/ble.sh ]] && source /usr/share/blesh/ble.sh --attach=prompt
+```
 
-### When fix lands:
-- Update ble.sh: `yay -S blesh-git` (Linux) or `ble-update` (macOS)
-- On macOS also update ble.sh: `cd ~/.local/share/blesh && git pull && make`
-- Restart shell, verify single prompt
+Key: `--attach=prompt` on the ble.sh source line. The manual Ghostty source must come first.
 
-### Config state (both platforms, reverted to clean):
-- Ghostty config: `shell-integration = bash`
-- `.bashrc`: original (no workaround lines)
-- `.blerc`: clean (no workaround bleopt lines)
+### Why earlier `shell-integration = none` attempts failed
+Those were tried alone on macOS without the manual source line. Without it, Ghostty features (cursor tracking, title, etc.) are lost entirely — blinking cursor. The manual source restores them; `none` just stops Ghostty from doing it automatically at the wrong moment.
+
+### When Ghostty 1.3.2 lands
+Test whether the fix is still needed:
+1. Change Ghostty config back to `shell-integration = bash`
+2. Remove the manual Ghostty source line from `.bashrc`
+3. Open a new shell — if single prompt, revert is clean and done
+4. If double-prompt returns, put the fix back
+
+If 1.3.2 fixes the auto-injection timing, the manual workaround can be dropped. If not, keep it — it works regardless of Ghostty version.
+
+### Upstream tracking
+- github.com/akinomyoga/ble.sh/issues/684 (opened 2026-03-17)
+- Root cause: Ghostty changed bash shell integration between 1.3.0→1.3.1
 
 ## AI Tools — Linux
 
